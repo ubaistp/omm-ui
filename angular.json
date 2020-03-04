@@ -29,11 +29,13 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./src/assets/plugins/select2/select2.min.css",
               "src/scss/styles.scss"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",
               "./src/assets/plugins/popper/popper.min.js",
+              "./src/assets/plugins/select2/select2.full.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
           },

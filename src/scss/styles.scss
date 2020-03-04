@@ -3,6 +3,7 @@
 @import "utils/variables";
 @import "components/bottons";
 @import "components/progress";
+@import "components/select2";
 
 *,
 :after,
@@ -202,6 +203,9 @@ table {
   overflow: hidden;
   .form{
     margin-top: 3rem;
+    @media (max-width: 991px){
+      margin-top: 1rem !important;
+    }
   }
 }
 
@@ -211,6 +215,9 @@ table {
   align-items: center;
   padding: 1rem 0;
   border-bottom: 1px solid rgba($color: $color-dark, $alpha: 0.1);
+  &:last-child{
+    border: none;
+  }
   .description {
     font-weight: 400;
   }

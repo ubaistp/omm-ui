@@ -209,17 +209,22 @@
 <div class="modal fade" id="strategiesModal" tabindex="-1" role="dialog" aria-labelledby="strategiesModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style="background-color: #E6EDF6;">
       <div class="modal-body py0 px0">
         <div class="row my0 mx0">
-          <div class="col-md-6 py0 px0">
-            <div>
-
+          <div class="col-lg-6 py0 px0" style="background-color: #fff;">
+            <div class="py15 px15 d-block d-lg-none">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="d-none d-lg-block">
+              <canvas id="myChart" style="height: 200px;"></canvas>
             </div>
             <div class="px15">
               <div class="calculation">
                 <span class="description">Supply APY</span>
-                <span class="color-success">8.07%</span>
+                <span class="color-success">{{supplyAPY}}%</span>
               </div>
               <div class="calculation">
                 <span class="description">Price</span>
@@ -235,9 +240,9 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6 py0 px0" style="background-color: #E6EDF6;">
+          <div class="col-lg-6 py0 px0">
             <div class="py15 px15">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close d-none d-lg-block" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
               <div class="form" *ngIf="collateralEnable">
@@ -253,10 +258,10 @@
                 </div>
                 <div class="my30">
                   <div class="row align-items-center">
-                    <div class="col-sm-9">
+                    <div class="col-9">
                       <input type="text" class="form-control form-control-lg text-center" placeholder="0">
                     </div>
-                    <div class="col-sm-3 text-center">
+                    <div class="col-3 text-center">
                       <a href="" class="link">
                         SAFE MAX
                       </a>
@@ -287,8 +292,8 @@
                   <button class="btn btn-lg btn-full btn-secondary" *ngIf="typeViewStrategy == 'supply'">Supply</button>
                 </div>
               </div>
-              <div class="form" *ngIf="!collateralEnable">
-                <div class="text-center mt30">
+              <div class="form mt100" *ngIf="!collateralEnable">
+                <div class="text-center">
                   <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
                 </div>
                 <div class="mt20 mb30" style="font-weight: 500;">
