@@ -1,5 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import Chart from 'chart.js';
+import { ethers } from 'ethers';
+import { getAddress } from 'ethers/utils';
+import { blockchainConstants } from '../environments/blockchain-constants';
 declare var $: any;
 
 @Component({
@@ -11,6 +14,9 @@ declare var $: any;
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'Konkrete';
 
+  private ethereum: any;
+  private web3: any;
+  public provider: any;
   public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
@@ -81,6 +87,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.initializeMetaMask();
     this.supplyAPY = this.chartData.dataSet[0];
   }
   ngAfterViewInit() {
@@ -106,6 +113,29 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.supplyChart();
     this.borrowChart();
   }
+
+  public async initializeMetaMask() {
+    this.ethereum = window['ethereum'];
+    await this.ethereum.enable();
+    this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+    this.setup();
+  }
+
+  public async setup() {
+    const contractAddresses = await this.getContractAddresses();
+    console.log(contractAddresses);
+  }
+  private async getContractAddresses() {
+    let contractAddresses = {};
+    const network = await this.web3.getNetwork();
+    if (network.name === 'homestead') {
+      contractAddresses = blockchainConstants.mainnet;
+    } else {
+      contractAddresses = blockchainConstants[network.name];
+    }
+    return contractAddresses;
+  }
+
 
   openSupplyModal() {
     $('#supplyModal').modal('show');
