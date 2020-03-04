@@ -45,6 +45,7 @@
     2px 4px 6px 0 rgba(0, 0, 0, 0.21), -2px -4px 6px 0 rgba(0, 0, 0, 0.21);
   border: none;
   border-radius: 0.25rem;
+  overflow: hidden;
   input.select2-search__field {
     font-size: 0.9rem;
     padding: 0.25rem 1rem;
@@ -59,12 +60,21 @@
   color: $color-text;
   font-weight: 500;
 }
-.select2-results__option span {
-  display: flex;
-  align-items: center;
-  font-size: 0.8rem;
-  color: $color-text;
-  font-weight: 500;
+.select2-results__option{
+  padding: 0.5rem 1rem;
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+    color: $color-text;
+    font-weight: 500;
+    i {
+      font-size: 0.9rem;
+      font-style: normal;
+      color: rgba($color: $color-text, $alpha: 0.8);
+    }
+  }
 }
 .select2-container--default .select2-results__option[aria-selected="true"],
 .select2-container--default

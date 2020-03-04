@@ -33,7 +33,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       callbacks: {
         label: function (tooltipItem, data) {
           this.supplyAPY = data['datasets'][0]['data'][tooltipItem['index']];
-          return data['datasets'][0]['label'] + ' ' + this.supplyAPY + '%';
+          // return data['datasets'][0]['label'] + ' ' + this.supplyAPY + '%';
         }.bind(this),
       },
       backgroundColor: '#FFF',
@@ -82,6 +82,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.supplyAPY = this.chartData.dataSet[0];
   }
   ngAfterViewInit() {
+
+    $('#strategies').select2({
+      data: [{"id":"1","text":"cDAI","apy":"50"},{"id":"1","text":"IVTDemo","apy":"20"}],
+      dropdownCssClass: 'bigdrop',
+      minimumResultsForSearch: Infinity,
+      templateResult: this.formatCountrySelection,
+      dropdownParent: $('#strategiesGroup')
+    });
+    $('.select2-main').one('select2:open', function (e) {
+      $('input.select2-search__field').prop('placeholder', 'Search');
+    });
+
     this.chart();
   }
 
@@ -120,6 +132,16 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       options: this.chartOptions
     });
+  }
+
+  formatCountrySelection(strategies) {
+    if (!strategies.id) {
+      return strategies.text;
+    }
+    var $strategies = $(
+      '<span>' + strategies.text + '<i>' + strategies.apy + '%</i></span>'
+    );
+    return $strategies;
   }
 
 }
