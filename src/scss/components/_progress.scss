@@ -1,0 +1,182 @@
+.progress-bar--container {
+  background-color: $object-color;
+  padding: 0.5rem 0.8rem;
+  box-shadow: $outer-shadow;
+  border-radius: $box-radius;
+  display: flex;
+  align-items: center;
+  label {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    &.progress-title {
+      font-weight: 500;
+      color: rgba($color: $color-text, $alpha: 0.8);
+      margin-right: 5px;
+    }
+  }
+  .progress {
+    background-color: $object-color;
+    box-shadow: $inner-shadow;
+    border-radius: $box-radius;
+    width: 100%;
+    &.progress-sm {
+      height: 0.5rem;
+    }
+    .progress-bar {
+      border-radius: $box-radius;
+    }
+    .progress-success {
+      background-color: $color-success;
+    }
+  }
+}
+
+.progress-circle--container {
+  background-color: $object-color;
+  padding: 0.5rem 0.5rem;
+  box-shadow: $outer-shadow;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+$size: 150px;
+
+//Create how many steps
+$howManySteps: 10; //this needs to be even.
+//for fun try using 20 and changine in the HTML the data-percentage to 15 or 85
+
+.progress.progress-circle {
+  width: $size;
+  height: $size;
+  line-height: $size;
+  background: none;
+  margin: 0 auto;
+  box-shadow: none;
+  position: relative;
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: $inner-shadow;
+    // border: 5px solid $color-success;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  &:before {
+    content: "";
+    width: 92%;
+    height: 92%;
+    border-radius: 50%;
+    box-shadow: $outer-shadow;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  > span {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+  }
+  .progress-left {
+    left: 0;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border-width: 5px;
+    border-style: solid;
+    position: absolute;
+    top: 0;
+    border-color: $color-danger;
+  }
+  .progress-left .progress-bar {
+    left: 100%;
+    border-top-right-radius: ($size/2);
+    border-bottom-right-radius: ($size/2);
+    border-left: 0;
+    transform-origin: center left;
+  }
+  .progress-right {
+    right: 0;
+    .progress-bar {
+      left: -100%;
+      border-top-left-radius: ($size/2);
+      border-bottom-left-radius: ($size/2);
+      border-right: 0;
+      transform-origin: center right;
+    }
+  }
+  .progress-value {
+    width: 100%;
+    display: flex;
+    border-radius: 50%;
+    font-size: 2rem;
+    text-align: center;
+    line-height: 20px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-weight: 500;
+    span {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+/* This for loop creates the 	necessary css animation names
+Due to the split circle of progress-left and progress right, we must use the animations on each side.
+*/
+@for $i from 1 through $howManySteps {
+  $stepName: ($i * (100 / $howManySteps));
+
+  //animation only the left side if below 50%
+  @if $i <= ($howManySteps/2) {
+    .progress[data-percentage="#{$stepName}"] {
+      .progress-right .progress-bar {
+        animation: loading-#{$i} 1.5s linear forwards;
+      }
+      .progress-left .progress-bar {
+        animation: 0;
+      }
+    }
+  }
+  //animation only the right side if above 50%
+  @if $i > ($howManySteps/2) {
+    .progress[data-percentage="#{$stepName}"] {
+      .progress-right .progress-bar {
+        animation: loading-#{($howManySteps/2)} 1.5s linear forwards; //set the animation to longest animation
+      }
+      .progress-left .progress-bar {
+        animation: loading-#{$i - ($howManySteps/2)} 1.5s linear forwards 1.5s;
+      }
+    }
+  }
+}
+
+//animation
+@for $i from 1 through ($howManySteps/2) {
+  $degrees: (180/ ($howManySteps/2));
+  $degrees: ($degrees * $i);
+  @keyframes loading-#{$i} {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate($degrees);
+      transform: rotate(#{$degrees}deg);
+    }
+  }
+}

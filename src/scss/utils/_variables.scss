@@ -1,0 +1,116 @@
+$screen-xs-max: 575px;
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+// extra Small devices
+@mixin xs {
+  @media (max-width: #{$screen-xs-max}) {
+    @content;
+  }
+}
+
+// Small devices
+@mixin sm {
+  @media (min-width: #{$screen-sm-min}) {
+    @content;
+  }
+}
+
+// Medium devices
+@mixin md {
+  @media (min-width: #{$screen-md-min}) {
+    @content;
+  }
+}
+
+// Large devices
+@mixin lg {
+  @media (min-width: #{$screen-lg-min}) {
+    @content;
+  }
+}
+
+// Extra large devices
+@mixin xl {
+  @media (min-width: #{$screen-xl-min}) {
+    @content;
+  }
+}
+
+$spaceamounts: (0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100);
+@each $space in $spaceamounts {
+  .padding#{$space} {
+    padding: #{$space}px !important;
+  }
+  .px#{$space},
+  .pl#{$space} {
+    padding-left: #{$space}px !important;
+  }
+  .px#{$space},
+  .pr#{$space} {
+    padding-right: #{$space}px !important;
+  }
+  .py#{$space},
+  .pt#{$space} {
+    padding-top: #{$space}px !important;
+  }
+  .py#{$space},
+  .pb#{$space} {
+    padding-bottom: #{$space}px !important;
+  }
+  .margin#{$space} {
+    margin: #{$space}px !important;
+  }
+  .mx#{$space},
+  .ml#{$space} {
+    margin-left: #{$space}px !important;
+  }
+  .mx#{$space},
+  .mr#{$space} {
+    margin-right: #{$space}px !important;
+  }
+  .my#{$space},
+  .mt#{$space} {
+    margin-top: #{$space}px !important;
+  }
+  .my#{$space},
+  .mb#{$space} {
+    margin-bottom: #{$space}px !important;
+  }
+
+  .mx-#{$space},
+  .ml-#{$space} {
+    margin-left: -#{$space}px !important;
+  }
+  .mx-#{$space},
+  .mr-#{$space} {
+    margin-right: -#{$space}px !important;
+  }
+  .my-#{$space},
+  .mt-#{$space} {
+    margin-top: -#{$space}px !important;
+  }
+  .my-#{$space},
+  .mb-#{$space} {
+    margin-bottom: -#{$space}px !important;
+  }
+}
+
+$box-radius: 6px;
+$card-radius: 4px;
+$shadow-portlet: 4px 6px 23px 0 rgba(202, 210, 224, 0.7), 1px 2px 4px 0 #c8d2e1;
+$shadow-container: 1px 2px 1px 0 rgba(200, 210, 225, 0.5),
+  2px 4px 6px 0 rgba(200, 210, 225, 0.21);
+$btn-shadow: 1px 0 1px 0 rgba(200, 210, 225, 0.8), 4px 6px 6px 0 #c8d2e1;
+
+$outer-shadow: 2px 2px 4px 0px rgba($color: #000000, $alpha: 0.2), -2px -2px 4px 0px rgba($color: #ffffff, $alpha: 1);
+$inner-shadow: inset 2px 2px 2px 0px rgba($color: #000000, $alpha: 0.2), inset -2px -2px 2px 0px rgba($color: #ffffff, $alpha: 1);

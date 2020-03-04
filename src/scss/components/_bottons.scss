@@ -1,0 +1,51 @@
+.btn{
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  box-shadow: 4px 4px 8px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 8px 0px rgba($color: #ffffff, $alpha: 1);
+  &:hover{
+    box-shadow: $outer-shadow;
+  }
+  &.btn-full{
+    width: 100%;
+  }
+  &.btn-success{
+    background-color: $color-success;
+    color: $color-text;
+    border: none;
+    &:active,&:focus{
+      border: none;
+      background-color: $color-success !important;
+      color: $color-text !important;
+      box-shadow: inset 2px 2px 4px 0px rgba($color: #000000, $alpha: 0.5), inset -2px -2px 2px 0px rgba($color: #ffffff, $alpha: 0.5) !important;
+    }
+  }
+  &.btn-secondary{
+    background-color: $object-color !important;
+    color: $color-success;
+    border: none;
+    box-shadow: 4px 4px 10px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 10px 0px rgba($color: #ffffff, $alpha: 1);
+    transition: all 0.2s ease-in-out;
+    border-radius: 25px;
+    &:hover {
+      box-shadow: $outer-shadow;
+      border: none;
+    }
+
+    &:active,&:focus,&:active &:focus,&.active{
+      color: $color-success !important;
+      box-shadow: $inner-shadow !important;
+      border: none !important;
+    }
+  }
+}
+.link{
+  font-weight: 500;
+  color: rgba($color: $color-text, $alpha: 0.8);
+  text-decoration: none;
+  &:hover{
+    text-decoration: none;
+    color: $color-success;
+  }
+}
