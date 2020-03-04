@@ -193,6 +193,9 @@ table {
       letter-spacing: 0;
       padding: 1rem;
       font-weight: 500;
+      &:last-child{
+        border: none;
+      }
       .subtitle {
         font-size: 0.8rem;
       }

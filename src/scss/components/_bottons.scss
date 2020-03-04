@@ -39,6 +39,24 @@
       border: none !important;
     }
   }
+  &.btn-danger{
+    background-color: $object-color !important;
+    color: $color-danger;
+    border: none;
+    box-shadow: 4px 4px 10px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 10px 0px rgba($color: #ffffff, $alpha: 1);
+    transition: all 0.2s ease-in-out;
+    border-radius: 25px;
+    &:hover {
+      box-shadow: $outer-shadow;
+      border: none;
+    }
+
+    &:active,&:focus,&:active &:focus,&.active{
+      color: $color-danger !important;
+      box-shadow: $inner-shadow !important;
+      border: none !important;
+    }
+  }
 }
 .link{
   font-weight: 500;

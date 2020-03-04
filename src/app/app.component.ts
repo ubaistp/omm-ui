@@ -12,8 +12,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   title = 'Konkrete';
 
   public supplyAPY;
-  public collateralEnable = false;
-  public typeViewStrategy = 'withdraw';
+  public collateralSupplyEnable = false;
+  public collateralBorrowEnable = false;
+  public typeViewSupply = 'withdraw';
+  public typeViewBorrow = 'repay';
   public canvas: any;
   public ctx: any;
   public chartData = {
@@ -83,38 +85,60 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
 
-    $('#strategies').select2({
+    $('#supply').select2({
       data: [{"id":"1","text":"cDAI","apy":"50"},{"id":"1","text":"IVTDemo","apy":"20"}],
       dropdownCssClass: 'bigdrop',
       minimumResultsForSearch: Infinity,
       templateResult: this.formatCountrySelection,
-      dropdownParent: $('#strategiesGroup')
+      dropdownParent: $('#supplyGroup')
+    });
+    $('#borrow').select2({
+      data: [{"id":"1","text":"cDAI","apy":"50"},{"id":"1","text":"IVTDemo","apy":"20"}],
+      dropdownCssClass: 'bigdrop',
+      minimumResultsForSearch: Infinity,
+      templateResult: this.formatCountrySelection,
+      dropdownParent: $('#borrowGroup')
     });
     $('.select2-main').one('select2:open', function (e) {
       $('input.select2-search__field').prop('placeholder', 'Search');
     });
 
-    this.chart();
+    this.supplyChart();
+    this.borrowChart();
   }
 
-  openStrategiesModal() {
-    $('#strategiesModal').modal('show');
+  openSupplyModal() {
+    $('#supplyModal').modal('show');
+  }
+  openBorrowModal() {
+    $('#borrowModal').modal('show');
   }
 
-  enableCollateral() {
-    this.collateralEnable = true;
+  enableSupplyCollateral() {
+    this.collateralSupplyEnable = true;
+  }
+  enableBorrowCollateral() {
+    this.collateralBorrowEnable = true;
   }
 
   viewWithdrawForm() {
-    this.typeViewStrategy = 'withdraw';
+    this.typeViewSupply = 'withdraw';
   }
 
   viewSupplyForm() {
-    this.typeViewStrategy = 'supply';
+    this.typeViewSupply = 'supply';
   }
 
-  chart() {
-    this.canvas = document.getElementById('myChart');
+  viewRepayForm() {
+    this.typeViewBorrow = 'repay';
+  }
+
+  viewBorrowForm() {
+    this.typeViewBorrow = 'borrow';
+  }
+
+  supplyChart() {
+    this.canvas = document.getElementById('supplyChart');
     this.ctx = this.canvas.getContext('2d');
     let myChart = new Chart(this.ctx, {
       type: 'line',
@@ -133,15 +157,35 @@ export class AppComponent implements OnInit, AfterViewInit {
       options: this.chartOptions
     });
   }
+  borrowChart() {
+    this.canvas = document.getElementById('borrowChart');
+    this.ctx = this.canvas.getContext('2d');
+    let myChart = new Chart(this.ctx, {
+      type: 'line',
+      data: {
+        labels: this.chartData.label,
+        datasets: [{
+          label: 'Supply APY',
+          data: this.chartData.dataSet,
+          backgroundColor: 'rgb(217, 84, 108)',
+          borderColor: 'rgb(217, 84, 108)',
+          borderWidth: 2,
+          fill: false,
+          lineTension: 0,
+        }]
+      },
+      options: this.chartOptions
+    });
+  }
 
-  formatCountrySelection(strategies) {
-    if (!strategies.id) {
-      return strategies.text;
+  formatCountrySelection(supply) {
+    if (!supply.id) {
+      return supply.text;
     }
-    var $strategies = $(
-      '<span>' + strategies.text + '<i>' + strategies.apy + '%</i></span>'
+    var $supply = $(
+      '<span>' + supply.text + '<i>' + supply.apy + '%</i></span>'
     );
-    return $strategies;
+    return $supply;
   }
 
 }
