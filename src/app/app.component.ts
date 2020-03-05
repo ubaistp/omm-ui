@@ -151,6 +151,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
       token.borrowApy = apy[0];
       token.supplyApy = apy[1];
+      token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
     });
     console.log(this.tokenData);
   }
@@ -222,22 +223,23 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async getUtilizationRate(cTokenContract) {
-    let interestRateModelAbi;
-    if (cTokenContract == this.Contracts.cDAI) {
-      interestRateModelAbi = DAIInterestRateModel.abi;
-    } else {
-      interestRateModelAbi = WhitePaperInterestRateModel.abi;
-    }
-    const intRateModelAddr = await cTokenContract.interestRateModel();
-    const interestRateContract = this.initContract(intRateModelAddr, interestRateModelAbi);
+    // let interestRateModelAbi;
+    // if (cTokenContract == this.Contracts.cDAI) {
+    //   interestRateModelAbi = DAIInterestRateModel.abi;
+    // } else {
+    //   interestRateModelAbi = WhitePaperInterestRateModel.abi;
+    // }
+    // const intRateModelAddr = await cTokenContract.interestRateModel();
+    // const interestRateContract = this.initContract(intRateModelAddr, interestRateModelAbi);
     const cash = await cTokenContract.getCash();
     const borrow = await cTokenContract.totalBorrows();
     const reserves = await cTokenContract.totalReserves();
-
-    let utilizationRate = await interestRateContract.utilizationRate(cash, borrow, reserves);
-    utilizationRate = this.getNumber(utilizationRate);
-    console.log(utilizationRate)
-    return utilizationRate;
+    const utilizationRate = (parseFloat(borrow) * (10 ** 18)) / (parseFloat(cash) + parseFloat(borrow) - parseFloat(reserves));
+    // console.log(utilizationRate)
+    // let utilizationRate = await interestRateContract.utilizationRate(cash, borrow, reserves);
+    // utilizationRate = this.getNumber(utilizationRate);
+    // console.log(utilizationRate)
+    return utilizationRate.toString();
   }
 
   public getNumber(hexNum) {
