@@ -3,6 +3,13 @@ import Chart from 'chart.js';
 import { ethers } from 'ethers';
 import { getAddress } from 'ethers/utils';
 import { blockchainConstants } from '../environments/blockchain-constants';
+import * as Comptroller from '../assets/contracts/Comptroller.json';
+import * as PriceOracleProxy from '../assets/contracts/PriceOracleProxy.json';
+import * as CErc20Delegator from '../assets/contracts/CErc20Delegator.json';
+import * as CErc20 from '../assets/contracts/CErc20.json';
+import * as DAIInterestRateModel from '../assets/contracts/DAIInterestRateModel.json';
+import * as WhitePaperInterestRateModel from '../assets/contracts/WhitePaperInterestRateModel.json';
+
 declare var $: any;
 
 @Component({
@@ -17,6 +24,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   private ethereum: any;
   private web3: any;
   public provider: any;
+  public userAddress: any;
+  public Contracts: any;
+  public contractAddresses: any;
+  public BLOCKS_YEAR = 2102400;
+  public tokenData: any;
+  // public cTokenData: any;
   public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
@@ -25,8 +38,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   public canvas: any;
   public ctx: any;
   public chartData = {
-    "dataSet": Array.from({ length: 7 }, () => Math.floor(Math.random() * 50) + 10),
-    "label": [1578392733000, 1578306333000, 1578219933000, 1578133533000, 1578047133000, 1577960733000, 1577874333000],
+    dataSet: Array.from({ length: 7 }, () => Math.floor(Math.random() * 50) + 10),
+    label: [1578392733000, 1578306333000, 1578219933000, 1578133533000, 1578047133000, 1577960733000, 1577874333000],
   };
   public chartOptions = {
     legend: {
@@ -84,23 +97,28 @@ export class AppComponent implements OnInit, AfterViewInit {
         radius: 0
       }
     }
+  };
+
+  constructor() {
+    this.tokenData = [{id: '1', text: 'DAI', apy: '50'}, {id: '1', text: 'IVTDemo', apy: '20'}];
+    this.initializeMetaMask();
   }
 
   ngOnInit() {
-    this.initializeMetaMask();
+    // this.initializeMetaMask();
     this.supplyAPY = this.chartData.dataSet[0];
   }
   ngAfterViewInit() {
 
     $('#supply').select2({
-      data: [{"id":"1","text":"cDAI","apy":"50"},{"id":"1","text":"IVTDemo","apy":"20"}],
+      data: this.tokenData,
       dropdownCssClass: 'bigdrop',
       minimumResultsForSearch: Infinity,
       templateResult: this.formatCountrySelection,
       dropdownParent: $('#supplyGroup')
     });
     $('#borrow').select2({
-      data: [{"id":"1","text":"cDAI","apy":"50"},{"id":"1","text":"IVTDemo","apy":"20"}],
+      data: this.tokenData,
       dropdownCssClass: 'bigdrop',
       minimumResultsForSearch: Infinity,
       templateResult: this.formatCountrySelection,
@@ -115,6 +133,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async initializeMetaMask() {
+    // tslint:disable-next-line: no-string-literal
     this.ethereum = window['ethereum'];
     await this.ethereum.enable();
     this.web3 = new ethers.providers.Web3Provider(this.ethereum);
@@ -122,20 +141,108 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async setup() {
+    this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
-    console.log(contractAddresses);
+    this.initAllContracts(contractAddresses);
+    this.tokenData.forEach(async (token) => {
+      this.initToken(token);
+      token.priceEth = await this.getPrice(token.cTokenAddress);
+      token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+      const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
+      token.borrowApy = apy[0];
+      token.supplyApy = apy[1];
+    });
+    console.log(this.tokenData);
   }
+
   private async getContractAddresses() {
     let contractAddresses = {};
+    this.contractAddresses = {};
     const network = await this.web3.getNetwork();
     if (network.name === 'homestead') {
       contractAddresses = blockchainConstants.mainnet;
     } else {
       contractAddresses = blockchainConstants[network.name];
     }
+    this.contractAddresses = contractAddresses;
     return contractAddresses;
   }
 
+  private initToken(token) {
+    token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
+    token.tokenAddress = this.contractAddresses[token.name];
+    token.cTokenAddress = this.contractAddresses[`c${token.name}`];
+    // if (token.text === 'DAI') {
+
+    // } else {
+
+    // }
+
+  }
+  private async initAllContracts(contractAddresses) {
+    this.Contracts = {};
+    this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
+    this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
+    this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
+    this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20.abi);
+
+    // this.getAPY(this.Contracts.cDAI)
+    // this.getUtilizationRate(this.Contracts.cDAI)
+    console.log(this.Contracts);
+  }
+
+  private initContract(contractAddress, abi) {
+    return new ethers.Contract(contractAddress, abi, this.web3.getSigner());
+  }
+
+  public async getPrice(cTokenAddress) {
+    const price = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
+    const priceStr = this.getNumber(price);
+    return priceStr;
+  }
+
+  public async getCollateralFactor(cTokenAddress) {
+    const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
+    const colFactorStr = this.getNumber(markets.collateralFactorMantissa);
+    return colFactorStr;
+  }
+
+  public async getAPY(cTokenContract) {
+    let borrowRate = await cTokenContract.borrowRatePerBlock();
+    borrowRate = this.getNumber(borrowRate);
+    let supplyRate = await cTokenContract.supplyRatePerBlock();
+    supplyRate = this.getNumber(supplyRate);
+    const borrowApy = this.BLOCKS_YEAR * parseFloat(borrowRate);
+    const supplyApy = this.BLOCKS_YEAR * parseFloat(supplyRate);
+    const divBy = 10 ** 16;
+    const borrowApyPerc = borrowApy / divBy;
+    const supplyApyPerc = supplyApy / divBy;
+    // console.log(borrowApyPerc.toFixed(3), supplyApyPerc.toFixed(3));
+    return [borrowApyPerc.toFixed(3), supplyApyPerc.toFixed(3)];
+  }
+
+  public async getUtilizationRate(cTokenContract) {
+    let interestRateModelAbi;
+    if (cTokenContract == this.Contracts.cDAI) {
+      interestRateModelAbi = DAIInterestRateModel.abi;
+    } else {
+      interestRateModelAbi = WhitePaperInterestRateModel.abi;
+    }
+    const intRateModelAddr = await cTokenContract.interestRateModel();
+    const interestRateContract = this.initContract(intRateModelAddr, interestRateModelAbi);
+    const cash = await cTokenContract.getCash();
+    const borrow = await cTokenContract.totalBorrows();
+    const reserves = await cTokenContract.totalReserves();
+
+    let utilizationRate = await interestRateContract.utilizationRate(cash, borrow, reserves);
+    utilizationRate = this.getNumber(utilizationRate);
+    console.log(utilizationRate)
+    return utilizationRate;
+  }
+
+  public getNumber(hexNum) {
+    return ethers.utils.bigNumberify(hexNum).toString();
+  }
 
   openSupplyModal() {
     $('#supplyModal').modal('show');
