@@ -151,16 +151,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     await this.getExchangeRate();
     this.tokenData.forEach(async (token) => {
       this.initToken(token);
-      token.priceEth = await this.getPrice(token.cTokenAddress);
-      token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-      const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
-      token.borrowApy = apy[0];
-      token.supplyApy = apy[1];
-      token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
-      token.tokenBalance = await this.getUserBalance(this.Contracts[token.name]);
-      token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     });
-    console.log(this.tokenData);
   }
 
   private async getContractAddresses() {
@@ -176,12 +167,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     return contractAddresses;
   }
 
-  private initToken(token) {
+  private async initToken(token) {
     token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
     token.tokenAddress = this.contractAddresses[token.name];
     token.cTokenAddress = this.contractAddresses[`c${token.name}`];
-    // if (token.text === 'DAI') {} else {}
+
+    token.priceEth = await this.getPrice(token.cTokenAddress);
+    token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+    const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
+    token.borrowApy = apy[0];
+    token.supplyApy = apy[1];
+    token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
+    token.cTokenSupplyBalance = parseFloat( await this.getUserBalance(this.Contracts[`c${token.name}`]) ) / 10 ** 8;
+    token.tokenBalance = parseFloat( await this.getUserBalance(this.Contracts[token.name]) ) / 10 ** 18;
+    token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
+    token.tokenBorrowBalance = await this.getUserBorrowBalance(this.Contracts[`c${token.name}`]);
+    console.log(token);
   }
+
   private async initAllContracts(contractAddresses) {
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
@@ -247,6 +250,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   public async getUserBalance(tokenContract) {
     let tokenBalance = await tokenContract.balanceOf(this.userAddress);
+    tokenBalance = this.getNumber(tokenBalance);
+    return tokenBalance;
+  }
+
+  public async getUserBorrowBalance(cTokenContract) {
+    let tokenBalance = await cTokenContract.balanceOf(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
     return tokenBalance;
   }
