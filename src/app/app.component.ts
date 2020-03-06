@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js';
 import { ethers } from 'ethers';
 import { getAddress } from 'ethers/utils';
@@ -30,8 +31,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   public contractAddresses: any;
   public BLOCKS_YEAR = 2102400;
   public tokenData: any;
-  // public cTokenData: any;
+  public accountLiquidity: any;
   public selectedTokenIndex = 0;
+  public ethUsdExchangeRate: any;
   public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
@@ -101,7 +103,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   };
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
+    this.getExchangeRate();
     this.tokenData = [{ id: '0', text: 'DAI', apy: '50' }, { id: '1', text: 'IVTDemo', apy: '20' }];
     this.initializeMetaMask();
   }
@@ -145,6 +148,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     this.initAllContracts(contractAddresses);
+    await this.getExchangeRate();
     this.tokenData.forEach(async (token) => {
       this.initToken(token);
       token.priceEth = await this.getPrice(token.cTokenAddress);
@@ -154,6 +158,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       token.supplyApy = apy[1];
       token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
       token.tokenBalance = await this.getUserBalance(this.Contracts[token.name]);
+      token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     });
     console.log(this.tokenData);
   }
@@ -201,8 +206,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   public async getCollateralFactor(cTokenAddress) {
     const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
-    const colFactorStr = this.getNumber(markets.collateralFactorMantissa);
-    return colFactorStr;
+    const colFactorStrTemp = this.getNumber(markets.collateralFactorMantissa);
+    const divBy = 10 ** 16;
+    const colFactorStr = parseFloat(colFactorStrTemp) / divBy;
+    return colFactorStr.toFixed(2).toString();
   }
 
   public async getAPY(cTokenContract) {
@@ -215,7 +222,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     const divBy = 10 ** 16;
     const borrowApyPerc = borrowApy / divBy;
     const supplyApyPerc = supplyApy / divBy;
-    // console.log(borrowApyPerc.toFixed(3), supplyApyPerc.toFixed(3));
     return [borrowApyPerc.toFixed(3), supplyApyPerc.toFixed(3)];
   }
 
@@ -243,6 +249,36 @@ export class AppComponent implements OnInit, AfterViewInit {
     let tokenBalance = await tokenContract.balanceOf(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
     return tokenBalance;
+  }
+
+  public async getAccountLiquidity() {
+    const liquidityData = await this.Contracts.Comptroller.getAccountLiquidity(this.userAddress);
+    if (this.getNumber(liquidityData[0]) === '0') {
+      const val = this.getNumber(liquidityData[1]);
+      const valInEth = ethers.utils.formatEther(val);
+      this.accountLiquidity = this.getUsdPrice(valInEth);
+      // console.log(this.accountLiquidity, valInEth)
+    }
+  }
+
+  public async getExchangeRate() {
+    this.ethUsdExchangeRate = null;
+    const from = 'ETH';
+    const to  = 'USD';
+    await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
+      headers: { 'X-CoinAPI-Key': '97DFF9D2-14F9-4ADE-BED6-C05DFE93E338' }
+    })
+    .subscribe(
+      data => {
+        this.ethUsdExchangeRate = data['rate'];
+        this.getAccountLiquidity();
+        // console.log(this.ethUsdExchangeRate)
+      },
+      error => { console.log(error); });
+  }
+
+  public getUsdPrice(val) {
+    return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
   }
 
   public getNumber(hexNum) {
@@ -337,7 +373,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       return supply.text;
     }
     var $supply = $(
-      '<span>' + supply.text + '<i>' + supply.apy + '%</i></span>'
+      '<span>' + supply.text + '</span>'
     );
     return $supply;
   }
