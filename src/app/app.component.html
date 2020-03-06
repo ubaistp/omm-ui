@@ -103,30 +103,9 @@
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
-                      <mat-slide-toggle [checked]="false" [disabled]="false"></mat-slide-toggle>
+                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false"></mat-slide-toggle>
                     </div>
                   </a>
-                  <!-- <a class="asset" (click)="openSupplyModal()">
-                    <div class="col-4 col-sm-4">
-                      <div class="balance">
-                        <div>IVTDemo</div>
-                        <span class="subtitle d-block d-sm-none">1.25%</span>
-                      </div>
-                    </div>
-                    <div class="col-sm-3 text-right d-none d-sm-block">
-                      <div class="balance">
-                        <div>1.25%</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-3 text-right">
-                      <div class="balance">
-                        <div>100 IVT</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-2 text-right">
-                      <mat-slide-toggle [checked]="false" [disabled]="false"></mat-slide-toggle>
-                    </div>
-                  </a> -->
                 </div>
               </div>
             </div>
@@ -179,27 +158,6 @@
                       0%
                     </div>
                   </a>
-                  <!-- <a class="asset" (click)="openBorrowModal()">
-                    <div class="col-4 col-sm-4">
-                      <div class="balance">
-                        <div>IVTDemo</div>
-                        <span class="subtitle d-block d-sm-none">1.25%</span>
-                      </div>
-                    </div>
-                    <div class="col-sm-3 text-right d-none d-sm-block">
-                      <div class="balance">
-                        <div>1.25%</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-3 text-right">
-                      <div class="balance">
-                        <div>100 IVT</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-2 text-right">
-                      10%
-                    </div>
-                  </a> -->
                 </div>
               </div>
             </div>
@@ -252,7 +210,7 @@
               <button type="button" class="close d-none d-lg-block" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <div class="form" *ngIf="collateralSupplyEnable">
+              <div class="form" *ngIf="tokenData[selectedTokenIndex].approved">
                 <div class="row">
                   <div class="col-6">
                     <button [ngClass]="{'active': typeViewSupply == 'withdraw'}"
@@ -299,7 +257,7 @@
                   <button class="btn btn-lg btn-full btn-secondary" *ngIf="typeViewSupply == 'supply'">Supply</button>
                 </div>
               </div>
-              <div class="form mt100" *ngIf="!collateralSupplyEnable">
+              <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                 <div class="text-center">
                   <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
                 </div>
@@ -358,7 +316,7 @@
               <button type="button" class="close d-none d-lg-block" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <div class="form" *ngIf="collateralBorrowEnable">
+              <div class="form" *ngIf="tokenData[selectedTokenIndex].approved">
                 <div class="row">
                   <div class="col-6">
                     <button [ngClass]="{'active': typeViewBorrow == 'repay'}"
@@ -397,7 +355,7 @@
                   <button class="btn btn-lg btn-full btn-danger" *ngIf="typeViewBorrow == 'borrow'">Borrow</button>
                 </div>
               </div>
-              <div class="form mt100" *ngIf="!collateralBorrowEnable">
+              <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                 <div class="text-center">
                   <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
                 </div>

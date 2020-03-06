@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js';
 import { ethers } from 'ethers';
-import { getAddress } from 'ethers/utils';
+import { getAddress, BigNumber } from 'ethers/utils';
 import { blockchainConstants } from '../environments/blockchain-constants';
 import * as Comptroller from '../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../assets/contracts/PriceOracleProxy.json';
@@ -104,8 +104,23 @@ export class AppComponent implements OnInit, AfterViewInit {
   };
 
   constructor(private httpClient: HttpClient) {
-    this.getExchangeRate();
-    this.tokenData = [{ id: '0', text: 'DAI', apy: '50' }, { id: '1', text: 'IVTDemo', apy: '20' }];
+    // this.getExchangeRate();
+    this.tokenData = [
+      {
+        id: '0',
+        text: 'DAI',
+        apy: '50',
+        enabled: false,
+        approved: false
+      },
+      {
+        id: '1',
+        text: 'IVTDemo',
+        apy: '20',
+        enabled: false,
+        approved: false
+      }
+    ];
     this.initializeMetaMask();
   }
 
@@ -148,10 +163,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     this.initAllContracts(contractAddresses);
-    await this.getExchangeRate();
+    // await this.getExchangeRate();
     this.tokenData.forEach(async (token) => {
       this.initToken(token);
     });
+    await this.getEnteredMarkets();
   }
 
   private async getContractAddresses() {
@@ -182,7 +198,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.tokenBalance = parseFloat( await this.getUserBalance(this.Contracts[token.name]) ) / 10 ** 18;
     token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     token.tokenBorrowBalance = await this.getUserBorrowBalance(this.Contracts[`c${token.name}`]);
-    console.log(token);
+    token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
   }
 
   private async initAllContracts(contractAddresses) {
@@ -286,12 +302,43 @@ export class AppComponent implements OnInit, AfterViewInit {
       error => { console.log(error); });
   }
 
+  public async getEnteredMarkets() {
+    const assetsInArray = await this.Contracts.Comptroller.getAssetsIn(this.userAddress);
+    if (assetsInArray.length === 0) { return; }
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < assetsInArray.length; i++) {
+      // tslint:disable-next-line: prefer-for-of
+      for (let j = 0; j < this.tokenData.length; j++) {
+        if (assetsInArray[i].toLowerCase() === this.tokenData[j].cTokenAddress.toLowerCase()) {
+          this.tokenData[j].enabled = true;
+        }
+      }
+    }
+    console.log(this.tokenData);
+  }
+
+  public async checkApproved(tokenContract, allowanceOf) {
+    let approvedBal = await tokenContract.allowance(this.userAddress, allowanceOf);
+    approvedBal = this.getNumber(approvedBal);
+    return approvedBal !== '0' ? true : false;
+  }
   public getUsdPrice(val) {
     return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
   }
 
   public getNumber(hexNum) {
     return ethers.utils.bigNumberify(hexNum).toString();
+  }
+
+
+  public async erc20Approve() {
+    const amountStr = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+    const tokenName = this.tokenData[this.selectedTokenIndex].name;
+    const tokenContract = this.Contracts[tokenName];
+    const tx = await tokenContract.approve(this.tokenData[this.selectedTokenIndex].cTokenAddress, amountStr);
+    await this.web3.waitForTransaction(tx.hash);
+    window.location.reload();
   }
 
   openSupplyModal(i) {
@@ -315,6 +362,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   enableSupplyCollateral() {
     this.collateralSupplyEnable = true;
+    // this.erc20Approve();
   }
   enableBorrowCollateral() {
     this.collateralBorrowEnable = true;
