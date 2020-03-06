@@ -85,28 +85,28 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" (click)="openSupplyModal()">
+                  <a class="asset" *ngFor="let token of tokenData; let i = index" (click)="openSupplyModal(i)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
-                        <div>cDAI</div>
-                        <span class="subtitle d-block d-sm-none">0.19%</span>
+                        <div>{{token.name}}</div>
+                        <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                       </div>
                     </div>
                     <div class="col-sm-3 text-right d-none d-sm-block">
                       <div class="balance">
-                        <div>0.19%</div>
+                        <div>{{token.supplyApy}}%</div>
                       </div>
                     </div>
                     <div class="col-4 col-sm-3 text-right">
                       <div class="balance">
-                        <div>0 cDAI</div>
+                        <div>{{ token.tokenBalance }} {{ token.name }}</div>
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
                       <mat-slide-toggle [checked]="false" [disabled]="false"></mat-slide-toggle>
                     </div>
                   </a>
-                  <a class="asset" (click)="openSupplyModal()">
+                  <!-- <a class="asset" (click)="openSupplyModal()">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>IVTDemo</div>
@@ -126,7 +126,7 @@
                     <div class="col-4 col-sm-2 text-right">
                       <mat-slide-toggle [checked]="false" [disabled]="false"></mat-slide-toggle>
                     </div>
-                  </a>
+                  </a> -->
                 </div>
               </div>
             </div>
@@ -158,28 +158,28 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" (click)="openBorrowModal()">
+                  <a class="asset" *ngFor="let token of tokenData; let i = index"(click)="openBorrowModal(i)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
-                        <div>cDAI</div>
-                        <span class="subtitle d-block d-sm-none">0.19%</span>
+                        <div>{{token.name}}</div>
+                        <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
                       </div>
                     </div>
                     <div class="col-sm-3 text-right d-none d-sm-block">
                       <div class="balance">
-                        <div>0.19%</div>
+                        <div>{{token.borrowApy}}%</div>
                       </div>
                     </div>
                     <div class="col-4 col-sm-3 text-right">
                       <div class="balance">
-                        <div>0 cDAI</div>
+                        <div>{{ token.tokenBalance }} {{token.name}}</div>
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
                       0%
                     </div>
                   </a>
-                  <a class="asset" (click)="openBorrowModal()">
+                  <!-- <a class="asset" (click)="openBorrowModal()">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>IVTDemo</div>
@@ -199,7 +199,7 @@
                     <div class="col-4 col-sm-2 text-right">
                       10%
                     </div>
-                  </a>
+                  </a> -->
                 </div>
               </div>
             </div>
@@ -231,19 +231,19 @@
             <div class="px15">
               <div class="calculation">
                 <span class="description">Supply APY</span>
-                <span class="color-success">{{supplyAPY}}%</span>
+                <span class="color-success">{{tokenData[selectedTokenIndex].supplyApy}}%</span>
               </div>
               <div class="calculation">
                 <span class="description">Price</span>
-                <span>$1.00</span>
+                <span>$ {{tokenData[selectedTokenIndex].priceEth}}</span>
               </div>
               <div class="calculation">
                 <span class="description">Collateral Factor</span>
-                <span>75%</span>
+                <span>{{tokenData[selectedTokenIndex].collateralFactor}}%</span>
               </div>
               <div class="calculation">
                 <span class="description">Wallet</span>
-                <span>0 DAI</span>
+                <span>{{tokenData[selectedTokenIndex].tokenBalance}} {{ tokenData[selectedTokenIndex].name }}</span>
               </div>
             </div>
           </div>
@@ -337,19 +337,19 @@
             <div class="px15">
               <div class="calculation">
                 <span class="description">Borrow APY</span>
-                <span class="color-danger">{{supplyAPY}}%</span>
+                <span class="color-danger">{{tokenData[selectedTokenIndex].borrowApy}}%</span>
               </div>
               <div class="calculation">
                 <span class="description">Price</span>
-                <span>$1.00</span>
+                <span>$ {{tokenData[selectedTokenIndex].priceEth}}</span>
               </div>
               <div class="calculation">
                 <span class="description">Borrow Balance</span>
-                <span>75%</span>
+                <span>{{tokenData[selectedTokenIndex].collateralFactor}}%</span>
               </div>
               <div class="calculation">
                 <span class="description">Wallet</span>
-                <span>0 DAI</span>
+                <span>{{tokenData[selectedTokenIndex].tokenBalance}} {{ tokenData[selectedTokenIndex].name }}</span>
               </div>
             </div>
           </div>

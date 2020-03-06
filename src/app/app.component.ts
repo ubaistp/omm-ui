@@ -7,6 +7,7 @@ import * as Comptroller from '../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../assets/contracts/PriceOracleProxy.json';
 import * as CErc20Delegator from '../assets/contracts/CErc20Delegator.json';
 import * as CErc20 from '../assets/contracts/CErc20.json';
+import * as EIP20Interface from '../assets/contracts/EIP20Interface.json';
 import * as DAIInterestRateModel from '../assets/contracts/DAIInterestRateModel.json';
 import * as WhitePaperInterestRateModel from '../assets/contracts/WhitePaperInterestRateModel.json';
 
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public BLOCKS_YEAR = 2102400;
   public tokenData: any;
   // public cTokenData: any;
+  public selectedTokenIndex = 0;
   public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
@@ -100,7 +102,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   };
 
   constructor() {
-    this.tokenData = [{id: '1', text: 'DAI', apy: '50'}, {id: '1', text: 'IVTDemo', apy: '20'}];
+    this.tokenData = [{ id: '0', text: 'DAI', apy: '50' }, { id: '1', text: 'IVTDemo', apy: '20' }];
     this.initializeMetaMask();
   }
 
@@ -127,7 +129,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     $('.select2-main').one('select2:open', function (e) {
       $('input.select2-search__field').prop('placeholder', 'Search');
     });
-
     this.supplyChart();
     this.borrowChart();
   }
@@ -152,6 +153,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       token.borrowApy = apy[0];
       token.supplyApy = apy[1];
       token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
+      token.tokenBalance = await this.getUserBalance(this.Contracts[token.name]);
     });
     console.log(this.tokenData);
   }
@@ -173,12 +175,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
     token.tokenAddress = this.contractAddresses[token.name];
     token.cTokenAddress = this.contractAddresses[`c${token.name}`];
-    // if (token.text === 'DAI') {
-
-    // } else {
-
-    // }
-
+    // if (token.text === 'DAI') {} else {}
   }
   private async initAllContracts(contractAddresses) {
     this.Contracts = {};
@@ -186,9 +183,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
     this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
     this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20.abi);
+    this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
+    this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
 
-    // this.getAPY(this.Contracts.cDAI)
-    // this.getUtilizationRate(this.Contracts.cDAI)
     console.log(this.Contracts);
   }
 
@@ -242,14 +239,32 @@ export class AppComponent implements OnInit, AfterViewInit {
     return utilizationRate.toString();
   }
 
+  public async getUserBalance(tokenContract) {
+    let tokenBalance = await tokenContract.balanceOf(this.userAddress);
+    tokenBalance = this.getNumber(tokenBalance);
+    return tokenBalance;
+  }
+
   public getNumber(hexNum) {
     return ethers.utils.bigNumberify(hexNum).toString();
   }
 
-  openSupplyModal() {
+  openSupplyModal(i) {
+    $('#supply').val(this.tokenData[i].id);
+    this.selectedTokenIndex = $('#supply').val();
+    $('#supply').trigger('change');
+    $('#supply').on('change', function() {
+      this.selectedTokenIndex = $('#supply').val();
+    }.bind(this));
     $('#supplyModal').modal('show');
   }
-  openBorrowModal() {
+  openBorrowModal(i) {
+    $('#borrow').val(this.tokenData[i].id);
+    this.selectedTokenIndex = $('#borrow').val();
+    $('#borrow').trigger('change');
+    $('#borrow').on('change', function() {
+      this.selectedTokenIndex = $('#borrow').val();
+    }.bind(this));
     $('#borrowModal').modal('show');
   }
 
