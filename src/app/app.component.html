@@ -85,7 +85,7 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" *ngFor="let token of supplyData; let i = index" (click)="openSupplyModal(i)">
+                  <a class="asset" *ngFor="let token of supplyData; let i = index" (click)="openSupplyModal(token.id)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>{{token.name}}</div>
@@ -125,7 +125,7 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" *ngFor="let token of supplyTokenData; let i = index" (click)="openSupplyModal(i)">
+                  <a class="asset" *ngFor="let token of supplyTokenData; let i = index" (click)="openSupplyModal(token.id)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>{{token.name}}</div>
@@ -178,7 +178,7 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" *ngFor="let token of borrowData; let i = index" (click)="openBorrowModal(i)">
+                  <a class="asset" *ngFor="let token of borrowData; let i = index" (click)="openBorrowModal(token.id)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>{{token.name}}</div>
@@ -217,7 +217,7 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" *ngFor="let token of borrowTokenData; let i = index" (click)="openBorrowModal(i)">
+                  <a class="asset" *ngFor="let token of borrowTokenData; let i = index" (click)="openBorrowModal(token.id)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>{{token.name}}</div>
