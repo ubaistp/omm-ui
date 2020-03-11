@@ -327,9 +327,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     approvedBal = this.getNumber(approvedBal);
     return approvedBal !== '0' ? true : false;
   }
-  // public getUsdPrice(val) {
-  //   return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
-  // }
+  public getUsdPrice(val) {
+    return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
+  }
 
   public getNumber(hexNum) {
     return ethers.utils.bigNumberify(hexNum).toString();
