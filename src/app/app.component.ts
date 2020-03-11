@@ -49,6 +49,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   public dataObj={};
   public supplyTokenData=[];
   public borrowTokenData=[];
+  public supplyBalance;
+  public borrowBalance;
   public chartData = {
     dataSet: Array.from({ length: 7 }, () => Math.floor(Math.random() * 50) + 10),
     label: [1578392733000, 1578306333000, 1578219933000, 1578133533000, 1578047133000, 1577960733000, 1577874333000],
@@ -169,18 +171,25 @@ export class AppComponent implements OnInit, AfterViewInit {
       if(this.supplyData.length > 0){
         this.dataObj["showSupply"] = true;
       }
-      this.borrowData = this.borrowData.filter(el=>el.tokenBorrowBalance != "0")
+      this.borrowData = this.borrowData.filter(el=>el.tokenBorrowBalance > 0)
       if(this.borrowData.length > 0){
         this.dataObj["showBorrow"] = true;
       }
-      this.supplyTokenData = this.supplyTokenData.filter(el=>el.cTokenSupplyBalance == 0)
+      this.supplyTokenData = this.supplyTokenData.filter(el=>el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0)
       if(this.supplyTokenData.length > 0){
         this.dataObj["showSupplyToken"] = true;
       }
-      this.borrowTokenData = this.borrowTokenData.filter(el=>el.tokenBorrowBalance == "0")
+      this.borrowTokenData = this.borrowTokenData.filter(el=>el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0)
       if(this.borrowTokenData.length > 0){
         this.dataObj["showBorrowToken"] = true;
       }
+      this.tokenData.filter(el=>el["supplyBalance"] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)))
+      this.supplyBalance = 0
+      this.tokenData.filter(el => this.supplyBalance =this.supplyBalance + el.supplyBalance)
+      this.tokenData.filter(el=>el["borrowBalance"] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)))
+      this.borrowBalance = 0
+      this.tokenData.filter(el => this.borrowBalance =this.borrowBalance + el.borrowBalance)
+      console.log(this.borrowBalance)
   }
 
   public async initializeMetaMask() {
@@ -321,7 +330,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public async getUserBorrowBalance(cTokenContract, token) {
     let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
-    if (parseFloat(tokenBalance) > 0) {
+    if (parseFloat(tokenBalance) > 0) { 
       const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 18);
       this.totalBorrowBalance += borrowBal;
     }
