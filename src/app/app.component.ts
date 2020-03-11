@@ -104,7 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   };
 
   constructor(private httpClient: HttpClient) {
-    this.getExchangeRate();
+    // this.getExchangeRate();
     this.tokenData = [
       {
         id: '0',
@@ -163,7 +163,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     this.initAllContracts(contractAddresses);
-    await this.getExchangeRate();
+    // await this.getExchangeRate();
     this.tokenData.forEach(async (token) => {
       this.initToken(token);
     });
@@ -188,7 +188,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.tokenAddress = this.contractAddresses[token.name];
     token.cTokenAddress = this.contractAddresses[`c${token.name}`];
 
-    token.priceEth = await this.getPrice(token.cTokenAddress);
+    token.priceUsd = await this.getPrice(token.cTokenAddress);
     token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
     const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
     token.borrowApy = apy[0];
@@ -196,7 +196,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
     token.cTokenSupplyBalance = parseFloat( await this.getUserBalance(this.Contracts[`c${token.name}`]) ) / 10 ** 8;
     token.tokenBalance = parseFloat( await this.getUserBalance(this.Contracts[token.name]) ) / 10 ** 18;
-    token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
+    // token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     token.tokenBorrowBalance = await this.getUserBorrowBalance(this.Contracts[`c${token.name}`]);
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
   }
@@ -218,8 +218,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async getPrice(cTokenAddress) {
-    const price = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
-    const priceStr = this.getNumber(price);
+    let tokenPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
+    let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.cDAI);
+    tokenPrice = this.getNumber(tokenPrice);
+    daiPrice = this.getNumber(daiPrice);
+    const price = parseFloat(tokenPrice) / parseFloat(daiPrice);
+    const priceStr = price.toFixed(3);
     return priceStr;
   }
 
@@ -286,21 +290,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public async getExchangeRate() {
-    this.ethUsdExchangeRate = null;
-    const from = 'ETH';
-    const to  = 'USD';
-    await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
-      headers: { 'X-CoinAPI-Key': '97DFF9D2-14F9-4ADE-BED6-C05DFE93E338' }
-    })
-    .subscribe(
-      data => {
-        this.ethUsdExchangeRate = data['rate'];
-        this.getAccountLiquidity();
-        // console.log(this.ethUsdExchangeRate)
-      },
-      error => { console.log(error); });
-  }
+  // public async getExchangeRate() {
+  //   this.ethUsdExchangeRate = null;
+  //   const from = 'ETH';
+  //   const to  = 'USD';
+  //   await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
+  //     headers: { 'X-CoinAPI-Key': '97DFF9D2-14F9-4ADE-BED6-C05DFE93E338' }
+  //   })
+  //   .subscribe(
+  //     data => {
+  //       this.ethUsdExchangeRate = data['rate'];
+  //       this.getAccountLiquidity();
+  //       // console.log(this.ethUsdExchangeRate)
+  //     },
+  //     error => { console.log(error); });
+  // }
 
   public async getEnteredMarkets() {
     const assetsInArray = await this.Contracts.Comptroller.getAssetsIn(this.userAddress);
@@ -323,9 +327,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     approvedBal = this.getNumber(approvedBal);
     return approvedBal !== '0' ? true : false;
   }
-  public getUsdPrice(val) {
-    return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
-  }
+  // public getUsdPrice(val) {
+  //   return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
+  // }
 
   public getNumber(hexNum) {
     return ethers.utils.bigNumberify(hexNum).toString();
