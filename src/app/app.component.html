@@ -395,16 +395,18 @@
                   </div>
                 </div>
                 <div class="my30">
-                  <div class="row align-items-center">
-                    <div class="col-9">
-                      <input type="text" class="form-control form-control-lg text-center" placeholder="0">
+                  <form>
+                    <div class="row align-items-center">
+                      <div class="col-9">
+                        <input type="text" class="form-control form-control-lg text-center" placeholder="0" [(ngModel)]="amountInput" name="amountInput">
+                      </div>
+                      <div class="col-3 text-center">
+                        <a href="" class="link">
+                          SAFE MAX
+                        </a>
+                      </div>
                     </div>
-                    <div class="col-3 text-center">
-                      <a href="" class="link">
-                        SAFE MAX
-                      </a>
-                    </div>
-                  </div>
+                  </form>
                   <div class="mt30">
                     <div class="calculation">
                       <span class="description">Supply Balance</span>
@@ -425,9 +427,10 @@
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-lg btn-full btn-secondary"
+                  <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
                     *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
-                  <button class="btn btn-lg btn-full btn-secondary" *ngIf="typeViewSupply == 'supply'">Supply</button>
+                  <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
+                    *ngIf="typeViewSupply == 'supply'">Supply</button>
                 </div>
               </div>
               <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
