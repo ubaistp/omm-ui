@@ -34,6 +34,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   public accountLiquidity: any;
   public selectedTokenIndex = 0;
   public ethUsdExchangeRate: any;
+  public totalSupplyBalance = 0;
+  public totalBorrowBalance = 0;
+
   public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
@@ -164,7 +167,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const contractAddresses = await this.getContractAddresses();
     this.initAllContracts(contractAddresses);
     await this.getExchangeRate();
-    this.tokenData.forEach(async (token) => {
+    await this.tokenData.forEach(async (token) => {
       this.initToken(token);
     });
     await this.getEnteredMarkets();
@@ -195,11 +198,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.borrowApy = apy[0];
     token.supplyApy = apy[1];
     token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
-    token.cTokenSupplyBalance = parseFloat( await this.getUserBalance(this.Contracts[`c${token.name}`]) ) / 10 ** 8;
-    token.tokenBalance = parseFloat( await this.getUserBalance(this.Contracts[token.name]) ) / 10 ** 18;
+    token.tokenBalance = parseFloat( await this.getUserTokenBalance(this.Contracts[token.name]) ) / 10 ** 18;
+    token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) ) / 10 ** 8;
     // token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
-    token.tokenBorrowBalance = await this.getUserBorrowBalance(this.Contracts[`c${token.name}`]);
+    token.tokenBorrowBalance = parseFloat( await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
+    console.log(this.totalSupplyBalance , this.totalBorrowBalance );
   }
 
   private async initAllContracts(contractAddresses) {
@@ -269,15 +273,28 @@ export class AppComponent implements OnInit, AfterViewInit {
     return utilizationRate.toString();
   }
 
-  public async getUserBalance(tokenContract) {
+  public async getUserTokenBalance(tokenContract) {
     let tokenBalance = await tokenContract.balanceOf(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
     return tokenBalance;
   }
-
-  public async getUserBorrowBalance(cTokenContract) {
+  public async getUserSupplyBalance(cTokenContract, token) {
     let tokenBalance = await cTokenContract.balanceOf(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
+    if (parseFloat(tokenBalance) > 0) {
+      const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 18);
+      this.totalBorrowBalance += supplyBal;
+    }
+    return tokenBalance;
+  }
+
+  public async getUserBorrowBalance(cTokenContract, token) {
+    let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
+    tokenBalance = this.getNumber(tokenBalance);
+    if (parseFloat(tokenBalance) > 0) {
+      const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 18);
+      this.totalBorrowBalance += borrowBal;
+    }
     return tokenBalance;
   }
 
@@ -287,8 +304,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       const val = this.getNumber(liquidityData[1]);
       const valInEth = ethers.utils.formatEther(val);
       this.accountLiquidity = this.getUsdPrice(valInEth);
-      // console.log(this.accountLiquidity, valInEth)
+      // console.log(this.accountLiquidity)
     }
+  }
+  public twoDecimal(val) {
+    val = val.toString();
+    val = parseFloat(val);
+    return val.toFixed(2);
   }
 
   public async getExchangeRate() {
@@ -297,7 +319,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     daiPrice = this.getNumber(daiPrice);
     const price = (10 ** 18) / parseFloat(daiPrice);
     this.ethUsdExchangeRate = price.toFixed(3);
-    console.log(this.ethUsdExchangeRate);
+    // console.log(this.ethUsdExchangeRate);
     // const from = 'ETH';
     // const to  = 'USD';
     // await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
