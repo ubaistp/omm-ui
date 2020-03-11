@@ -104,7 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   };
 
   constructor(private httpClient: HttpClient) {
-    // this.getExchangeRate();
+    this.getExchangeRate();
     this.tokenData = [
       {
         id: '0',
@@ -163,7 +163,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     this.initAllContracts(contractAddresses);
-    // await this.getExchangeRate();
+    await this.getExchangeRate();
     this.tokenData.forEach(async (token) => {
       this.initToken(token);
     });
@@ -340,6 +340,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
   }
+
+  public async enterExitMarket(token) {
+    let tx;
+    if (token.enabled === true) {
+      tx = await this.Contracts.Comptroller.exitMarket(token.cTokenAddress);
+    } else {
+      tx = await this.Contracts.Comptroller.enterMarkets(token.cTokenAddress);
+    }
+    await this.web3.waitForTransaction(tx.hash);
+    window.location.reload();
+  }
+
+  // public async mint() {
+  //   const tokenName = this.tokenData[this.selectedTokenIndex].name;
+  //   const cTokenContract = this.Contracts[`c${tokenName}`];
+  //   const tx = await this.Contracts.cTokenContract.mint(amount);
+
+  // }
 
   openSupplyModal(i) {
     $('#supply').val(this.tokenData[i].id);

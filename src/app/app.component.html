@@ -103,7 +103,7 @@
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
-                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false"></mat-slide-toggle>
+                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false" (change)="enterExitMarket(token)"></mat-slide-toggle>
                     </div>
                   </a>
                 </div>
