@@ -417,7 +417,7 @@
                     <div class="calculation">
                       <span class="description">Borrow Limit</span>
                       <span>
-                        $1.00
+                        $ {{ twoDecimal(accountLiquidity) }}
                         <mat-icon aria-hidden="false">arrow_forward</mat-icon>
                         $0.00
                       </span>
@@ -514,7 +514,7 @@
                   <div class="mt30">
                     <div class="calculation">
                       <span class="description">Borrow Limit</span>
-                      <span>$1.00</span>
+                      <span>$ {{ twoDecimal(accountLiquidity) }}</span>
                     </div>
                     <div class="calculation">
                       <span class="description">Borrow Balance</span>
