@@ -44,6 +44,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   public typeViewBorrow = 'repay';
   public canvas: any;
   public ctx: any;
+  public supplyData=[];
+  public borrowData=[];
+  public dataObj={};
+  public supplyTokenData=[];
+  public borrowTokenData=[];
   public chartData = {
     dataSet: Array.from({ length: 7 }, () => Math.floor(Math.random() * 50) + 10),
     label: [1578392733000, 1578306333000, 1578219933000, 1578133533000, 1578047133000, 1577960733000, 1577874333000],
@@ -154,6 +159,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.borrowChart();
   }
 
+  filterTable(){
+    console.log(this.tokenData)
+      this.supplyData = this.tokenData;
+      this.borrowData = this.tokenData;
+      this.supplyTokenData = this.tokenData;
+      this.borrowTokenData = this.tokenData;
+      this.supplyData = this.supplyData.filter(el=>el.cTokenSupplyBalance > 0)
+      if(this.supplyData.length > 0){
+        this.dataObj["showSupply"] = true;
+      }
+      this.borrowData = this.borrowData.filter(el=>el.tokenBorrowBalance != "0")
+      if(this.borrowData.length > 0){
+        this.dataObj["showBorrow"] = true;
+      }
+      this.supplyTokenData = this.supplyTokenData.filter(el=>el.cTokenSupplyBalance == 0)
+      if(this.supplyTokenData.length > 0){
+        this.dataObj["showSupplyToken"] = true;
+      }
+      this.borrowTokenData = this.borrowTokenData.filter(el=>el.tokenBorrowBalance == "0")
+      if(this.borrowTokenData.length > 0){
+        this.dataObj["showBorrowToken"] = true;
+      }
+  }
+
   public async initializeMetaMask() {
     // tslint:disable-next-line: no-string-literal
     this.ethereum = window['ethereum'];
@@ -204,6 +233,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.tokenBorrowBalance = parseFloat( await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
     console.log(this.totalSupplyBalance , this.totalBorrowBalance );
+    this.filterTable();
   }
 
   private async initAllContracts(contractAddresses) {

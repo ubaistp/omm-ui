@@ -69,6 +69,185 @@
               </div>
             </div>
             <div class="portlet__body py0 px0">
+              <div *ngIf="dataObj.showSupply" class="asset-list">
+                <div class="labels row">
+                  <div class="col-sm-4 col-4">
+                    <label>Asset</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                    <label>APY</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right">
+                    <label>Wallet</label>
+                  </div>
+                  <div class="col-sm-2 col-4 text-right">
+                    <label>Collateral</label>
+                  </div>
+                </div>
+                <div class="assets">
+                  <a class="asset" *ngFor="let token of supplyData; let i = index" (click)="openSupplyModal(i)">
+                    <div class="col-4 col-sm-4">
+                      <div class="balance">
+                        <div>{{token.name}}</div>
+                        <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 text-right d-none d-sm-block">
+                      <div class="balance">
+                        <div>{{token.supplyApy}}%</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-3 text-right">
+                      <div class="balance">
+                        <div>{{ token.tokenBalance }} {{ token.name }}</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-2 text-right">
+                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false" (change)="enterExitMarket(token)">
+                      </mat-slide-toggle>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div *ngIf="dataObj.showSupplyToken"  class="asset-list">
+                <div class="labels row">
+                  <div class="col-sm-4 col-4">
+                    <label>Asset</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                    <label>APY</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right">
+                    <label>Wallet</label>
+                  </div>
+                  <div class="col-sm-2 col-4 text-right">
+                    <label>Collateral</label>
+                  </div>
+                </div>
+                <div class="assets">
+                  <a class="asset" *ngFor="let token of supplyTokenData; let i = index" (click)="openSupplyModal(i)">
+                    <div class="col-4 col-sm-4">
+                      <div class="balance">
+                        <div>{{token.name}}</div>
+                        <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 text-right d-none d-sm-block">
+                      <div class="balance">
+                        <div>{{token.supplyApy}}%</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-3 text-right">
+                      <div class="balance">
+                        <div>{{ token.tokenBalance }} {{ token.name }}</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-2 text-right">
+                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false" (change)="enterExitMarket(token)">
+                      </mat-slide-toggle>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="portlet portlet--height-full">
+            <div class="portlet__head">
+              <div class="portlet__head-caption">
+                <div class="portlet__head-title">
+                  <h3 class="portlet__head-text">Available to Borrow</h3>
+                </div>
+              </div>
+            </div>
+            <div class="portlet__body py0 px0">
+              <div *ngIf="dataObj.showBorrow" class="asset-list">
+                <div class="labels row">
+                  <div class="col-sm-4 col-4">
+                    <label>Asset</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                    <label>APY</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right">
+                    <label>Wallet</label>
+                  </div>
+                  <div class="col-sm-2 col-4 text-right">
+                    <label>% Of Limit</label>
+                  </div>
+                </div>
+                <div class="assets">
+                  <a class="asset" *ngFor="let token of borrowData; let i = index" (click)="openBorrowModal(i)">
+                    <div class="col-4 col-sm-4">
+                      <div class="balance">
+                        <div>{{token.name}}</div>
+                        <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 text-right d-none d-sm-block">
+                      <div class="balance">
+                        <div>{{token.borrowApy}}%</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-3 text-right">
+                      <div class="balance">
+                        <div>{{ token.tokenBalance }} {{token.name}}</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-2 text-right">
+                      0%
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div *ngIf="dataObj.showBorrowToken"  class="asset-list">
+                <div class="labels row">
+                  <div class="col-sm-4 col-4">
+                    <label>Asset</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                    <label>APY</label>
+                  </div>
+                  <div class="col-sm-3 col-4 text-right">
+                    <label>Wallet</label>
+                  </div>
+                  <div class="col-sm-2 col-4 text-right">
+                    <label>% Of Limit</label>
+                  </div>
+                </div>
+                <div class="assets">
+                  <a class="asset" *ngFor="let token of borrowTokenData; let i = index" (click)="openBorrowModal(i)">
+                    <div class="col-4 col-sm-4">
+                      <div class="balance">
+                        <div>{{token.name}}</div>
+                        <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 text-right d-none d-sm-block">
+                      <div class="balance">
+                        <div>{{token.borrowApy}}%</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-3 text-right">
+                      <div class="balance">
+                        <div>{{ token.tokenBalance }} {{token.name}}</div>
+                      </div>
+                    </div>
+                    <div class="col-4 col-sm-2 text-right">
+                      0%
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-md-6">
+          <div class="portlet portlet--height-full">
+            <div class="portlet__body py0 px0">
               <div class="asset-list">
                 <div class="labels row">
                   <div class="col-sm-4 col-4">
@@ -103,7 +282,8 @@
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
-                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false" (change)="enterExitMarket(token)"></mat-slide-toggle>
+                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false" (change)="enterExitMarket(token)">
+                      </mat-slide-toggle>
                     </div>
                   </a>
                 </div>
@@ -113,13 +293,6 @@
         </div>
         <div class="col-md-6">
           <div class="portlet portlet--height-full">
-            <div class="portlet__head">
-              <div class="portlet__head-caption">
-                <div class="portlet__head-title">
-                  <h3 class="portlet__head-text">Available to Borrow</h3>
-                </div>
-              </div>
-            </div>
             <div class="portlet__body py0 px0">
               <div class="asset-list">
                 <div class="labels row">
@@ -137,7 +310,7 @@
                   </div>
                 </div>
                 <div class="assets">
-                  <a class="asset" *ngFor="let token of tokenData; let i = index"(click)="openBorrowModal(i)">
+                  <a class="asset" *ngFor="let token of tokenData; let i = index" (click)="openBorrowModal(i)">
                     <div class="col-4 col-sm-4">
                       <div class="balance">
                         <div>{{token.name}}</div>
@@ -163,7 +336,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 </div>
@@ -217,8 +390,8 @@
                       class="btn btn-lg btn-full btn-secondary" (click)="viewWithdrawForm()">Withdraw</button>
                   </div>
                   <div class="col-6">
-                    <button [ngClass]="{'active': typeViewSupply == 'supply'}"
-                      class="btn btn-lg btn-full btn-secondary" (click)="viewSupplyForm()">Supply</button>
+                    <button [ngClass]="{'active': typeViewSupply == 'supply'}" class="btn btn-lg btn-full btn-secondary"
+                      (click)="viewSupplyForm()">Supply</button>
                   </div>
                 </div>
                 <div class="my30">
@@ -319,12 +492,12 @@
               <div class="form" *ngIf="tokenData[selectedTokenIndex].approved">
                 <div class="row">
                   <div class="col-6">
-                    <button [ngClass]="{'active': typeViewBorrow == 'repay'}"
-                      class="btn btn-lg btn-full btn-danger" (click)="viewRepayForm()">Replay</button>
+                    <button [ngClass]="{'active': typeViewBorrow == 'repay'}" class="btn btn-lg btn-full btn-danger"
+                      (click)="viewRepayForm()">Replay</button>
                   </div>
                   <div class="col-6">
-                    <button [ngClass]="{'active': typeViewBorrow == 'borrow'}"
-                      class="btn btn-lg btn-full btn-danger" (click)="viewBorrowForm()">Borrow</button>
+                    <button [ngClass]="{'active': typeViewBorrow == 'borrow'}" class="btn btn-lg btn-full btn-danger"
+                      (click)="viewBorrowForm()">Borrow</button>
                   </div>
                 </div>
                 <div class="my30">
@@ -350,8 +523,7 @@
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-lg btn-full btn-danger"
-                    *ngIf="typeViewBorrow == 'repay'">Repay</button>
+                  <button class="btn btn-lg btn-full btn-danger" *ngIf="typeViewBorrow == 'repay'">Repay</button>
                   <button class="btn btn-lg btn-full btn-danger" *ngIf="typeViewBorrow == 'borrow'">Borrow</button>
                 </div>
               </div>
