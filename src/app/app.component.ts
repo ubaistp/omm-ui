@@ -163,11 +163,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     this.initAllContracts(contractAddresses);
-    // await this.getExchangeRate();
+    await this.getExchangeRate();
     this.tokenData.forEach(async (token) => {
       this.initToken(token);
     });
     await this.getEnteredMarkets();
+    await this.getAccountLiquidity();
   }
 
   private async getContractAddresses() {
@@ -290,21 +291,26 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // public async getExchangeRate() {
-  //   this.ethUsdExchangeRate = null;
-  //   const from = 'ETH';
-  //   const to  = 'USD';
-  //   await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
-  //     headers: { 'X-CoinAPI-Key': '97DFF9D2-14F9-4ADE-BED6-C05DFE93E338' }
-  //   })
-  //   .subscribe(
-  //     data => {
-  //       this.ethUsdExchangeRate = data['rate'];
-  //       this.getAccountLiquidity();
-  //       // console.log(this.ethUsdExchangeRate)
-  //     },
-  //     error => { console.log(error); });
-  // }
+  public async getExchangeRate() {
+    this.ethUsdExchangeRate = null;
+    let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.cDAI);
+    daiPrice = this.getNumber(daiPrice);
+    const price = (10 ** 18) / parseFloat(daiPrice);
+    this.ethUsdExchangeRate = price.toFixed(3);
+    console.log(this.ethUsdExchangeRate);
+    // const from = 'ETH';
+    // const to  = 'USD';
+    // await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
+    //   headers: { 'X-CoinAPI-Key': '97DFF9D2-14F9-4ADE-BED6-C05DFE93E338' }
+    // })
+    // .subscribe(
+    //   data => {
+    //     this.ethUsdExchangeRate = data['rate'];
+    //     this.getAccountLiquidity();
+    //     // console.log(this.ethUsdExchangeRate)
+    //   },
+    //   error => { console.log(error); });
+  }
 
   public async getEnteredMarkets() {
     const assetsInArray = await this.Contracts.Comptroller.getAssetsIn(this.userAddress);
@@ -328,7 +334,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     return approvedBal !== '0' ? true : false;
   }
   public getUsdPrice(val) {
-    return (parseFloat(val) / parseFloat(this.ethUsdExchangeRate)).toString();
+    return (parseFloat(val) * parseFloat(this.ethUsdExchangeRate)).toString();
   }
 
   public getNumber(hexNum) {
