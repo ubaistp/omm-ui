@@ -425,8 +425,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async mint() {
-    // let x = ethers.utils.RLP.decode(['uint256'], '0xa0712d680000000000000000000000000000000000000000000000000de0b6b3a7640000');
-    // console.log(x, this.amountInput);
     const tokenName = this.tokenData[this.selectedTokenIndex].name;
     const cTokenContract = this.Contracts[`c${tokenName}`];
     const tx = await cTokenContract.mint(ethers.utils.parseEther(this.amountInput));
@@ -434,29 +432,26 @@ export class AppComponent implements OnInit, AfterViewInit {
     window.location.reload();
   }
 
-  public async borrow() {
-    const amount = this.amountInput * (10 ** 18);
+  public async withdrawUnderlying() {
     const tokenName = this.tokenData[this.selectedTokenIndex].name;
     const cTokenContract = this.Contracts[`c${tokenName}`];
-    const tx = await cTokenContract.borrow(amount);
+    const tx = await cTokenContract.redeemUnderlying(ethers.utils.parseEther(this.amountInput));
+    await this.web3.waitForTransaction(tx.hash);
+    window.location.reload();
+  }
+
+  public async borrow() {
+    const tokenName = this.tokenData[this.selectedTokenIndex].name;
+    const cTokenContract = this.Contracts[`c${tokenName}`];
+    const tx = await cTokenContract.borrow(ethers.utils.parseEther(this.amountInput), {gasLimit: 400000});
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
   }
 
   public async repayBorrow() {
-    const amount = this.amountInput * (10 ** 18);
     const tokenName = this.tokenData[this.selectedTokenIndex].name;
     const cTokenContract = this.Contracts[`c${tokenName}`];
-    const tx = await cTokenContract.repayBorrow(amount);
-    await this.web3.waitForTransaction(tx.hash);
-    window.location.reload();
-  }
-
-  public async withdrawUnderlying() {
-    const amount = this.amountInput * (10 ** 18);
-    const tokenName = this.tokenData[this.selectedTokenIndex].name;
-    const cTokenContract = this.Contracts[`c${tokenName}`];
-    const tx = await cTokenContract.redeemUnderlying(amount);
+    const tx = await cTokenContract.repayBorrow(ethers.utils.parseEther(this.amountInput), {gasLimit: 350000});
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
   }
@@ -484,10 +479,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   enableSupplyCollateral() {
     this.collateralSupplyEnable = true;
-    // this.erc20Approve();
+    this.erc20Approve();
   }
   enableBorrowCollateral() {
     this.collateralBorrowEnable = true;
+    this.erc20Approve();
   }
 
   viewWithdrawForm() {

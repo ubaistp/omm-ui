@@ -427,7 +427,7 @@
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
+                  <button class="btn btn-lg btn-full btn-secondary" (click)="withdrawUnderlying()"
                     *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
                   <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
                     *ngIf="typeViewSupply == 'supply'">Supply</button>
@@ -496,7 +496,7 @@
                 <div class="row">
                   <div class="col-6">
                     <button [ngClass]="{'active': typeViewBorrow == 'repay'}" class="btn btn-lg btn-full btn-danger"
-                      (click)="viewRepayForm()">Replay</button>
+                      (click)="viewRepayForm()">Repay</button>
                   </div>
                   <div class="col-6">
                     <button [ngClass]="{'active': typeViewBorrow == 'borrow'}" class="btn btn-lg btn-full btn-danger"
@@ -504,16 +504,18 @@
                   </div>
                 </div>
                 <div class="my30">
-                  <div class="row align-items-center">
-                    <div class="col-9">
-                      <input type="text" class="form-control form-control-lg text-center" placeholder="0">
+                  <form>
+                    <div class="row align-items-center">
+                      <div class="col-9">
+                        <input type="text" class="form-control form-control-lg text-center" placeholder="0" [(ngModel)]="amountInput" name="amountInput">
+                      </div>
+                      <div class="col-3 text-center">
+                        <a href="" class="link">
+                          SAFE MAX
+                        </a>
+                      </div>
                     </div>
-                    <div class="col-3 text-center">
-                      <a href="" class="link">
-                        SAFE MAX
-                      </a>
-                    </div>
-                  </div>
+                  </form>
                   <div class="mt30">
                     <div class="calculation">
                       <span class="description">Borrow Limit</span>
@@ -526,8 +528,10 @@
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-lg btn-full btn-danger" *ngIf="typeViewBorrow == 'repay'">Repay</button>
-                  <button class="btn btn-lg btn-full btn-danger" *ngIf="typeViewBorrow == 'borrow'">Borrow</button>
+                  <button class="btn btn-lg btn-full btn-danger"
+                    (click)="repayBorrow()" *ngIf="typeViewBorrow == 'repay'">Repay</button>
+                  <button class="btn btn-lg btn-full btn-danger"
+                    (click)="borrow()" *ngIf="typeViewBorrow == 'borrow'">Borrow</button>
                 </div>
               </div>
               <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
