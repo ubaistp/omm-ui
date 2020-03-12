@@ -48,11 +48,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   public typeViewBorrow = 'repay';
   public canvas: any;
   public ctx: any;
-  public supplyData=[];
-  public borrowData=[];
-  public dataObj={};
-  public supplyTokenData=[];
-  public borrowTokenData=[];
+  public supplyData = [];
+  public borrowData = [];
+  public dataObj = {
+    showBorrow : false,
+    showBorrowToken : false,
+    showSupply : false,
+    showSupplyToken : false
+  };
+  public supplyTokenData = [];
+  public borrowTokenData = [];
   public supplyBalance;
   public borrowBalance;
   public chartData = {
@@ -161,18 +166,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     $('.select2-main').one('select2:open', function (e) {
       $('input.select2-search__field').prop('placeholder', 'Search');
     });
+
+    window['ethereum'].on('accountsChanged', () => {
+      window.location.reload();
+    });
+
+    window['ethereum'].on('networkChanged', () => {
+      window.location.reload();
+    });
+    // web3.currentProvider.publicConfigStore.on('update', callback);
     // this.supplyChart();
     // this.borrowChart();
   }
 
-  filterTable(){
+  filterTable() {
     // console.log(this.tokenData)
       this.supplyData = this.tokenData;
       this.borrowData = this.tokenData;
       this.supplyTokenData = this.tokenData;
       this.borrowTokenData = this.tokenData;
-      this.supplyData = this.supplyData.filter(el=>el.cTokenSupplyBalance > 0)
-      if(this.supplyData.length > 0){
+      this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0)
+      if (this.supplyData.length > 0) {
         this.dataObj["showSupply"] = true;
       }
       this.borrowData = this.borrowData.filter(el=>el.tokenBorrowBalance > 0)
@@ -585,7 +599,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!supply.id) {
       return supply.text;
     }
-    var $supply = $(
+    const $supply = $(
       '<span>' + supply.text + '</span>'
     );
     return $supply;
