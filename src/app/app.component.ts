@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import Chart from 'chart.js';
+// import Chart from 'chart.js';
 import { ethers } from 'ethers';
 import { getAddress, BigNumber } from 'ethers/utils';
 import { blockchainConstants } from '../environments/blockchain-constants';
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public contractAddresses: any;
   public BLOCKS_YEAR = 2102400;
   public tokenData: any;
-  public accountLiquidity: any;
+  public accountLiquidity = 0;
   public selectedTokenIndex = 0;
   public ethUsdExchangeRate: any;
   public totalSupplyBalance = 0;
@@ -160,8 +160,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     $('.select2-main').one('select2:open', function (e) {
       $('input.select2-search__field').prop('placeholder', 'Search');
     });
-    this.supplyChart();
-    this.borrowChart();
+    // this.supplyChart();
+    // this.borrowChart();
   }
 
   filterTable(){
@@ -192,7 +192,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.tokenData.filter(el=>el["borrowBalance"] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)))
       this.borrowBalance = 0
       this.tokenData.filter(el => this.borrowBalance =this.borrowBalance + el.borrowBalance);
-      this.sliderPercentage = parseFloat(this.borrowBalance) / parseFloat(this.accountLiquidity) * 100;
+      this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
       // console.log(this.borrowBalance)
   }
 
@@ -241,11 +241,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.supplyApy = apy[1];
     token.utilizationRate = parseFloat(await this.getUtilizationRate(this.Contracts[`c${token.name}`])) / 10 ** 18;
     token.tokenBalance = parseFloat( await this.getUserTokenBalance(this.Contracts[token.name]) ) / 10 ** 18;
-    token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) ) / 10 ** 9;
+    token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) );
     // token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     token.tokenBorrowBalance = parseFloat( await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
     // console.log(this.totalSupplyBalance , this.totalBorrowBalance );
+    await this.getAccountLiquidity();
     this.filterTable();
   }
 
@@ -330,14 +331,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   public async getUserSupplyBalance(cTokenContract, token) {
     let tokenBalance = await cTokenContract.balanceOf(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
-    let supplyRatePerBlock = await cTokenContract.supplyRatePerBlock();
-    supplyRatePerBlock = this.getNumber(supplyRatePerBlock);
-    const factor = parseFloat(tokenBalance) / (parseFloat(supplyRatePerBlock) * this.BLOCKS_YEAR);
-    // console.log(tokenBalance)
+
     if (parseFloat(tokenBalance) > 0) {
-      tokenBalance = parseFloat(tokenBalance) / factor;
-      // console.log(tokenBalance, factor)
-      const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 9);
+      let exchangeRateStored = await cTokenContract.exchangeRateStored();
+      exchangeRateStored = this.getNumber(exchangeRateStored);
+      const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / 10 ** 36;
+      console.log(bal);
+      tokenBalance = bal;
+      const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
       this.totalSupplyBalance += supplyBal;
       this.netApy += parseFloat(token.supplyApy);
     }
@@ -357,13 +358,19 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async getAccountLiquidity() {
-    const liquidityData = await this.Contracts.Comptroller.getAccountLiquidity(this.userAddress);
-    if (this.getNumber(liquidityData[0]) === '0') {
-      const val = this.getNumber(liquidityData[1]);
-      const valInEth = ethers.utils.formatEther(val);
-      this.accountLiquidity = this.getUsdPrice(valInEth);
-      // console.log(this.accountLiquidity)
-    }
+    this.tokenData.forEach(token => {
+      if (parseFloat(token.supplyBalance) > 0) {
+        this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.supplyBalance) / 100);
+      }
+    });
+    console.log(this.accountLiquidity);
+    // const liquidityData = await this.Contracts.Comptroller.getAccountLiquidity(this.userAddress);
+    // if (this.getNumber(liquidityData[0]) === '0') {
+    //   const val = this.getNumber(liquidityData[1]);
+    //   const valInEth = ethers.utils.formatEther(val);
+    //   this.accountLiquidity = this.getUsdPrice(valInEth);
+    //   // console.log(this.accountLiquidity)
+    // }
   }
   public toDecimal(val, decimal) {
     if (val === undefined || val === null) {
@@ -528,46 +535,46 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.typeViewBorrow = 'borrow';
   }
 
-  supplyChart() {
-    this.canvas = document.getElementById('supplyChart');
-    this.ctx = this.canvas.getContext('2d');
-    let myChart = new Chart(this.ctx, {
-      type: 'line',
-      data: {
-        labels: this.chartData.label,
-        datasets: [{
-          label: 'Supply APY',
-          data: this.chartData.dataSet,
-          backgroundColor: 'rgb(28, 179, 163)',
-          borderColor: 'rgb(28, 179, 163)',
-          borderWidth: 2,
-          fill: false,
-          lineTension: 0,
-        }]
-      },
-      options: this.chartOptions
-    });
-  }
-  borrowChart() {
-    this.canvas = document.getElementById('borrowChart');
-    this.ctx = this.canvas.getContext('2d');
-    let myChart = new Chart(this.ctx, {
-      type: 'line',
-      data: {
-        labels: this.chartData.label,
-        datasets: [{
-          label: 'Supply APY',
-          data: this.chartData.dataSet,
-          backgroundColor: 'rgb(217, 84, 108)',
-          borderColor: 'rgb(217, 84, 108)',
-          borderWidth: 2,
-          fill: false,
-          lineTension: 0,
-        }]
-      },
-      options: this.chartOptions
-    });
-  }
+  // supplyChart() {
+  //   this.canvas = document.getElementById('supplyChart');
+  //   this.ctx = this.canvas.getContext('2d');
+  //   let myChart = new Chart(this.ctx, {
+  //     type: 'line',
+  //     data: {
+  //       labels: this.chartData.label,
+  //       datasets: [{
+  //         label: 'Supply APY',
+  //         data: this.chartData.dataSet,
+  //         backgroundColor: 'rgb(28, 179, 163)',
+  //         borderColor: 'rgb(28, 179, 163)',
+  //         borderWidth: 2,
+  //         fill: false,
+  //         lineTension: 0,
+  //       }]
+  //     },
+  //     options: this.chartOptions
+  //   });
+  // }
+  // borrowChart() {
+  //   this.canvas = document.getElementById('borrowChart');
+  //   this.ctx = this.canvas.getContext('2d');
+  //   let myChart = new Chart(this.ctx, {
+  //     type: 'line',
+  //     data: {
+  //       labels: this.chartData.label,
+  //       datasets: [{
+  //         label: 'Supply APY',
+  //         data: this.chartData.dataSet,
+  //         backgroundColor: 'rgb(217, 84, 108)',
+  //         borderColor: 'rgb(217, 84, 108)',
+  //         borderWidth: 2,
+  //         fill: false,
+  //         lineTension: 0,
+  //       }]
+  //     },
+  //     options: this.chartOptions
+  //   });
+  // }
 
   formatCountrySelection(supply) {
     if (!supply.id) {
