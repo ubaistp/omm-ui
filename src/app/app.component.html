@@ -22,7 +22,7 @@
         </div>
         <div class="col-sm-4 col-7 mb30">
           <div class="progress-circle--container">
-            <div class="progress progress-circle" data-percentage="100">
+            <div class="progress progress-circle" data-percentage="0">
               <span class="progress-left">
                 <span class="progress-bar"></span>
               </span>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="col-4 col-sm-3 text-right">
                       <div class="balance">
-                        <div>{{ token.tokenBalance }} {{ token.name }}</div>
+                        <div>{{ toDecimal(token.tokenBalance, 2) }} {{ token.name }}</div>
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
@@ -233,7 +233,7 @@
                     </div>
                     <div class="col-4 col-sm-3 text-right">
                       <div class="balance">
-                        <div>{{ token.tokenBalance }} {{token.name}}</div>
+                        <div>{{ toDecimal(token.tokenBalance, 3) }} {{token.name}}</div>
                       </div>
                     </div>
                     <div class="col-4 col-sm-2 text-right">
@@ -433,7 +433,7 @@
                     *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
                   <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
                     *ngIf="typeViewSupply == 'supply'">Supply</button>
-                    <div *ngIf="tokenData[selectedTokenIndex].name == 'IVTDemo'"
+                    <div
                       class="text-center my20" (click)="faucetIvt()">
                       <a href="#" class="link">Faucet</a>
                     </div>
@@ -444,7 +444,7 @@
                   <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
                 </div>
                 <div class="mt20 mb30" style="font-weight: 500;">
-                  To use cDAI with the Konkrete, you need to enable it first.
+                  To use {{tokenData[selectedTokenIndex].name}} with the Konkrete, you need to enable it first.
                 </div>
                 <button class="btn btn-lg btn-full btn-secondary" (click)="enableSupplyCollateral()">Enable</button>
               </div>
@@ -489,7 +489,7 @@
               </div>
               <div class="calculation">
                 <span class="description">Wallet</span>
-                <span>{{tokenData[selectedTokenIndex].tokenBalance}} {{ tokenData[selectedTokenIndex].name }}</span>
+                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}} {{ tokenData[selectedTokenIndex].name }}</span>
               </div>
             </div>
           </div>
@@ -545,7 +545,7 @@
                   <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
                 </div>
                 <div class="mt20 mb30" style="font-weight: 500;">
-                  To use cDAI with the Konkrete, you need to enable it first.
+                  To use {{tokenData[selectedTokenIndex].name}} with the Konkrete, you need to enable it first.
                 </div>
                 <button class="btn btn-lg btn-full btn-danger" (click)="enableBorrowCollateral()">Enable</button>
               </div>

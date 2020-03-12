@@ -27,12 +27,11 @@ export const blockchainConstants = {
     // Compound
     // Comptroller: '0x1f5d7f3caac149fe41b8bd62a3673fe6ec0ab73b',
     // PriceOracleProxy: '0x6998ed7daf969ea0950e01071aceeee54cccbab5',
-    // IVTDemo: '0x9dDB308C14f700d397bB26F584Ac2E303cdc7365',
-    // DAI: '0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa',
-    // cIVTDemo: '0xd5ff020f970462816fdd31a603cb7d120e48376e',
-    // cDAI: '0xe7bc397dbd069fc7d0109c0636d06888bb50668c',
-    // cETH: '0xf92fbe0d3c0dcdae407923b2ac17ec223b1084e4',
-    // DAI: '0x813a4658007ed3c7b31f02009e8699bef8539cd8',
+    // IVTDemo: '0x29eb28bAF3B296b9F14e5e858C52269b57b4dF6E',
+    // DAI: '0x9dDB308C14f700d397bB26F584Ac2E303cdc7365',
+    // cIVTDemo: '0xC014DC10A57aC78350C5fddB26Bb66f1Cb0960a0',
+    // cDAI: '0xd5ff020f970462816fDD31a603Cb7D120E48376E',
+    // cETH: '0xf92fbe0d3c0dcdae407923b2ac17ec223b1084e4'
 
     // Konkrete
     Comptroller: '0x4383939B8105B86490bb4273Cf0aC8F85a0851bd',

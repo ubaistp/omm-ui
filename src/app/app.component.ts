@@ -174,6 +174,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     window['ethereum'].on('networkChanged', () => {
       window.location.reload();
     });
+    this.calcNetApy();
     // web3.currentProvider.publicConfigStore.on('update', callback);
     // this.supplyChart();
     // this.borrowChart();
@@ -263,6 +264,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
     // console.log(this.totalSupplyBalance , this.totalBorrowBalance );
     await this.getAccountLiquidity();
+    this.calcNetApy();
     this.filterTable();
   }
 
@@ -350,7 +352,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       tokenBalance = bal;
       const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
       this.totalSupplyBalance += supplyBal;
-      this.netApy += parseFloat(token.supplyApy);
+      // this.netApy += parseFloat(token.supplyApy);
     }
     return tokenBalance;
   }
@@ -361,15 +363,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (parseFloat(tokenBalance) > 0) {
       const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 8);
       this.totalBorrowBalance += borrowBal;
-      this.netApy -= parseFloat(token.borrowApy);
+      // this.netApy -= parseFloat(token.borrowApy);
     }
     // console.log(this.totalSupplyBalance)
     return tokenBalance;
   }
-
+  public calcNetApy() {
+    let posApy = 0;
+    let negApy = 0;
+    this.tokenData.forEach(token => {
+      if (parseFloat(token.supplyBalance) > 0 && parseFloat(token.supplyApy) > 0 && parseFloat(this.supplyBalance) > 0) {
+        posApy += parseFloat(token.supplyBalance) * parseFloat(token.supplyApy) / parseFloat(this.supplyBalance);
+      }
+      if (parseFloat(token.borrowBalance) > 0 && parseFloat(token.borrowApy) > 0 && parseFloat(this.borrowBalance) > 0) {
+        negApy += parseFloat(token.borrowBalance) * parseFloat(token.borrowApy) / parseFloat(this.borrowBalance);
+      }
+    });
+    this.netApy = posApy - negApy;
+  }
   public async getAccountLiquidity() {
     this.tokenData.forEach(token => {
-      if (parseFloat(token.supplyBalance) > 0) {
+      if (parseFloat(token.supplyBalance) > 0 && token.enabled === true) {
         this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.supplyBalance) / 100);
       }
     });
@@ -502,7 +516,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async faucetIvt() {
-    const IvtContract = this.initContract(this.contractAddresses.IVTDemo, IVTDemoABI.abi);
+    const tokenName = this.tokenData[this.selectedTokenIndex].name;
+    const tokenAddress = this.contractAddresses[tokenName];
+    const IvtContract = this.initContract(tokenAddress, IVTDemoABI.abi);
+    // const IvtContract = this.initContract(this.contractAddresses.IVTDemo, IVTDemoABI.abi);
     const tx = await IvtContract.allocateTo(this.userAddress, ethers.utils.parseEther('100'));
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
