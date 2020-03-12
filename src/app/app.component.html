@@ -376,7 +376,7 @@
               </div>
               <div class="calculation">
                 <span class="description">Wallet</span>
-                <span>{{tokenData[selectedTokenIndex].tokenBalance}} {{ tokenData[selectedTokenIndex].name }}</span>
+                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}} {{ tokenData[selectedTokenIndex].name }}</span>
               </div>
             </div>
           </div>
@@ -402,11 +402,11 @@
                       <div class="col-9">
                         <input type="text" class="form-control form-control-lg text-center" placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                       </div>
-                      <div class="col-3 text-center">
+                      <!-- <div class="col-3 text-center">
                         <a href="" class="link">
                           SAFE MAX
                         </a>
-                      </div>
+                      </div> -->
                     </div>
                   </form>
                   <div class="mt30">
@@ -511,11 +511,11 @@
                       <div class="col-9">
                         <input type="text" class="form-control form-control-lg text-center" placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                       </div>
-                      <div class="col-3 text-center">
+                      <!-- <div class="col-3 text-center">
                         <a href="" class="link">
                           SAFE MAX
                         </a>
-                      </div>
+                      </div> -->
                     </div>
                   </form>
                   <div class="mt30">

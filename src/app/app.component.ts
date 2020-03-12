@@ -294,12 +294,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     const divBy = 10 ** 16;
     const borrowApyPerc = borrowApy / divBy;
     const supplyApyPerc = supplyApy / divBy;
-    // if (borrowApyPerc > 0) {
-    //   this.netApy -= borrowApyPerc;
-    // } else if (supplyApyPerc > 0) {
-    //   this.netApy += supplyApyPerc;
-    // }
-    // console.log(this.netApy)
     return [borrowApyPerc.toFixed(3), supplyApyPerc.toFixed(3)];
   }
 
@@ -336,7 +330,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       let exchangeRateStored = await cTokenContract.exchangeRateStored();
       exchangeRateStored = this.getNumber(exchangeRateStored);
       const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / 10 ** 36;
-      console.log(bal);
+      // console.log(bal);
       tokenBalance = bal;
       const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
       this.totalSupplyBalance += supplyBal;
@@ -363,7 +357,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.supplyBalance) / 100);
       }
     });
-    console.log(this.accountLiquidity);
+    // console.log(this.accountLiquidity);
     // const liquidityData = await this.Contracts.Comptroller.getAccountLiquidity(this.userAddress);
     // if (this.getNumber(liquidityData[0]) === '0') {
     //   const val = this.getNumber(liquidityData[1]);
