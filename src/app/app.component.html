@@ -433,7 +433,8 @@
                     *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
                   <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
                     *ngIf="typeViewSupply == 'supply'">Supply</button>
-                    <div class="text-center my20" (click)="faucetIvt()">
+                    <div *ngIf="tokenData[selectedTokenIndex].name == 'IVTDemo'"
+                      class="text-center my20" (click)="faucetIvt()">
                       <a href="#" class="link">Faucet</a>
                     </div>
                 </div>
