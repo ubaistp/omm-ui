@@ -8,6 +8,7 @@ import * as Comptroller from '../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../assets/contracts/PriceOracleProxy.json';
 import * as CErc20Delegator from '../assets/contracts/CErc20Delegator.json';
 import * as CErc20 from '../assets/contracts/CErc20.json';
+import * as IVTDemoABI from '../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../assets/contracts/EIP20Interface.json';
 import * as DAIInterestRateModel from '../assets/contracts/DAIInterestRateModel.json';
 import * as WhitePaperInterestRateModel from '../assets/contracts/WhitePaperInterestRateModel.json';
@@ -192,8 +193,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.tokenData.filter(el=>el["borrowBalance"] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)))
       this.borrowBalance = 0
       this.tokenData.filter(el => this.borrowBalance =this.borrowBalance + el.borrowBalance);
-      this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
-      // console.log(this.borrowBalance)
+      if (this.accountLiquidity !== 0) {
+        this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
+      }
   }
 
   public async initializeMetaMask() {
@@ -441,11 +443,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async enterExitMarket(token) {
+    let addressArray = [];
+    addressArray.push(token.cTokenAddress);
     let tx;
     if (token.enabled === true) {
       tx = await this.Contracts.Comptroller.exitMarket(token.cTokenAddress);
     } else {
-      tx = await this.Contracts.Comptroller.enterMarkets(token.cTokenAddress);
+      tx = await this.Contracts.Comptroller.enterMarkets(addressArray);
     }
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
@@ -479,6 +483,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     const tokenName = this.tokenData[this.selectedTokenIndex].name;
     const cTokenContract = this.Contracts[`c${tokenName}`];
     const tx = await cTokenContract.repayBorrow(ethers.utils.parseEther(this.amountInput), {gasLimit: 350000});
+    await this.web3.waitForTransaction(tx.hash);
+    window.location.reload();
+  }
+
+  public async faucetIvt() {
+    const IvtContract = this.initContract(this.contractAddresses.IVTDemo, IVTDemoABI.abi);
+    const tx = await IvtContract.allocateTo(this.userAddress, ethers.utils.parseEther('100'));
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
   }
