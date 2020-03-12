@@ -37,6 +37,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   public totalSupplyBalance = 0;
   public totalBorrowBalance = 0;
   public amountInput: any;
+  public sliderPercentage = 0;
+  public netApy = 0;
+
   public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
@@ -162,7 +165,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   filterTable(){
-    console.log(this.tokenData)
+    // console.log(this.tokenData)
       this.supplyData = this.tokenData;
       this.borrowData = this.tokenData;
       this.supplyTokenData = this.tokenData;
@@ -188,8 +191,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.tokenData.filter(el => this.supplyBalance =this.supplyBalance + el.supplyBalance)
       this.tokenData.filter(el=>el["borrowBalance"] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)))
       this.borrowBalance = 0
-      this.tokenData.filter(el => this.borrowBalance =this.borrowBalance + el.borrowBalance)
-      console.log(this.borrowBalance)
+      this.tokenData.filter(el => this.borrowBalance =this.borrowBalance + el.borrowBalance);
+      this.sliderPercentage = parseFloat(this.borrowBalance) / parseFloat(this.accountLiquidity) * 100;
+      // console.log(this.borrowBalance)
   }
 
   public async initializeMetaMask() {
@@ -235,13 +239,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
     token.borrowApy = apy[0];
     token.supplyApy = apy[1];
-    token.utilizationRate = await this.getUtilizationRate(this.Contracts[`c${token.name}`]);
+    token.utilizationRate = parseFloat(await this.getUtilizationRate(this.Contracts[`c${token.name}`])) / 10 ** 18;
     token.tokenBalance = parseFloat( await this.getUserTokenBalance(this.Contracts[token.name]) ) / 10 ** 18;
-    token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) ) / 10 ** 8;
+    token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) ) / 10 ** 9;
     // token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     token.tokenBorrowBalance = parseFloat( await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
-    console.log(this.totalSupplyBalance , this.totalBorrowBalance );
+    // console.log(this.totalSupplyBalance , this.totalBorrowBalance );
     this.filterTable();
   }
 
@@ -254,7 +258,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
     this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
 
-    console.log(this.Contracts);
+    // console.log(this.Contracts);
   }
 
   private initContract(contractAddress, abi) {
@@ -289,6 +293,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     const divBy = 10 ** 16;
     const borrowApyPerc = borrowApy / divBy;
     const supplyApyPerc = supplyApy / divBy;
+    // if (borrowApyPerc > 0) {
+    //   this.netApy -= borrowApyPerc;
+    // } else if (supplyApyPerc > 0) {
+    //   this.netApy += supplyApyPerc;
+    // }
+    // console.log(this.netApy)
     return [borrowApyPerc.toFixed(3), supplyApyPerc.toFixed(3)];
   }
 
@@ -320,9 +330,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   public async getUserSupplyBalance(cTokenContract, token) {
     let tokenBalance = await cTokenContract.balanceOf(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
+    let supplyRatePerBlock = await cTokenContract.supplyRatePerBlock();
+    supplyRatePerBlock = this.getNumber(supplyRatePerBlock);
+    const factor = parseFloat(tokenBalance) / (parseFloat(supplyRatePerBlock) * this.BLOCKS_YEAR);
+    // console.log(tokenBalance)
     if (parseFloat(tokenBalance) > 0) {
-      const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 18);
-      this.totalBorrowBalance += supplyBal;
+      tokenBalance = parseFloat(tokenBalance) / factor;
+      // console.log(tokenBalance, factor)
+      const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 9);
+      this.totalSupplyBalance += supplyBal;
+      this.netApy += parseFloat(token.supplyApy);
     }
     return tokenBalance;
   }
@@ -331,8 +348,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
     tokenBalance = this.getNumber(tokenBalance);
     if (parseFloat(tokenBalance) > 0) {
-      const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 8);
-      this.totalSupplyBalance += supplyBal;
+      const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 8);
+      this.totalBorrowBalance += borrowBal;
+      this.netApy -= parseFloat(token.borrowApy);
     }
     // console.log(this.totalSupplyBalance)
     return tokenBalance;
@@ -347,10 +365,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       // console.log(this.accountLiquidity)
     }
   }
-  public twoDecimal(val) {
+  public toDecimal(val, decimal) {
+    if (val === undefined || val === null) {
+      return;
+    }
     val = val.toString();
     val = parseFloat(val);
-    return val.toFixed(2);
+    return val.toFixed(decimal);
+  }
+
+  public afterSupplyAmount(token) {
+    // if()
+    return parseFloat(token.supplyBalance) + (parseFloat(this.amountInput) * parseFloat(token.priceUsd));
   }
 
   public async getExchangeRate() {
@@ -457,7 +483,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   openSupplyModal(i) {
-    this.amountInput = '';
+    this.amountInput = null;
     $('#supply').val(this.tokenData[i].id);
     this.selectedTokenIndex = $('#supply').val();
     $('#supply').trigger('change');
@@ -467,7 +493,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     $('#supplyModal').modal('show');
   }
   openBorrowModal(i) {
-    this.amountInput = '';
+    this.amountInput = null;
     $('#borrow').val(this.tokenData[i].id);
     this.selectedTokenIndex = $('#borrow').val();
     $('#borrow').trigger('change');
