@@ -174,8 +174,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     window['ethereum'].on('networkChanged', () => {
       window.location.reload();
     });
-    this.calcNetApy();
-    // web3.currentProvider.publicConfigStore.on('update', callback);
     // this.supplyChart();
     // this.borrowChart();
   }
@@ -264,8 +262,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
     // console.log(this.totalSupplyBalance , this.totalBorrowBalance );
     await this.getAccountLiquidity();
-    this.calcNetApy();
     this.filterTable();
+    this.calcNetApy();
   }
 
   private async initAllContracts(contractAddresses) {
@@ -369,6 +367,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     return tokenBalance;
   }
   public calcNetApy() {
+    // this.netApy = 0;
     let posApy = 0;
     let negApy = 0;
     this.tokenData.forEach(token => {
@@ -404,7 +403,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     val = parseFloat(val);
     return val.toFixed(decimal);
   }
-
+  public trucateAddress(address) {
+    if (address === null || address === undefined) { return; }
+    const start4Digits = address.slice(0, 6);
+    const separator = '...';
+    const last4Digits = address.slice(-4);
+    return (start4Digits.padStart(2, '0') + separator.padStart(2, '0') + last4Digits.padStart(2, '0'));
+  }
   public afterSupplyAmount(token) {
     // if()
     return parseFloat(token.supplyBalance) + (parseFloat(this.amountInput) * parseFloat(token.priceUsd));
@@ -444,7 +449,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    console.log(this.tokenData);
+    // console.log(this.tokenData);
   }
 
   public async checkApproved(tokenContract, allowanceOf) {
