@@ -100,6 +100,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     $('.select2-main').one('select2:open', function (e) {
       $('input.select2-search__field').prop('placeholder', 'Search');
     });
+    if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+      return;
+    }
 
     window['ethereum'].on('accountsChanged', () => {
       window.location.reload();
@@ -143,16 +146,30 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async initializeMetaMask() {
-    // tslint:disable-next-line: no-string-literal
-    this.ethereum = window['ethereum'];
-    await this.ethereum.enable();
-    this.web3 = new ethers.providers.Web3Provider(this.ethereum);
-    const network = await this.web3.getNetwork();
-    if (network.name !== 'kovan') {
-      $('#kovanNetModal').modal('show');
-      return;
+    try {
+      if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+        setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
+        return;
+      }
+      this.ethereum = window['ethereum'];
+      await this.ethereum.enable();
+      this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+      const network = await this.web3.getNetwork();
+      if (network.name !== 'kovan') {
+        $('#kovanNetModal').modal('show');
+        return;
+      }
+      this.setup();
+
+    } catch (error) {
+      if (error.code === 4001) {
+        $('#metaMaskRejectModal').modal('show');
+      } else { console.error(error); }
     }
-    this.setup();
+  }
+
+  public reloadPage() {
+    window.location.reload();
   }
 
   public async setup() {
