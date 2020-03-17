@@ -123,7 +123,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   };
 
   constructor(private httpClient: HttpClient) {
-    // this.getExchangeRate();
     this.tokenData = [
       {
         id: '0',
