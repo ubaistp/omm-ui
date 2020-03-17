@@ -147,6 +147,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.ethereum = window['ethereum'];
     await this.ethereum.enable();
     this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+    const network = await this.web3.getNetwork();
+    if (network.name !== 'kovan') {
+      $('#kovanNetModal').modal('show');
+      return;
+    }
     this.setup();
   }
 
