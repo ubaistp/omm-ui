@@ -246,99 +246,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="row">
-        <div class="col-md-6">
-          <div class="portlet portlet--height-full">
-            <div class="portlet__body py0 px0">
-              <div class="asset-list">
-                <div class="labels row">
-                  <div class="col-sm-4 col-4">
-                    <label>Asset</label>
-                  </div>
-                  <div class="col-sm-3 col-4 text-right d-none d-sm-block">
-                    <label>APY</label>
-                  </div>
-                  <div class="col-sm-3 col-4 text-right">
-                    <label>Wallet</label>
-                  </div>
-                  <div class="col-sm-2 col-4 text-right">
-                    <label>Collateral</label>
-                  </div>
-                </div>
-                <div class="assets">
-                  <a class="asset" *ngFor="let token of tokenData; let i = index" (click)="openSupplyModal(i)">
-                    <div class="col-4 col-sm-4">
-                      <div class="balance">
-                        <div>{{token.name}}</div>
-                        <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
-                      </div>
-                    </div>
-                    <div class="col-sm-3 text-right d-none d-sm-block">
-                      <div class="balance">
-                        <div>{{token.supplyApy}}%</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-3 text-right">
-                      <div class="balance">
-                        <div>{{ token.tokenBalance }} {{ token.name }}</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-2 text-right">
-                      <mat-slide-toggle [checked]="token.enabled" [disabled]="false" (change)="enterExitMarket(token)">
-                      </mat-slide-toggle>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="portlet portlet--height-full">
-            <div class="portlet__body py0 px0">
-              <div class="asset-list">
-                <div class="labels row">
-                  <div class="col-sm-4 col-4">
-                    <label>Asset</label>
-                  </div>
-                  <div class="col-sm-3 col-4 text-right d-none d-sm-block">
-                    <label>APY</label>
-                  </div>
-                  <div class="col-sm-3 col-4 text-right">
-                    <label>Wallet</label>
-                  </div>
-                  <div class="col-sm-2 col-4 text-right">
-                    <label>% Of Limit</label>
-                  </div>
-                </div>
-                <div class="assets">
-                  <a class="asset" *ngFor="let token of tokenData; let i = index" (click)="openBorrowModal(i)">
-                    <div class="col-4 col-sm-4">
-                      <div class="balance">
-                        <div>{{token.name}}</div>
-                        <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
-                      </div>
-                    </div>
-                    <div class="col-sm-3 text-right d-none d-sm-block">
-                      <div class="balance">
-                        <div>{{token.borrowApy}}%</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-3 text-right">
-                      <div class="balance">
-                        <div>{{ token.tokenBalance }} {{token.name}}</div>
-                      </div>
-                    </div>
-                    <div class="col-4 col-sm-2 text-right">
-                      0%
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
   </section>
 </div>
@@ -359,7 +266,6 @@
               <select id="supply" name="supply" class="select2-main" style="width: 100%;"></select>
             </div>
             <div class="d-none d-lg-block">
-              <!-- <canvas id="supplyChart" style="height: 200px;"></canvas> -->
             </div>
             <div class="px15">
               <div class="calculation">
@@ -472,7 +378,6 @@
               <select id="borrow" name="borrow" class="select2-main" style="width: 100%;"></select>
             </div>
             <div class="d-none d-lg-block">
-              <!-- <canvas id="borrowChart" style="height: 200px;"></canvas> -->
             </div>
             <div class="px15">
               <div class="calculation">

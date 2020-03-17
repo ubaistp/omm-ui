@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// import Chart from 'chart.js';
 import { ethers } from 'ethers';
 import { getAddress, BigNumber } from 'ethers/utils';
 import { blockchainConstants } from '../environments/blockchain-constants';
@@ -10,8 +9,6 @@ import * as CErc20Delegator from '../assets/contracts/CErc20Delegator.json';
 import * as CErc20 from '../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../assets/contracts/EIP20Interface.json';
-import * as DAIInterestRateModel from '../assets/contracts/DAIInterestRateModel.json';
-import * as WhitePaperInterestRateModel from '../assets/contracts/WhitePaperInterestRateModel.json';
 
 declare var $: any;
 
@@ -41,7 +38,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   public sliderPercentage = 0;
   public netApy = 0;
 
-  public supplyAPY;
   public collateralSupplyEnable = false;
   public collateralBorrowEnable = false;
   public typeViewSupply = 'withdraw';
@@ -60,67 +56,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   public borrowTokenData = [];
   public supplyBalance;
   public borrowBalance;
-  public chartData = {
-    dataSet: Array.from({ length: 7 }, () => Math.floor(Math.random() * 50) + 10),
-    label: [1578392733000, 1578306333000, 1578219933000, 1578133533000, 1578047133000, 1577960733000, 1577874333000],
-  };
-  public chartOptions = {
-    legend: {
-      display: false
-    },
-    title: {
-      display: false
-    },
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-      callbacks: {
-        label: function (tooltipItem, data) {
-          this.supplyAPY = data['datasets'][0]['data'][tooltipItem['index']];
-          // return data['datasets'][0]['label'] + ' ' + this.supplyAPY + '%';
-        }.bind(this),
-      },
-      backgroundColor: '#FFF',
-      titleFontSize: 14,
-      titleFontColor: '#000',
-      bodyFontColor: '#1cb3a3',
-      bodyFontSize: 14,
-      displayColors: false
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true
-    },
-    scales: {
-      xAxes: [{
-        ticks: {
-          display: false
-        },
-        type: 'time',
-        time: {
-          unit: 'day',
-          parser: 'timeFormat',
-          tooltipFormat: 'DD MMM YYYY',
-        },
-        gridLines: {
-          display: false
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          display: false
-        },
-        gridLines: {
-          display: false
-        }
-      }]
-    },
-    elements: {
-      point: {
-        radius: 0
-      }
-    }
-  };
 
   constructor(private httpClient: HttpClient) {
     this.tokenData = [
@@ -144,10 +79,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // this.initializeMetaMask();
-    this.supplyAPY = this.chartData.dataSet[0];
   }
   ngAfterViewInit() {
-
     $('#supply').select2({
       data: this.tokenData,
       dropdownCssClass: 'bigdrop',
@@ -173,12 +106,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     window['ethereum'].on('networkChanged', () => {
       window.location.reload();
     });
-    // this.supplyChart();
-    // this.borrowChart();
   }
 
   filterTable() {
-    // console.log(this.tokenData)
       this.supplyData = this.tokenData;
       this.borrowData = this.tokenData;
       this.supplyTokenData = this.tokenData;
@@ -256,10 +186,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.utilizationRate = parseFloat(await this.getUtilizationRate(this.Contracts[`c${token.name}`])) / 10 ** 18;
     token.tokenBalance = parseFloat( await this.getUserTokenBalance(this.Contracts[token.name]) ) / 10 ** 18;
     token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) );
-    // token.priceUsd = this.getUsdPrice(ethers.utils.formatEther(token.priceEth));
     token.tokenBorrowBalance = parseFloat( await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
-    // console.log(this.totalSupplyBalance , this.totalBorrowBalance );
     await this.getAccountLiquidity();
     this.filterTable();
     this.calcNetApy();
@@ -273,8 +201,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20.abi);
     this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
     this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
-
-    // console.log(this.Contracts);
   }
 
   private initContract(contractAddress, abi) {
@@ -313,22 +239,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public async getUtilizationRate(cTokenContract) {
-    // let interestRateModelAbi;
-    // if (cTokenContract == this.Contracts.cDAI) {
-    //   interestRateModelAbi = DAIInterestRateModel.abi;
-    // } else {
-    //   interestRateModelAbi = WhitePaperInterestRateModel.abi;
-    // }
-    // const intRateModelAddr = await cTokenContract.interestRateModel();
-    // const interestRateContract = this.initContract(intRateModelAddr, interestRateModelAbi);
     const cash = await cTokenContract.getCash();
     const borrow = await cTokenContract.totalBorrows();
     const reserves = await cTokenContract.totalReserves();
     const utilizationRate = (parseFloat(borrow) * (10 ** 18)) / (parseFloat(cash) + parseFloat(borrow) - parseFloat(reserves));
-    // console.log(utilizationRate)
-    // let utilizationRate = await interestRateContract.utilizationRate(cash, borrow, reserves);
-    // utilizationRate = this.getNumber(utilizationRate);
-    // console.log(utilizationRate)
     return utilizationRate.toString();
   }
 
@@ -345,11 +259,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       let exchangeRateStored = await cTokenContract.exchangeRateStored();
       exchangeRateStored = this.getNumber(exchangeRateStored);
       const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / 10 ** 36;
-      // console.log(bal);
       tokenBalance = bal;
       const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
       this.totalSupplyBalance += supplyBal;
-      // this.netApy += parseFloat(token.supplyApy);
     }
     return tokenBalance;
   }
@@ -360,13 +272,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (parseFloat(tokenBalance) > 0) {
       const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 8);
       this.totalBorrowBalance += borrowBal;
-      // this.netApy -= parseFloat(token.borrowApy);
     }
-    // console.log(this.totalSupplyBalance)
     return tokenBalance;
   }
   public calcNetApy() {
-    // this.netApy = 0;
     let posApy = 0;
     let negApy = 0;
     this.tokenData.forEach(token => {
@@ -409,10 +318,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     const last4Digits = address.slice(-4);
     return (start4Digits.padStart(2, '0') + separator.padStart(2, '0') + last4Digits.padStart(2, '0'));
   }
-  public afterSupplyAmount(token) {
-    // if()
-    return parseFloat(token.supplyBalance) + (parseFloat(this.amountInput) * parseFloat(token.priceUsd));
-  }
 
   public async getExchangeRate() {
     this.ethUsdExchangeRate = null;
@@ -448,7 +353,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    // console.log(this.tokenData);
   }
 
   public async checkApproved(tokenContract, allowanceOf) {
@@ -523,7 +427,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     const tokenName = this.tokenData[this.selectedTokenIndex].name;
     const tokenAddress = this.contractAddresses[tokenName];
     const IvtContract = this.initContract(tokenAddress, IVTDemoABI.abi);
-    // const IvtContract = this.initContract(this.contractAddresses.IVTDemo, IVTDemoABI.abi);
     const tx = await IvtContract.allocateTo(this.userAddress, ethers.utils.parseEther('100'));
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
@@ -574,47 +477,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   viewBorrowForm() {
     this.typeViewBorrow = 'borrow';
   }
-
-  // supplyChart() {
-  //   this.canvas = document.getElementById('supplyChart');
-  //   this.ctx = this.canvas.getContext('2d');
-  //   let myChart = new Chart(this.ctx, {
-  //     type: 'line',
-  //     data: {
-  //       labels: this.chartData.label,
-  //       datasets: [{
-  //         label: 'Supply APY',
-  //         data: this.chartData.dataSet,
-  //         backgroundColor: 'rgb(28, 179, 163)',
-  //         borderColor: 'rgb(28, 179, 163)',
-  //         borderWidth: 2,
-  //         fill: false,
-  //         lineTension: 0,
-  //       }]
-  //     },
-  //     options: this.chartOptions
-  //   });
-  // }
-  // borrowChart() {
-  //   this.canvas = document.getElementById('borrowChart');
-  //   this.ctx = this.canvas.getContext('2d');
-  //   let myChart = new Chart(this.ctx, {
-  //     type: 'line',
-  //     data: {
-  //       labels: this.chartData.label,
-  //       datasets: [{
-  //         label: 'Supply APY',
-  //         data: this.chartData.dataSet,
-  //         backgroundColor: 'rgb(217, 84, 108)',
-  //         borderColor: 'rgb(217, 84, 108)',
-  //         borderWidth: 2,
-  //         fill: false,
-  //         lineTension: 0,
-  //       }]
-  //     },
-  //     options: this.chartOptions
-  //   });
-  // }
 
   formatCountrySelection(supply) {
     if (!supply.id) {
