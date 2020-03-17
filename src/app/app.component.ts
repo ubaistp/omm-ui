@@ -28,6 +28,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   public Contracts: any;
   public contractAddresses: any;
   public BLOCKS_YEAR = 2102400;
+  public DECIMAL_8 = 10 ** 8;
+  public DECIMAL_18 = 10 ** 18;
   public tokenData: any;
   public accountLiquidity = 0;
   public selectedTokenIndex = 0;
@@ -188,6 +190,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     token.cTokenSupplyBalance = parseFloat( await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token) );
     token.tokenBorrowBalance = parseFloat( await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
     token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
+    token.availableBorrow = await this.getAvailableBorrow(this.Contracts[`c${token.name}`]);
     await this.getAccountLiquidity();
     this.filterTable();
     this.calcNetApy();
@@ -355,6 +358,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public async getAvailableBorrow(cTokenContract) {
+    let cash = await cTokenContract.getCash();
+    cash = this.getNumber(cash);
+    const availableBorrow = parseFloat(cash) / this.DECIMAL_18;
+    return availableBorrow.toString();
+  }
   public async checkApproved(tokenContract, allowanceOf) {
     let approvedBal = await tokenContract.allowance(this.userAddress, allowanceOf);
     approvedBal = this.getNumber(approvedBal);

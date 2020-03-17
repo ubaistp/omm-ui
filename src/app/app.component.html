@@ -396,6 +396,10 @@
                 <span class="description">Wallet</span>
                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}} {{ tokenData[selectedTokenIndex].name }}</span>
               </div>
+              <div class="calculation">
+                <span class="description">Available to Borrow</span>
+                <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}} {{ tokenData[selectedTokenIndex].name }}</span>
+              </div>
             </div>
           </div>
           <div class="col-lg-6 py0 px0">
