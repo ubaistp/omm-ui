@@ -454,11 +454,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     window.location.reload();
   }
 
-  public async faucetIvt() {
+  public async faucet() {
     const tokenName = this.tokenData[this.selectedTokenIndex].name;
     const tokenAddress = this.contractAddresses[tokenName];
     const IvtContract = this.initContract(tokenAddress, IVTDemoABI.abi);
-    const tx = await IvtContract.allocateTo(this.userAddress, ethers.utils.parseEther('100'));
+    const tx = await IvtContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'));
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
   }
