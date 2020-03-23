@@ -1,19 +1,29 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { IndexComponent } from './pages/index/index.component';
+import { AdminComponent } from './pages/admin/admin.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 
-
+const appRoutes: Routes = [
+  { path: '', component: IndexComponent },
+  { path: 'admin', component: AdminComponent },
+];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent,
+    IndexComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +31,8 @@ import { FormsModule } from '@angular/forms';
     MatSlideToggleModule,
     MatIconModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
