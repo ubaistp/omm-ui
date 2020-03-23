@@ -7,3 +7,47 @@
         <a class="d-none d-sm-block" id="account">0x2544.55555</a>
     </div>
 </header>
+
+<div class="modal fade" id="kovanNetModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+    aria-labelledby="kovanNetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="py30">
+                    <h2>Switch to Kovan Ethereum Network!</h2>
+                    <p class="lead">Please switch to the Kovan Ethereum Network via Metamask to continue using Konkrete
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="noMetaMaskModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+    aria-labelledby="noMetaMaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="py30">
+                    <h2>Metamask Not Found!</h2>
+                    <p class="lead">Connection to Blockchain could not be established. Please install Metamask plugin
+                        for your browser from <a href="https://metamask.io/" target="_blank">metamask.io</a> and then
+                        try again.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="metaMaskRejectModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="metaMaskRejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="py30">
+                    <h2>Metamask Connection Denied!</h2>
+                    <p class="lead">Please Accept Metamask Connection Request.</p>
+                    <button class="btn btn-primary" (click)="reloadPage()">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

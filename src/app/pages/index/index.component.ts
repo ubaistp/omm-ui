@@ -146,7 +146,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public async initializeMetaMask() {
         try {
             if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-                setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
+                // setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
                 return;
             }
             this.ethereum = window['ethereum'];
@@ -154,14 +154,14 @@ export class IndexComponent implements OnInit, AfterViewInit {
             this.web3 = new ethers.providers.Web3Provider(this.ethereum);
             const network = await this.web3.getNetwork();
             if (network.name !== 'kovan') {
-                $('#kovanNetModal').modal('show');
+                // $('#kovanNetModal').modal('show');
                 return;
             }
             this.setup();
 
         } catch (error) {
             if (error.code === 4001) {
-                $('#metaMaskRejectModal').modal('show');
+                // $('#metaMaskRejectModal').modal('show');
             } else { console.error(error); }
         }
     }
