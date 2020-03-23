@@ -10,6 +10,8 @@ import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
+declare var $:any;
+
 @Component({
     selector: "",
     templateUrl: "./index.component.html",
