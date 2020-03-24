@@ -9,13 +9,15 @@ import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json
 import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+import { SharedService } from '../../commonData.service';
 
-declare var $:any;
+declare var $: any;
 
 @Component({
-    selector: "",
-    templateUrl: "./index.component.html",
+    selector: '',
+    templateUrl: './index.component.html',
     encapsulation: ViewEncapsulation.None,
+    providers: [SharedService]
 })
 export class IndexComponent implements OnInit, AfterViewInit {
 
@@ -57,7 +59,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public supplyBalance;
     public borrowBalance;
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, private sharedService: SharedService) {
         this.tokenData = [
             {
                 id: '0',
@@ -109,6 +111,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         window['ethereum'].on('networkChanged', () => {
             window.location.reload();
         });
+        // this.initializeMetaMask();
     }
 
     filterTable() {
@@ -144,9 +147,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
 
     public async initializeMetaMask() {
+        // this.ethereum = await this.sharedService.ethereum;
+        // this.web3 = await this.sharedService.web3;
+        // console.log(this.web3)
+
         try {
             if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-                // setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
+                setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
                 return;
             }
             this.ethereum = window['ethereum'];
@@ -154,26 +161,35 @@ export class IndexComponent implements OnInit, AfterViewInit {
             this.web3 = new ethers.providers.Web3Provider(this.ethereum);
             const network = await this.web3.getNetwork();
             if (network.name !== 'kovan') {
-                // $('#kovanNetModal').modal('show');
+                $('#kovanNetModal').modal('show');
                 return;
             }
-            this.setup();
+            // await this.timeout(2000);
+            // setTimeout(this.setup, 10000);
+            await this.setup();
 
         } catch (error) {
             if (error.code === 4001) {
-                // $('#metaMaskRejectModal').modal('show');
+                $('#metaMaskRejectModal').modal('show');
             } else { console.error(error); }
         }
     }
-
+    // public timeout(ms) {
+    //   return new Promise(resolve => setTimeout(resolve, ms));
+    // }
     public reloadPage() {
         window.location.reload();
     }
 
     public async setup() {
+        // this.userAddress = await this.sharedService.userAddress;
+        // console.log(this.sharedService)
+        // console.log(this.userAddress)
+        // const contractAddresses = await this.sharedService.contractAddresses;
         this.userAddress = await this.web3.getSigner().getAddress();
         const contractAddresses = await this.getContractAddresses();
-        this.initAllContracts(contractAddresses);
+        await this.initAllContracts(contractAddresses);
+        // console.log('2')
         await this.getExchangeRate();
         await this.tokenData.forEach(async (token) => {
             this.initToken(token);
@@ -217,6 +233,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
 
     private async initAllContracts(contractAddresses) {
+        // console.log(await this.sharedService.getAllContracts())
+        // this.Contracts = await this.sharedService.getAllContracts();
+        // console.log(this.Contracts)
+        // return;
         this.Contracts = {};
         this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
         this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);

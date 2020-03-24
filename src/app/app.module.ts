@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { SharedService } from './commonData.service';
 
 const appRoutes: Routes = [
   { path: '', component: IndexComponent },
@@ -34,7 +35,7 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [ SharedService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
