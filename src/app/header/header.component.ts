@@ -17,8 +17,17 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(private sharedService: SharedService) {
     this.initialize();
   }
+  ngOnInit() {
+
+  }
+  ngAfterViewInit() {
+  }
 
   public async initialize() {
+    if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+      setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
+      return;
+    }
     try {
       await this.sharedService.initializeMetaMask();
     } catch (error) {
@@ -28,26 +37,19 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
     this.ethereum = await this.sharedService.ethereum;
     this.web3 = await this.sharedService.web3;
-    this.modalCheck();
-  }
-
-  public async modalCheck() {
-    if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-      $('#noMetaMaskModal').modal('show');
-      // setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
-      return;
-    }
+    if (typeof(this.web3) === undefined) { return; }
     const network = await this.web3.getNetwork();
     if (network.name !== 'kovan') {
-      // console.log('network')
       $('#kovanNetModal').modal('show');
       return;
     }
   }
-  ngOnInit() {
+
+  public async modalCheck() {
 
   }
-  ngAfterViewInit() {
-  }
 
+  public reloadPage() {
+    window.location.reload();
+  }
 }
