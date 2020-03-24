@@ -33,7 +33,6 @@ export class SharedService {
     } catch (error) {
         throw(error);
     }
-    console.log('complete')
   }
   public getWeb3() {
     return this.web3;
