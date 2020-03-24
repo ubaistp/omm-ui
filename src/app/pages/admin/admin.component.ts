@@ -19,9 +19,22 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public userAddress: any;
   public Contracts: any;
   public contractAddresses: any;
+  public tokenData: any;
+  public cTokenAddress: any;
+  public cTokenRatio: any;
+  public isUserAdmin: Boolean = false;
 
   constructor() {
-
+    this.tokenData = [
+      {
+        id: '0',
+        text: 'DAI',
+      },
+      {
+        id: '1',
+        text: 'IVTDemo',
+      }
+    ];
   }
   ngOnInit() {
     this.initializeMetaMask();
@@ -38,7 +51,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     await this.initAllContracts(contractAddresses);
-
+    await this.checkAdmin();
+    await this.tokenData.forEach(async (token) => {
+      this.initToken(token);
+    });
+    console.log(this.Contracts)
+    console.log(this.tokenData)
 }
 
   private async getContractAddresses() {
@@ -61,10 +79,50 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20.abi);
     this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
     this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
-    console.log(this.Contracts)
   }
 
   private initContract(contractAddress, abi) {
     return new ethers.Contract(contractAddress, abi, this.web3.getSigner());
+  }
+
+  private async initToken(token) {
+    token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
+    token.tokenAddress = this.contractAddresses[token.name];
+    token.cTokenAddress = this.contractAddresses[`c${token.name}`];
+    token.cTokenName = `c${token.name}`;
+    const market = await this.Contracts.Comptroller.markets(token.cTokenAddress);
+    token.isListed = market.isListed;
+    token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+
+  }
+
+  public async getCollateralFactor(cTokenAddress) {
+    const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
+    const colFactorStrTemp = this.getNumber(markets.collateralFactorMantissa);
+    const divBy = 10 ** 16;
+    const colFactorStr = parseFloat(colFactorStrTemp) / divBy;
+    return colFactorStr.toFixed(2).toString();
+  }
+
+  public getNumber(hexNum) {
+    return ethers.utils.bigNumberify(hexNum).toString();
+  }
+
+  public async checkAdmin() {
+    const admin = await this.Contracts.Comptroller.admin();
+    const user = await this.web3.getSigner().getAddress();
+    this.isUserAdmin = (admin.toLowerCase() === user.toLowerCase()) ? true : false;
+    console.log(this.isUserAdmin, admin, user);
+  }
+
+  public async addToken() {
+    if (this.cTokenAddress === undefined || this.cTokenAddress === null) {
+      return;
+    }
+    try {
+      const tx = await this.Contracts.Comptroller._supportMarket(this.cTokenAddress);
+      await this.web3.waitForTransaction(tx.hash);
+      window.location.reload();
+    } catch (error) { console.error(error); }
   }
 }

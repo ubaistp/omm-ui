@@ -22,6 +22,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   }
   ngAfterViewInit() {
+    window['ethereum'].on('accountsChanged', () => {
+      window.location.reload();
+    });
+
+    window['ethereum'].on('networkChanged', () => {
+        window.location.reload();
+    });
   }
 
   public async initialize() {
