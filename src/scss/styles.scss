@@ -274,3 +274,35 @@ table {
 
   }
 }
+label.error{
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: $error-color;
+  margin-bottom: 0;
+  position: relative;
+  padding-left: 30px;
+  margin-top: 0.5rem;
+  &::before{
+    content: "\f12a";
+    font-family: "Font Awesome 5 Free";
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &::after{
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: rgba($color: $error-color, $alpha: 0.3);
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 50%;
+  }
+}

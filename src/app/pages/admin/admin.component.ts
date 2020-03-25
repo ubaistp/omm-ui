@@ -21,6 +21,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public contractAddresses: any;
   public tokenData: any;
   public cTokenAddress: any;
+  public cTkCollateralAddress: any;
   public cTokenRatio: any;
   public isUserAdmin: Boolean = false;
 
@@ -135,7 +136,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const admin = await this.Contracts.Comptroller.admin();
     const user = await this.web3.getSigner().getAddress();
     this.isUserAdmin = (admin.toLowerCase() === user.toLowerCase()) ? true : false;
-    console.log(this.isUserAdmin, admin, user);
   }
 
   public async addToken() {
@@ -144,6 +144,25 @@ export class AdminComponent implements OnInit, AfterViewInit {
     }
     try {
       const tx = await this.Contracts.Comptroller._supportMarket(this.cTokenAddress);
+      await this.web3.waitForTransaction(tx.hash);
+      window.location.reload();
+    } catch (error) { console.error(error); }
+  }
+
+  public async updateCR() {
+    if (this.cTkCollateralAddress === undefined || this.cTkCollateralAddress === null) {
+      return;
+    }
+    if (this.cTokenRatio === undefined || this.cTokenRatio === null) {
+      return;
+    }
+    let colFac = parseFloat(this.cTokenRatio);
+    if (colFac <= 0 || colFac >= 100) {
+      console.log('invalid');
+      return;
+    }
+    try {
+      const tx = await this.Contracts.Comptroller._setCollateralFactor(this.cTkCollateralAddress, colFac * (10 ** 16));
       await this.web3.waitForTransaction(tx.hash);
       window.location.reload();
     } catch (error) { console.error(error); }

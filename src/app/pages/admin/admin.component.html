@@ -1,8 +1,9 @@
 <div class="content">
+  <label *ngIf="!isUserAdmin" class="error align-right d-none d-sm-block">You are not an Admin</label>
     <section class="mt50">
         <div class="container-lg">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="portlet portlet--height-full">
                         <div class="portlet__head">
                             <div class="portlet__head-caption">
@@ -65,13 +66,41 @@
                                     <input type="text" class="form-control" [(ngModel)]="cTokenRatio" name="cTokenRatio">
                                 </div> -->
                                 <div class="mt30">
-                                    <button class="btn btn-lg btn-full btn-secondary" disabled="!isUserAdmin"
+                                    <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
                                       (click)="addToken()">Submit</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-6">
+                  <div class="portlet portlet--height-full">
+                      <div class="portlet__head">
+                          <div class="portlet__head-caption">
+                              <div class="portlet__head-title">
+                                  <h3 class="portlet__head-text">Update Collateralization Ratio</h3>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="portlet__body">
+                          <form>
+                              <div class="form-group">
+                                  <label>CToken Address</label>
+                                  <input type="text" class="form-control" [(ngModel)]="cTkCollateralAddress" name="cTkCollateralAddress">
+                              </div>
+                              <div class="form-group">
+                                  <label>New Collateralization Ratio</label>
+                                  <input type="text" class="form-control" [(ngModel)]="cTokenRatio" name="cTokenRatio">
+                              </div>
+                              <div class="mt30">
+                                  <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
+                                    (click)="updateCR()">Submit</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
             </div>
         </div>
     </section>
