@@ -2,11 +2,11 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/co
 import { ethers } from 'ethers';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
-import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+// import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
 @Component({
   selector: "",
   templateUrl: "./admin.component.html",
@@ -76,7 +76,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private async initAllContracts(contractAddresses) {
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
-    this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
+    // this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
     this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
     this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20.abi);
     this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
@@ -91,7 +91,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.tokenData = [];
     for (const key of Object.keys(this.contractAddresses)) {
       const markets = await this.Contracts.Comptroller.markets(this.contractAddresses[key]);
-      // console.log(key, markets.isListed);
       if (markets.isListed === true) {
         let token = {} as any;
         const cTokenContract = this.initContract(this.contractAddresses[key], CErc20Delegator.abi);

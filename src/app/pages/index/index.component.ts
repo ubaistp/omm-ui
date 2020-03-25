@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
-import { getAddress, BigNumber } from 'ethers/utils';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
@@ -9,7 +8,6 @@ import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json
 import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
-import { SharedService } from '../../commonData.service';
 
 declare var $: any;
 
@@ -17,7 +15,7 @@ declare var $: any;
     selector: '',
     templateUrl: './index.component.html',
     encapsulation: ViewEncapsulation.None,
-    providers: [SharedService]
+    providers: []
 })
 export class IndexComponent implements OnInit, AfterViewInit {
 
@@ -59,7 +57,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public supplyBalance;
     public borrowBalance;
 
-    constructor(private httpClient: HttpClient, private sharedService: SharedService) {
+    constructor(private httpClient: HttpClient) {
         this.tokenData = [
             {
                 id: '0',
@@ -233,10 +231,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
 
     private async initAllContracts(contractAddresses) {
-        // console.log(await this.sharedService.getAllContracts())
-        // this.Contracts = await this.sharedService.getAllContracts();
-        // console.log(this.Contracts)
-        // return;
         this.Contracts = {};
         this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
         this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
@@ -368,19 +362,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         daiPrice = this.getNumber(daiPrice);
         const price = (10 ** 18) / parseFloat(daiPrice);
         this.ethUsdExchangeRate = price.toFixed(3);
-        // console.log(this.ethUsdExchangeRate);
-        // const from = 'ETH';
-        // const to  = 'USD';
-        // await this.httpClient.get(`https://rest.coinapi.io/v1/exchangerate/${from}/${to}`, {
-        //   headers: { 'X-CoinAPI-Key': '97DFF9D2-14F9-4ADE-BED6-C05DFE93E338' }
-        // })
-        // .subscribe(
-        //   data => {
-        //     this.ethUsdExchangeRate = data['rate'];
-        //     this.getAccountLiquidity();
-        //     // console.log(this.ethUsdExchangeRate)
-        //   },
-        //   error => { console.log(error); });
     }
 
     public async getEnteredMarkets() {
