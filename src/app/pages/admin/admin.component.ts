@@ -52,9 +52,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const contractAddresses = await this.getContractAddresses();
     await this.initAllContracts(contractAddresses);
     await this.checkAdmin();
-    await this.tokenData.forEach(async (token) => {
-      this.initToken(token);
-    });
+    await this.fetchTokens();
+    // await this.tokenData.forEach(async (token) => {
+    //   this.initToken(token);
+    // });
     console.log(this.Contracts)
     console.log(this.tokenData)
 }
@@ -85,16 +86,38 @@ export class AdminComponent implements OnInit, AfterViewInit {
     return new ethers.Contract(contractAddress, abi, this.web3.getSigner());
   }
 
-  private async initToken(token) {
-    token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
-    token.tokenAddress = this.contractAddresses[token.name];
-    token.cTokenAddress = this.contractAddresses[`c${token.name}`];
-    token.cTokenName = `c${token.name}`;
-    const market = await this.Contracts.Comptroller.markets(token.cTokenAddress);
-    token.isListed = market.isListed;
-    token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+  public async fetchTokens() {
+    this.tokenData = [];
+    for (const key of Object.keys(this.contractAddresses)) {
+      const markets = await this.Contracts.Comptroller.markets(this.contractAddresses[key]);
+      // console.log(key, markets.isListed);
+      if (markets.isListed === true) {
+        let token = {} as any;
+        const cTokenContract = this.initContract(this.contractAddresses[key], CErc20Delegator.abi);
+        const cTokenName = await cTokenContract.name();
+        const underlyingTokenAddress = await cTokenContract.underlying();
+        const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+        token.name = await tokenContract.name();
 
+        token.tokenAddress = underlyingTokenAddress;
+        token.cTokenAddress = this.contractAddresses[key];
+        token.cTokenName = cTokenName;
+        token.isListed = true;
+        token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+        this.tokenData.push(token);
+      }
+    }
   }
+
+  // private async initToken(token) {
+  //   token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
+  //   token.tokenAddress = this.contractAddresses[token.name];
+  //   token.cTokenAddress = this.contractAddresses[`c${token.name}`];
+  //   token.cTokenName = `c${token.name}`;
+  //   const market = await this.Contracts.Comptroller.markets(token.cTokenAddress);
+  //   token.isListed = market.isListed;
+  //   token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+  // }
 
   public async getCollateralFactor(cTokenAddress) {
     const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
