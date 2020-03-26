@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { ethers } from 'ethers';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
+import { tempConstants } from '../../../environments/temp-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
+import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
@@ -24,6 +26,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public cTkCollateralAddress: any;
   public cTokenRatio: any;
   public isUserAdmin: Boolean = false;
+  public erc20AddressFull: any;
+  public collateralFacFull: any;
 
   constructor() {
     this.tokenData = [
@@ -165,5 +169,56 @@ export class AdminComponent implements OnInit, AfterViewInit {
       await this.web3.waitForTransaction(tx.hash);
       window.location.reload();
     } catch (error) { console.error(error); }
+  }
+
+  public async addCompleteMarket() {
+    if (this.erc20AddressFull === undefined || this.erc20AddressFull === null
+      || this.collateralFacFull === undefined || this.collateralFacFull === null) {
+      return;
+    }
+    try {
+      // get parameter data
+      const Erc20Token = this.initContract(this.erc20AddressFull, IVTDemoABI.abi);
+      const erc20Name = await Erc20Token.name();
+      const erc20Symbol = await Erc20Token.symbol();
+      const admin = await this.Contracts.Comptroller.admin();
+      const cTokenName = 'c' + erc20Name;
+      const cTokenSymbol = 'c' + erc20Symbol;
+
+      // deploy cToken
+      const abi = CErc20Immutable.abi;
+      const bytecode = CErc20Immutable.bytecode;
+      const factory = new ethers.ContractFactory(abi, bytecode, this.web3.getSigner());
+      const cTokenContract = await factory.deploy(this.erc20AddressFull, this.contractAddresses.Comptroller,
+        this.contractAddresses.DynamicInterestRateModel, 0.2 * (10 ** 9), cTokenName, cTokenSymbol, 8, admin);
+      // console.log(cTokenContract.address);
+      // console.log(cTokenContract.deployTransaction.hash);
+      await cTokenContract.deployed();
+
+      // call support market in comptroller
+      const tx = await this.Contracts.Comptroller._supportMarket(cTokenContract.address);
+      await this.web3.waitForTransaction(tx.hash);
+
+      // update collateral factor in comptroller
+      const colFac = parseFloat(this.collateralFacFull);
+      const tx2 = await this.Contracts.Comptroller._setCollateralFactor(cTokenContract.address, colFac * (10 ** 16));
+      await this.web3.waitForTransaction(tx2.hash);
+
+      // store cToken Address
+      const network = await this.web3.getNetwork();
+      tempConstants[network].push("a","b")
+
+      this.erc20AddressFull = null;
+      this.collateralFacFull = null;
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  public async temp() {
+    const network = await this.web3.getNetwork();
+    console.log(network.name, tempConstants[network.name]);
+    tempConstants[network.name].append("a","b")
+
   }
 }

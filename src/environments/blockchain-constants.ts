@@ -59,6 +59,7 @@ export const blockchainConstants = {
     cIVTDemo: '0xf9803A9cD573B91A666df6Fe448835AbeB83aC96',
     cDAI: '0xC7CaFa87D5FE46772858cB7576046547FF7Fa4b3',
     cETH: '0xfB52803e4f980eD55f74fc1B51bD626B1beC0759',
+    DynamicInterestRateModel: '0x1237ad42442d98e928fdda93bb1813b0721c59c4'
 
     // ScenComptrollerG1: '0x4E6185acaa7715F4d3555b095042059f6EbEF221',
     // CreditInterestRateModel: '0xAFb5822240359022721bD9347eCFD668DD5daFAf',
