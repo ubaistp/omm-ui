@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { ethers } from 'ethers';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
-import { tempConstants } from '../../../environments/temp-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
@@ -9,6 +8,7 @@ import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 // import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
+import Web3 from 'web3';
 @Component({
   selector: "",
   templateUrl: "./admin.component.html",
@@ -30,20 +30,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public collateralFacFull: any;
 
   constructor() {
-    this.tokenData = [
-      {
-        id: '0',
-        text: 'DAI',
-      },
-      {
-        id: '1',
-        text: 'IVTDemo',
-      }
-    ];
   }
+
   ngOnInit() {
     this.initializeMetaMask();
   }
+
   ngAfterViewInit() {
   }
   public async initializeMetaMask() {
@@ -55,6 +47,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
+    await this.fetchAllMarkets();
     await this.initAllContracts(contractAddresses);
     await this.checkAdmin();
     await this.fetchTokens();
@@ -78,6 +71,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     return contractAddresses;
   }
   private async initAllContracts(contractAddresses) {
+    console.log(this.contractAddresses)
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
     // this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
@@ -204,10 +198,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const tx2 = await this.Contracts.Comptroller._setCollateralFactor(cTokenContract.address, colFac * (10 ** 16));
       await this.web3.waitForTransaction(tx2.hash);
 
-      // store cToken Address
-      const network = await this.web3.getNetwork();
-      tempConstants[network].push("a","b")
-
       this.erc20AddressFull = null;
       this.collateralFacFull = null;
 
@@ -215,10 +205,20 @@ export class AdminComponent implements OnInit, AfterViewInit {
       console.error(error);
     }
   }
-  public async temp() {
-    const network = await this.web3.getNetwork();
-    console.log(network.name, tempConstants[network.name]);
-    tempConstants[network.name].append("a","b")
+  public async fetchAllMarkets() {
+    const myWeb3 = new Web3(Web3.givenProvider);
+    let abi;
+    abi = Comptroller.abi;
+    const web3Contract = new myWeb3.eth.Contract(abi, this.contractAddresses.Comptroller);
 
+    const result = await web3Contract.getPastEvents('MarketListed', {
+      fromBlock: 0,
+      toBlock: 'latest'
+    });
+    result.forEach(log => {
+      console.log(log.returnValues.cToken);
+
+    })
+    console.log(result);
   }
 }
