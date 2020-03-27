@@ -49,8 +49,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     await this.initAllContracts(contractAddresses);
     await this.checkAdmin();
     await this.fetchTokens(allListedTokens);
-    console.log(this.Contracts);
-    console.log(this.tokenData);
+    // console.log(this.Contracts);
+    // console.log(this.tokenData);
 }
 
   private async getContractAddresses() {
@@ -66,7 +66,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     return contractAddresses;
   }
   private async initAllContracts(contractAddresses) {
-    console.log(this.contractAddresses)
+    // console.log(this.contractAddresses)
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
   }

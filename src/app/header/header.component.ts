@@ -22,6 +22,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   }
   ngAfterViewInit() {
+    if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+      return;
+    }
     window['ethereum'].on('accountsChanged', () => {
       window.location.reload();
     });

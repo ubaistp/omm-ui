@@ -145,10 +145,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
 
     public async initializeMetaMask() {
-        // this.ethereum = await this.sharedService.ethereum;
-        // this.web3 = await this.sharedService.web3;
-        // console.log(this.web3)
-
         try {
             if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
                 setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
@@ -162,8 +158,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
                 $('#kovanNetModal').modal('show');
                 return;
             }
-            // await this.timeout(2000);
-            // setTimeout(this.setup, 10000);
             await this.setup();
 
         } catch (error) {
@@ -172,22 +166,15 @@ export class IndexComponent implements OnInit, AfterViewInit {
             } else { console.error(error); }
         }
     }
-    // public timeout(ms) {
-    //   return new Promise(resolve => setTimeout(resolve, ms));
-    // }
+
     public reloadPage() {
         window.location.reload();
     }
 
     public async setup() {
-        // this.userAddress = await this.sharedService.userAddress;
-        // console.log(this.sharedService)
-        // console.log(this.userAddress)
-        // const contractAddresses = await this.sharedService.contractAddresses;
         this.userAddress = await this.web3.getSigner().getAddress();
         const contractAddresses = await this.getContractAddresses();
         await this.initAllContracts(contractAddresses);
-        // console.log('2')
         await this.getExchangeRate();
         await this.tokenData.forEach(async (token) => {
             this.initToken(token);
