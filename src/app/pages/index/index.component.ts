@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
+import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
@@ -37,6 +38,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public amountInput: any;
     public sliderPercentage = 0;
     public netApy = 0;
+    public loadComplete = false;
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -58,22 +60,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public borrowBalance;
 
     constructor(private httpClient: HttpClient) {
-        this.tokenData = [
-            {
-                id: '0',
-                text: 'DAI',
-                apy: '50',
-                enabled: false,
-                approved: false
-            },
-            {
-                id: '1',
-                text: 'IVTDemo',
-                apy: '20',
-                enabled: false,
-                approved: false
-            }
-        ];
         this.initializeMetaMask();
     }
 
@@ -81,23 +67,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         // this.initializeMetaMask();
     }
     ngAfterViewInit() {
-        $('#supply').select2({
-            data: this.tokenData,
-            dropdownCssClass: 'bigdrop',
-            minimumResultsForSearch: Infinity,
-            templateResult: this.formatCountrySelection,
-            dropdownParent: $('#supplyGroup')
-        });
-        $('#borrow').select2({
-            data: this.tokenData,
-            dropdownCssClass: 'bigdrop',
-            minimumResultsForSearch: Infinity,
-            templateResult: this.formatCountrySelection,
-            dropdownParent: $('#borrowGroup')
-        });
-        $('.select2-main').one('select2:open', function (e) {
-            $('input.select2-search__field').prop('placeholder', 'Search');
-        });
         if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
             return;
         }
@@ -144,6 +113,28 @@ export class IndexComponent implements OnInit, AfterViewInit {
         }
     }
 
+    public setSelect2() {
+        setTimeout(() => {
+          $('#supply').select2({
+            data: this.tokenData,
+            dropdownCssClass: 'bigdrop',
+            minimumResultsForSearch: Infinity,
+            templateResult: this.formatCountrySelection,
+            dropdownParent: $('#supplyGroup')
+          });
+          $('#borrow').select2({
+              data: this.tokenData,
+              dropdownCssClass: 'bigdrop',
+              minimumResultsForSearch: Infinity,
+              templateResult: this.formatCountrySelection,
+              dropdownParent: $('#borrowGroup')
+          });
+          $('.select2-main').one('select2:open', function (e) {
+              $('input.select2-search__field').prop('placeholder', 'Search');
+          });
+        }, 1);
+    }
+
     public async initializeMetaMask() {
         try {
             if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
@@ -173,14 +164,23 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     public async setup() {
         this.userAddress = await this.web3.getSigner().getAddress();
+        $('#loadingModal').modal('show');
         const contractAddresses = await this.getContractAddresses();
+        const allListedTokens = await this.fetchAllMarkets();
         await this.initAllContracts(contractAddresses);
+        await this.fetchTokens(allListedTokens);
+        this.filterTable();
+        this.calcNetApy();
         await this.getExchangeRate();
-        await this.tokenData.forEach(async (token) => {
-            this.initToken(token);
-        });
+        // await this.tokenData.forEach(async (token) => {
+        //     this.initToken(token);
+        // });
         await this.getEnteredMarkets();
         await this.getAccountLiquidity();
+        // console.log(this.tokenData)
+        this.setSelect2();
+        this.loadComplete = true;
+        $('#loadingModal').modal('hide');
     }
 
     private async getContractAddresses() {
@@ -196,25 +196,78 @@ export class IndexComponent implements OnInit, AfterViewInit {
         return contractAddresses;
     }
 
-    private async initToken(token) {
-        token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
-        token.tokenAddress = this.contractAddresses[token.name];
-        token.cTokenAddress = this.contractAddresses[`c${token.name}`];
+    public async fetchAllMarkets() {
+      const myWeb3 = new Web3(Web3.givenProvider);
+      let abi;
+      abi = Comptroller.abi;
+      const web3Contract = new myWeb3.eth.Contract(abi, this.contractAddresses.Comptroller);
 
-        token.priceUsd = await this.getPrice(token.cTokenAddress);
-        token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-        const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
-        token.borrowApy = apy[0];
-        token.supplyApy = apy[1];
-        token.utilizationRate = parseFloat(await this.getUtilizationRate(this.Contracts[`c${token.name}`])) / 10 ** 18;
-        token.tokenBalance = parseFloat(await this.getUserTokenBalance(this.Contracts[token.name])) / 10 ** 18;
-        token.cTokenSupplyBalance = parseFloat(await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token));
-        token.tokenBorrowBalance = parseFloat(await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
-        token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
-        token.availableBorrow = await this.getAvailableBorrow(this.Contracts[`c${token.name}`]);
-        await this.getAccountLiquidity();
-        this.filterTable();
-        this.calcNetApy();
+      const result = await web3Contract.getPastEvents('MarketListed', {
+        fromBlock: 0,
+        toBlock: 'latest'
+      });
+      const allListedTokens = [];
+      result.forEach(log => {
+        allListedTokens.push(log.returnValues.cToken);
+      });
+      return allListedTokens;
+    }
+
+    public async fetchTokens(allListedTokens) {
+      this.tokenData = [];
+      for (const cTokenAddress of allListedTokens) {
+        const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
+        if (markets.isListed === true) {
+          let token = {} as any;
+          token.id = this.tokenData.length;
+          const cTokenContract = this.initContract(cTokenAddress, CErc20Delegator.abi);
+          const cTokenName = await cTokenContract.name();
+          const underlyingTokenAddress = await cTokenContract.underlying();
+          const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+          token.name = await tokenContract.name();
+          token.text = token.name;
+          token.tokenAddress = underlyingTokenAddress;
+          token.cTokenAddress = cTokenAddress;
+          token.cTokenName = cTokenName;
+          token.isListed = true;
+
+          token.priceUsd = await this.getPrice(token.cTokenAddress);
+          token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+
+          const apy = await this.getAPY(cTokenContract);
+          token.borrowApy = apy[0];
+          token.supplyApy = apy[1];
+          token.utilizationRate = parseFloat(await this.getUtilizationRate(cTokenContract)) / 10 ** 18;
+          token.tokenBalance = parseFloat(await this.getUserTokenBalance(tokenContract)) / 10 ** 18;
+          token.cTokenSupplyBalance = parseFloat(await this.getUserSupplyBalance(cTokenContract, token));
+          token.tokenBorrowBalance = parseFloat(await this.getUserBorrowBalance(cTokenContract, token)) / 10 ** 18;
+          token.approved = await this.checkApproved(tokenContract, token.cTokenAddress);
+          token.availableBorrow = await this.getAvailableBorrow(cTokenContract);
+          await this.getAccountLiquidity();
+          this.tokenData.push(token);
+        }
+      }
+    }
+
+    private async initToken(token) {
+        // token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
+        // token.tokenAddress = this.contractAddresses[token.name];
+        // token.cTokenAddress = this.contractAddresses[`c${token.name}`];
+
+        // token.priceUsd = await this.getPrice(token.cTokenAddress);
+        // token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+        // const apy = await this.getAPY(this.Contracts[`c${token.name}`]);
+        // token.borrowApy = apy[0];
+        // token.supplyApy = apy[1];
+        // token.utilizationRate = parseFloat(await this.getUtilizationRate(this.Contracts[`c${token.name}`])) / 10 ** 18;
+        // token.tokenBalance = parseFloat(await this.getUserTokenBalance(this.Contracts[token.name])) / 10 ** 18;
+        // token.cTokenSupplyBalance = parseFloat(await this.getUserSupplyBalance(this.Contracts[`c${token.name}`], token));
+        // token.tokenBorrowBalance = parseFloat(await this.getUserBorrowBalance(this.Contracts[`c${token.name}`], token)) / 10 ** 18;
+        // token.approved = await this.checkApproved(this.Contracts[token.name], token.cTokenAddress);
+        // token.availableBorrow = await this.getAvailableBorrow(this.Contracts[`c${token.name}`]);
+        // await this.getAccountLiquidity();
+        // this.filterTable();
+        // this.calcNetApy();
     }
 
     private async initAllContracts(contractAddresses) {
@@ -266,7 +319,11 @@ export class IndexComponent implements OnInit, AfterViewInit {
         const cash = await cTokenContract.getCash();
         const borrow = await cTokenContract.totalBorrows();
         const reserves = await cTokenContract.totalReserves();
-        const utilizationRate = (parseFloat(borrow) * (10 ** 18)) / (parseFloat(cash) + parseFloat(borrow) - parseFloat(reserves));
+        const divBy = (parseFloat(cash) + parseFloat(borrow) - parseFloat(reserves));
+        if (divBy === 0) {
+          return '0';
+        }
+        const utilizationRate = (parseFloat(borrow) * (10 ** 18)) / divBy;
         return utilizationRate.toString();
     }
 

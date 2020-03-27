@@ -7,6 +7,9 @@ import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+
+declare var $: any;
+
 @Component({
   selector: '',
   templateUrl: './admin.component.html',
@@ -44,11 +47,13 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
+    $('#loadingModal').modal('show');
     const contractAddresses = await this.getContractAddresses();
     const allListedTokens = await this.fetchAllMarkets();
     await this.initAllContracts(contractAddresses);
     await this.checkAdmin();
     await this.fetchTokens(allListedTokens);
+    $('#loadingModal').modal('hide');
     // console.log(this.Contracts);
     // console.log(this.tokenData);
 }

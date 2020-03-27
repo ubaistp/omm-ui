@@ -246,7 +246,7 @@
     </section>
 </div>
 
-<div class="modal fade" id="supplyModal" tabindex="-1" role="dialog" aria-labelledby="supplyModalLabel"
+<div *ngIf="loadComplete" class="modal fade" id="supplyModal" tabindex="-1" role="dialog" aria-labelledby="supplyModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content" style="background-color: #E6EDF6;">
@@ -364,7 +364,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="borrowModal" tabindex="-1" role="dialog" aria-labelledby="borrowModalLabel"
+<div *ngIf="loadComplete" class="modal fade" id="borrowModal" tabindex="-1" role="dialog" aria-labelledby="borrowModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content" style="background-color: #E6EDF6;">
@@ -515,6 +515,20 @@
                     <h2>Metamask Connection Denied!</h2>
                     <p class="lead">Please Accept Metamask Connection Request.</p>
                     <button class="btn btn-primary" (click)="reloadPage()">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loadingModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="py30">
+                    <h2>Please Wait...</h2>
+                    <!-- <p class="lead">Please Accept Metamask Connection Request.</p>
+                    <button class="btn btn-primary" (click)="reloadPage()">Try Again</button> -->
                 </div>
             </div>
         </div>
