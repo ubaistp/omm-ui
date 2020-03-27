@@ -1,17 +1,15 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { ethers } from 'ethers';
+import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
-import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
-// import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
-import Web3 from 'web3';
 @Component({
-  selector: "",
-  templateUrl: "./admin.component.html",
+  selector: '',
+  templateUrl: './admin.component.html',
   encapsulation: ViewEncapsulation.None,
 })
 export class AdminComponent implements OnInit, AfterViewInit {
@@ -25,7 +23,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public cTokenAddress: any;
   public cTkCollateralAddress: any;
   public cTokenRatio: any;
-  public isUserAdmin: Boolean = false;
+  public isUserAdmin = false;
   public erc20AddressFull: any;
   public collateralFacFull: any;
 
@@ -47,15 +45,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
-    await this.fetchAllMarkets();
+    const allListedTokens = await this.fetchAllMarkets();
     await this.initAllContracts(contractAddresses);
     await this.checkAdmin();
-    await this.fetchTokens();
-    // await this.tokenData.forEach(async (token) => {
-    //   this.initToken(token);
-    // });
-    console.log(this.Contracts)
-    console.log(this.tokenData)
+    await this.fetchTokens(allListedTokens);
+    console.log(this.Contracts);
+    console.log(this.tokenData);
 }
 
   private async getContractAddresses() {
@@ -74,31 +69,26 @@ export class AdminComponent implements OnInit, AfterViewInit {
     console.log(this.contractAddresses)
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
-    // this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
-    this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
-    this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20.abi);
-    this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
-    this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
   }
 
   private initContract(contractAddress, abi) {
     return new ethers.Contract(contractAddress, abi, this.web3.getSigner());
   }
 
-  public async fetchTokens() {
+  public async fetchTokens(allListedTokens) {
     this.tokenData = [];
-    for (const key of Object.keys(this.contractAddresses)) {
-      const markets = await this.Contracts.Comptroller.markets(this.contractAddresses[key]);
+    for (const cTokenAddress of allListedTokens) {
+      const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
       if (markets.isListed === true) {
         let token = {} as any;
-        const cTokenContract = this.initContract(this.contractAddresses[key], CErc20Delegator.abi);
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Delegator.abi);
         const cTokenName = await cTokenContract.name();
         const underlyingTokenAddress = await cTokenContract.underlying();
         const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
         token.name = await tokenContract.name();
 
         token.tokenAddress = underlyingTokenAddress;
-        token.cTokenAddress = this.contractAddresses[key];
+        token.cTokenAddress = cTokenAddress;
         token.cTokenName = cTokenName;
         token.isListed = true;
         token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
@@ -106,16 +96,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
     }
   }
-
-  // private async initToken(token) {
-  //   token.text === 'DAI' ? token.name = 'DAI' : token.name = 'IVTDemo';
-  //   token.tokenAddress = this.contractAddresses[token.name];
-  //   token.cTokenAddress = this.contractAddresses[`c${token.name}`];
-  //   token.cTokenName = `c${token.name}`;
-  //   const market = await this.Contracts.Comptroller.markets(token.cTokenAddress);
-  //   token.isListed = market.isListed;
-  //   token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-  // }
 
   public async getCollateralFactor(cTokenAddress) {
     const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
@@ -153,13 +133,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
     if (this.cTokenRatio === undefined || this.cTokenRatio === null) {
       return;
     }
-    let colFac = parseFloat(this.cTokenRatio);
-    if (colFac <= 0 || colFac >= 100) {
+    const colFac = parseFloat(this.cTokenRatio);
+    if (colFac <= 0) {
       console.log('invalid');
       return;
     }
     try {
-      const tx = await this.Contracts.Comptroller._setCollateralFactor(this.cTkCollateralAddress, colFac * (10 ** 16));
+      const colFacStr = (colFac * (10 ** 16)).toString();
+      const tx = await this.Contracts.Comptroller._setCollateralFactor(this.cTkCollateralAddress, colFacStr);
       await this.web3.waitForTransaction(tx.hash);
       window.location.reload();
     } catch (error) { console.error(error); }
@@ -168,6 +149,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public async addCompleteMarket() {
     if (this.erc20AddressFull === undefined || this.erc20AddressFull === null
       || this.collateralFacFull === undefined || this.collateralFacFull === null) {
+      return;
+    }
+    if (parseFloat(this.collateralFacFull) <= 0) {
+      console.log('invalid');
       return;
     }
     try {
@@ -185,8 +170,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const factory = new ethers.ContractFactory(abi, bytecode, this.web3.getSigner());
       const cTokenContract = await factory.deploy(this.erc20AddressFull, this.contractAddresses.Comptroller,
         this.contractAddresses.DynamicInterestRateModel, 0.2 * (10 ** 9), cTokenName, cTokenSymbol, 8, admin);
-      // console.log(cTokenContract.address);
-      // console.log(cTokenContract.deployTransaction.hash);
       await cTokenContract.deployed();
 
       // call support market in comptroller
@@ -195,12 +178,13 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
       // update collateral factor in comptroller
       const colFac = parseFloat(this.collateralFacFull);
-      const tx2 = await this.Contracts.Comptroller._setCollateralFactor(cTokenContract.address, colFac * (10 ** 16));
+      const colFacStr = (colFac * (10 ** 16)).toString();
+      const tx2 = await this.Contracts.Comptroller._setCollateralFactor(cTokenContract.address, colFacStr);
       await this.web3.waitForTransaction(tx2.hash);
 
       this.erc20AddressFull = null;
       this.collateralFacFull = null;
-
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }
@@ -215,10 +199,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       fromBlock: 0,
       toBlock: 'latest'
     });
+    const allListedTokens = [];
     result.forEach(log => {
-      console.log(log.returnValues.cToken);
-
-    })
-    console.log(result);
+      allListedTokens.push(log.returnValues.cToken);
+    });
+    return allListedTokens;
   }
 }
