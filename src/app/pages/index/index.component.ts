@@ -6,6 +6,7 @@ import { blockchainConstants } from '../../../environments/blockchain-constants'
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
+import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
@@ -220,6 +221,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
         if (markets.isListed === true) {
           let token = {} as any;
           token.id = this.tokenData.length;
+          token.enabled = false;
+          token.approved = false;
           const cTokenContract = this.initContract(cTokenAddress, CErc20Delegator.abi);
           const cTokenName = await cTokenContract.name();
           const underlyingTokenAddress = await cTokenContract.underlying();
@@ -445,8 +448,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     public async erc20Approve() {
         const amountStr = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-        const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        const tokenContract = this.Contracts[tokenName];
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const tokenContract = this.initContract(tokenAddress, IVTDemoABI.abi);
         const tx = await tokenContract.approve(this.tokenData[this.selectedTokenIndex].cTokenAddress, amountStr);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
@@ -466,42 +469,52 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
 
     public async mint() {
-        const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        const cTokenContract = this.Contracts[`c${tokenName}`];
+        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
+        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
         const tx = await cTokenContract.mint(ethers.utils.parseEther(this.amountInput));
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async withdrawUnderlying() {
-        const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        const cTokenContract = this.Contracts[`c${tokenName}`];
+        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
+        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
         const tx = await cTokenContract.redeemUnderlying(ethers.utils.parseEther(this.amountInput));
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async borrow() {
-        const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        const cTokenContract = this.Contracts[`c${tokenName}`];
+        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
+        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
         const tx = await cTokenContract.borrow(ethers.utils.parseEther(this.amountInput), { gasLimit: 400000 });
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async repayBorrow() {
-        const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        const cTokenContract = this.Contracts[`c${tokenName}`];
+        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
+        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
         const tx = await cTokenContract.repayBorrow(ethers.utils.parseEther(this.amountInput), { gasLimit: 350000 });
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async faucet() {
-        const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        const tokenAddress = this.contractAddresses[tokenName];
-        const IvtContract = this.initContract(tokenAddress, IVTDemoABI.abi);
-        const tx = await IvtContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'));
+        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
+        // const tokenAddress = this.contractAddresses[tokenName];
+        // const IvtContract = this.initContract(tokenAddress, IVTDemoABI.abi);
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const tokenContract = this.initContract(tokenAddress, IVTDemoABI.abi);
+        const tx = await tokenContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'));
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
