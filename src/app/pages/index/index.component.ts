@@ -12,6 +12,7 @@ import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
+declare var cApp: any;
 
 @Component({
     selector: '',
@@ -163,7 +164,12 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     public async setup() {
         this.userAddress = await this.web3.getSigner().getAddress();
-        $('#loadingModal').modal('show');
+        cApp.blockPage({
+          overlayColor: '#000000',
+          state: 'secondary',
+          message: 'Loading App...'
+        });
+        // $('#loadingModal').modal('show');
         const contractAddresses = await this.getContractAddresses();
         const allListedTokens = await this.fetchAllMarkets();
         this.initAllContracts(contractAddresses);
@@ -184,7 +190,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
             this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
         }
         this.loadComplete = true;
-        $('#loadingModal').modal('hide');
+        cApp.unblockPage();
+        // $('#loadingModal').modal('hide');
     }
 
     private async getContractAddresses() {

@@ -9,6 +9,7 @@ import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 // import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
+declare var cApp: any;
 
 @Component({
   selector: '',
@@ -48,7 +49,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async setup() {
-    $('#loadingModal').modal('show');
+    cApp.blockPage({
+      overlayColor: '#000000',
+      state: 'secondary',
+      message: 'Please Wait...'
+    });
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     const allListedTokens = await this.fetchAllMarkets();
@@ -63,7 +68,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     if (this.callCount < this.tokenData.length) {
       return;
     }
-    setTimeout(() => { $('#loadingModal').modal('hide'); }, 300);
+    cApp.unblockPage();
   }
 
   private async getContractAddresses() {

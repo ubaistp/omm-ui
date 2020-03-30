@@ -36,7 +36,9 @@
               "./node_modules/jquery/dist/jquery.min.js",
               "./src/assets/plugins/popper/popper.min.js",
               "./src/assets/plugins/select2/select2.full.min.js",
-              "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./src/assets/plugins/blockUI/jquery.blockUI.js",
+              "./src/assets/base/scripts.bundle.js"
             ]
           },
           "configurations": {

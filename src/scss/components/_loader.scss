@@ -1,0 +1,121 @@
+.loader {
+    position: relative;
+    &::before {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-top: 2px solid rgba($color: $color-text, $alpha: 0.6);
+        border-right: 2px solid transparent;
+        border-radius: 50%;
+        width: 1.4rem;
+        height: 1.4rem;
+        margin-top: -0.7rem;
+        margin-left: -0.7rem;
+        border-top-width: 2px;
+        border-right-width: 2px;
+        animation: rotate 0.6s linear infinite;
+    }
+    &.loader--sm::before {
+        width: 1rem;
+        height: 1rem;
+        margin-top: -0.5rem;
+        margin-left: -0.5rem;
+        border-top-width: 1px;
+        border-right-width: 1px;
+    }
+    &.loader--lg::before {
+        width: 2rem;
+        height: 2rem;
+        margin-top: -1rem;
+        margin-left: -1rem;
+        border-top-width: 3px;
+        border-right-width: 3px;
+    }
+    &.loader--right {
+        &:before {
+            left: auto;
+            right: 0.7rem;
+        }
+        &.loader--lg:before {
+            right: 1rem;
+        }
+        &.loader--sm:before {
+            right: 0.5rem;
+        }
+        &.btn {
+            padding-right: 3.35rem;
+            &.loader--lg {
+                padding-right: 4.75rem;
+            }
+            &.loader--sm {
+                padding-right: 2.25rem;
+            }
+        }
+    }
+    &.loader--left {
+        &:before {
+            left: 1.4rem;
+        }
+        &.loader--lg:before {
+            left: 2rem;
+        }
+        &.loader--sm:before {
+            left: 1rem;
+        }
+        &.btn {
+            padding-left: 3.35rem;
+            &.loader--lg {
+                padding-left: 4.75rem;
+            }
+            &.loader--sm {
+                padding-left: 2.25rem;
+            }
+        }
+    }
+    &.loader--primary::before,
+    &.loader--success::before {
+        border-top-color: $color-brand;
+    }
+    &.loader--secondary::before,
+    &.loader--info::before {
+        border-top-color: $color-success;
+    }
+    &.loader--danger::before {
+        border-top-color: $color-danger;
+    }
+    &.loader--warning::before {
+        border-top-color: $color-warning;
+    }
+    &.loader--light::before {
+        border-top-color: #fff;
+    }
+}
+
+.blockui {
+    background-color: $body-color;
+    border-radius: $card-radius;
+    display: table;
+    table-layout: fixed;
+    span {
+      display: table-cell;
+      vertical-align: middle;
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba($color: $color-text, $alpha: 1);
+      .loader {
+        margin-right: 10px;
+      }
+    }
+  }
+
+@keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
