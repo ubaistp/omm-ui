@@ -40,6 +40,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public sliderPercentage = 0;
     public netApy = 0;
     public loadComplete = false;
+    public callCount = 0;
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -109,9 +110,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.tokenData.filter(el => el["borrowBalance"] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)))
         this.borrowBalance = 0
         this.tokenData.filter(el => this.borrowBalance = this.borrowBalance + el.borrowBalance);
-        if (this.accountLiquidity !== 0) {
-            this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
-        }
     }
 
     public setSelect2() {
@@ -169,23 +167,22 @@ export class IndexComponent implements OnInit, AfterViewInit {
         const contractAddresses = await this.getContractAddresses();
         const allListedTokens = await this.fetchAllMarkets();
         this.initAllContracts(contractAddresses);
-        await this.fetchTokens(allListedTokens);
-        // this.filterTable();
-        // this.calcNetApy();
-        // await this.getEnteredMarkets();
-        // await this.getAccountLiquidity();
-        console.log(this.tokenData);
-        // this.setSelect2();
-        // this.loadComplete = true;
-        // $('#loadingModal').modal('hide');
+        this.fetchTokens(allListedTokens);
+        // console.log(this.tokenData);
     }
 
     public async afterInitToken() {
-        this.filterTable();
-        this.calcNetApy();
+        if (this.callCount < this.tokenData.length) {
+          return;
+        }
         await this.getEnteredMarkets();
+        this.filterTable();
         await this.getAccountLiquidity();
+        this.calcNetApy();
         this.setSelect2();
+        if (this.accountLiquidity !== 0) {
+            this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
+        }
         this.loadComplete = true;
         $('#loadingModal').modal('hide');
     }
@@ -220,10 +217,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
       return allListedTokens;
     }
 
-    public async fetchTokens(allListedTokens) {
+    public fetchTokens(allListedTokens) {
       this.tokenData = [];
       for (const cTokenAddress of allListedTokens) {
-        let token = {} as any;
+        const token = {} as any;
         token.id = this.tokenData.length;
         token.enabled = false;
         token.approved = false;
@@ -231,8 +228,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.initToken(token);
         this.tokenData.push(token);
       }
-      console.log(this.tokenData)
-      await this.getAccountLiquidity();
     }
 
     private async initToken(token) {
@@ -243,13 +238,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
         token.name = await tokenContract.name();
         token.text = token.name;
         token.tokenAddress = underlyingTokenAddress;
-        // token.cTokenAddress = cTokenAddress;
         token.cTokenName = cTokenName;
         token.isListed = true;
-
         token.priceUsd = await this.getPrice(token.cTokenAddress);
         token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-
         const apy = await this.getAPY(cTokenContract);
         token.borrowApy = apy[0];
         token.supplyApy = apy[1];
@@ -259,6 +251,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         token.tokenBorrowBalance = parseFloat(await this.getUserBorrowBalance(cTokenContract, token)) / 10 ** 18;
         token.approved = await this.checkApproved(tokenContract, token.cTokenAddress);
         token.availableBorrow = await this.getAvailableBorrow(cTokenContract);
+        this.callCount++;
         this.afterInitToken();
     }
 
