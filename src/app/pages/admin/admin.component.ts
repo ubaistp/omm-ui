@@ -6,7 +6,7 @@ import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
-import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+// import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
 
@@ -29,6 +29,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public isUserAdmin = false;
   public erc20AddressFull: any;
   public collateralFacFull: any;
+  public callCount = 0;
 
   constructor() {
   }
@@ -39,6 +40,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
   }
+
   public async initializeMetaMask() {
     this.ethereum = window['ethereum'];
     this.web3 = new ethers.providers.Web3Provider(this.ethereum);
@@ -46,17 +48,23 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async setup() {
-    this.userAddress = await this.web3.getSigner().getAddress();
     $('#loadingModal').modal('show');
+    this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
     const allListedTokens = await this.fetchAllMarkets();
-    await this.initAllContracts(contractAddresses);
-    await this.checkAdmin();
-    await this.fetchTokens(allListedTokens);
-    $('#loadingModal').modal('hide');
+    this.initAllContracts(contractAddresses);
+    this.checkAdmin();
+    this.fetchTokens(allListedTokens);
     // console.log(this.Contracts);
     // console.log(this.tokenData);
-}
+  }
+
+  public async afterInitToken() {
+    if (this.callCount < this.tokenData.length) {
+      return;
+    }
+    setTimeout(() => { $('#loadingModal').modal('hide'); }, 300);
+  }
 
   private async getContractAddresses() {
     let contractAddresses = {};
@@ -70,8 +78,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.contractAddresses = contractAddresses;
     return contractAddresses;
   }
-  private async initAllContracts(contractAddresses) {
-    // console.log(this.contractAddresses)
+
+  private initAllContracts(contractAddresses) {
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
   }
@@ -83,24 +91,26 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public async fetchTokens(allListedTokens) {
     this.tokenData = [];
     for (const cTokenAddress of allListedTokens) {
-      const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
-      if (markets.isListed === true) {
-        let token = {} as any;
-        const cTokenContract = this.initContract(cTokenAddress, CErc20Delegator.abi);
-        const cTokenName = await cTokenContract.name();
-        const underlyingTokenAddress = await cTokenContract.underlying();
-        const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
-        token.name = await tokenContract.name();
-
-        token.tokenAddress = underlyingTokenAddress;
-        token.cTokenAddress = cTokenAddress;
-        token.cTokenName = cTokenName;
-        token.isListed = true;
-        token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-        this.tokenData.push(token);
-      }
+      const token = {} as any;
+      token.cTokenAddress = cTokenAddress;
+      this.initToken(token);
+      this.tokenData.push(token);
     }
   }
+
+  private async initToken(token) {
+    const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
+    const cTokenName = await cTokenContract.name();
+    const underlyingTokenAddress = await cTokenContract.underlying();
+    const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+    token.name = await tokenContract.name();
+    token.tokenAddress = underlyingTokenAddress;
+    token.cTokenName = cTokenName;
+    token.isListed = true;
+    token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+    this.callCount++;
+    this.afterInitToken();
+}
 
   public async getCollateralFactor(cTokenAddress) {
     const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
