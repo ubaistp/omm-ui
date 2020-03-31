@@ -72,16 +72,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   private async getContractAddresses() {
-    let contractAddresses = {};
-    this.contractAddresses = {};
-    const network = await this.web3.getNetwork();
-    if (network.name === 'homestead') {
-        contractAddresses = blockchainConstants.mainnet;
-    } else {
-        contractAddresses = blockchainConstants[network.name];
-    }
-    this.contractAddresses = contractAddresses;
-    return contractAddresses;
+      let contractAddresses = {};
+      this.contractAddresses = {};
+      const network = await this.web3.getNetwork();
+      if (network.name === 'homestead') {
+          contractAddresses = blockchainConstants.mainnet;
+      } else {
+          contractAddresses = blockchainConstants[network.name];
+      }
+      this.contractAddresses = contractAddresses;
+      return contractAddresses;
   }
 
   private initAllContracts(contractAddresses) {
