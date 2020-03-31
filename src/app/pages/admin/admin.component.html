@@ -15,29 +15,37 @@
                         <div class="portlet__body py0 px0">
                             <div class="asset-list">
                                 <div class="labels row">
-                                    <div class="col-sm-4 col-4">
+                                    <div class="col-sm-2 col-4">
                                         <label>Token Name</label>
                                     </div>
                                     <div class="col-sm-4 col-4 text-right">
-                                        <label>Address</label>
+                                        <label>ERC20 Address</label>
                                     </div>
                                     <div class="col-sm-4 col-4 text-right">
+                                      <label>CToken Address</label>
+                                    </div>
+                                    <div class="col-sm-2 col-4 text-right">
                                         <label>Collateralization Ratio</label>
                                     </div>
                                 </div>
                                 <div class="assets">
                                     <a class="asset" *ngFor="let token of tokenData; let i = index">
-                                        <div class="col-4 col-sm-4">
+                                        <div class="col-4 col-sm-3">
                                             <div class="balance">
                                                 {{ token.name }}
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-4 text-right">
+                                        <div class="col-4 col-sm-3 text-right">
                                             <div class="balance">
-                                                <div title="address">{{ token.cTokenAddress }}</div>
+                                                <div title="address">{{ token.tokenAddress }}</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-4 text-right">
+                                        <div class="col-4 col-sm-3 text-right">
+                                          <div class="balance">
+                                              <div title="address">{{ token.cTokenAddress }}</div>
+                                          </div>
+                                        </div>
+                                        <div class="col-4 col-sm-3 text-right">
                                           {{ token.collateralFactor }}
                                         </div>
                                     </a>
