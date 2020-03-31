@@ -158,6 +158,25 @@ label {
 table {
   width: 100%;
   background: $object-color !important;
+  thead{
+    tr{
+      th{
+        color: rgba($color: $color-text, $alpha: 0.8);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+    }
+  }
+  tbody{
+    tr{
+      td{
+        text-transform: capitalize;
+        letter-spacing: 0;
+        padding: 1rem;
+        font-weight: 500;
+      }
+    }
+  }
 }
 .mat-slide-toggle {
   &.mat-checked:not(.mat-disabled) {
@@ -181,6 +200,9 @@ table {
   }
 }
 .asset-list {
+  &:not(:first-child){
+    border-top: 3px solid rgba($color: $color-dark, $alpha: 0.1);
+  }
   [class*="col"] {
     padding: 0;
   }

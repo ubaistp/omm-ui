@@ -12,45 +12,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="portlet__body py0 px0">
-                            <div class="asset-list">
-                                <div class="labels row">
-                                    <div class="col-sm-2 col-4">
-                                        <label>Token Name</label>
-                                    </div>
-                                    <div class="col-sm-4 col-4 text-right">
-                                        <label>ERC20 Address</label>
-                                    </div>
-                                    <div class="col-sm-4 col-4 text-right">
-                                      <label>CToken Address</label>
-                                    </div>
-                                    <div class="col-sm-2 col-4 text-right">
-                                        <label>Collateralization Ratio</label>
-                                    </div>
-                                </div>
-                                <div class="assets">
-                                    <a class="asset" *ngFor="let token of tokenData; let i = index">
-                                        <div class="col-4 col-sm-3">
-                                            <div class="balance">
-                                                {{ token.name }}
-                                            </div>
-                                        </div>
-                                        <div class="col-4 col-sm-3 text-right">
-                                            <div class="balance">
-                                                <div title="address">{{ token.tokenAddress }}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4 col-sm-3 text-right">
-                                          <div class="balance">
-                                              <div title="address">{{ token.cTokenAddress }}</div>
-                                          </div>
-                                        </div>
-                                        <div class="col-4 col-sm-3 text-right">
-                                          {{ token.collateralFactor }}
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="portlet__body py0 px0" style="overflow-x: auto;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Token Name</th>
+                                        <th class="text-right">ERC20 Address</th>
+                                        <th class="text-right">CToken Address</th>
+                                        <th class="text-right">Collateralization Ratio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let token of tokenData; let i = index">
+                                        <td>{{ token.name }}</td>
+                                        <td class="text-right">{{ token.tokenAddress }}</td>
+                                        <td class="text-right">{{ token.cTokenAddress }}</td>
+                                        <td class="text-right">{{ token.collateralFactor }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -65,24 +45,31 @@
                           </div>
                       </div>
                       <div class="portlet__body">
-                          <form>
-                              <div class="form-group row">
-                                  <label class="col-md-4">ERC20 Token Address</label>
-                                  <div class="col-md-8">
-                                    <input type="text" class="form-control" [(ngModel)]="erc20AddressFull" name="erc20AddressFull">
-                                  </div>
+                          <div class="row">
+                              <div class="col-lg-8 offset-lg-2">
+                                  <form>
+                                      <div class="form-group row">
+                                          <label class="col-md-4">ERC20 Token Address</label>
+                                          <div class="col-md-8">
+                                            <input type="text" class="form-control" [(ngModel)]="erc20AddressFull" name="erc20AddressFull">
+                                          </div>
+                                      </div>
+                                      <div class="form-group row">
+                                          <label class="col-md-4">Collateralization Ratio</label>
+                                          <div class="col-md-8">
+                                            <input type="text" class="form-control" [(ngModel)]="collateralFacFull" name="collateralFacFull">
+                                          </div>
+                                      </div>
+                                      <div class="mt30 form-group row">
+                                          <div class="col-md-4"></div>
+                                          <div class="col-md-8">
+                                              <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
+                                                (click)="addCompleteMarket()">Submit</button>
+                                          </div>
+                                      </div>
+                                  </form>
                               </div>
-                              <div class="form-group row">
-                                  <label class="col-md-4">Collateralization Ratio</label>
-                                  <div class="col-md-8">
-                                    <input type="text" class="form-control" [(ngModel)]="collateralFacFull" name="collateralFacFull">
-                                  </div>
-                              </div>
-                              <div class="mt30 form-group row">
-                                  <button class="btn btn-lg btn-full btn-secondary col-md-4" [disabled]="!isUserAdmin"
-                                    (click)="addCompleteMarket()">Submit</button>
-                              </div>
-                          </form>
+                          </div>
                       </div>
                   </div>
                 </div>
