@@ -89,50 +89,60 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.borrowData = this.tokenData;
         this.supplyTokenData = this.tokenData;
         this.borrowTokenData = this.tokenData;
-        this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0)
+        this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
         if (this.supplyData.length > 0) {
-            this.dataObj["showSupply"] = true;
+            this.dataObj['showSupply'] = true;
         }
-        this.borrowData = this.borrowData.filter(el => el.tokenBorrowBalance > 0)
+        this.borrowData = this.borrowData.filter(el => el.tokenBorrowBalance > 0);
         if (this.borrowData.length > 0) {
-            this.dataObj["showBorrow"] = true;
+            this.dataObj['showBorrow'] = true;
         }
-        this.supplyTokenData = this.supplyTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0)
+        this.supplyTokenData = this.supplyTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0);
         if (this.supplyTokenData.length > 0) {
-            this.dataObj["showSupplyToken"] = true;
+            this.dataObj['showSupplyToken'] = true;
         }
-        this.borrowTokenData = this.borrowTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0)
+        this.borrowTokenData = this.borrowTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0);
         if (this.borrowTokenData.length > 0) {
-            this.dataObj["showBorrowToken"] = true;
+            this.dataObj['showBorrowToken'] = true;
         }
-        this.tokenData.filter(el => el["supplyBalance"] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)))
-        this.supplyBalance = 0
-        this.tokenData.filter(el => this.supplyBalance = this.supplyBalance + el.supplyBalance)
-        this.tokenData.filter(el => el["borrowBalance"] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)))
-        this.borrowBalance = 0
-        this.tokenData.filter(el => this.borrowBalance = this.borrowBalance + el.borrowBalance);
+
+        this.tokenData.filter(el => el['supplyBalance'] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)));
+        this.supplyBalance = 0;
+        this.tokenData.filter(el => {
+          if (parseFloat(el.supplyBalance) >= 0) {
+            this.supplyBalance = this.supplyBalance + el.supplyBalance;
+          }
+        });
+
+        this.tokenData.filter(el => el['borrowBalance'] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)));
+        this.borrowBalance = 0;
+        this.tokenData.filter(el => {
+          if (parseFloat(el.borrowBalance) >= 0) {
+            this.borrowBalance = this.borrowBalance + el.borrowBalance;
+          }
+        });
     }
 
     public setSelect2() {
-        setTimeout(() => {
-          $('#supply').select2({
+        $('#supply').select2({
+          data: this.tokenData,
+          dropdownCssClass: 'bigdrop',
+          minimumResultsForSearch: Infinity,
+          templateResult: this.formatCountrySelection,
+          dropdownParent: $('#supplyGroup')
+        });
+        $('#borrow').select2({
             data: this.tokenData,
             dropdownCssClass: 'bigdrop',
             minimumResultsForSearch: Infinity,
             templateResult: this.formatCountrySelection,
-            dropdownParent: $('#supplyGroup')
-          });
-          $('#borrow').select2({
-              data: this.tokenData,
-              dropdownCssClass: 'bigdrop',
-              minimumResultsForSearch: Infinity,
-              templateResult: this.formatCountrySelection,
-              dropdownParent: $('#borrowGroup')
-          });
-          $('.select2-main').one('select2:open', function (e) {
-              $('input.select2-search__field').prop('placeholder', 'Search');
-          });
-        }, 1);
+            dropdownParent: $('#borrowGroup')
+        });
+        $('.select2-main').one('select2:open', function (e) {
+            $('input.select2-search__field').prop('placeholder', 'Search');
+        });
+        // setTimeout(() => {
+        // }, 1);
     }
 
     public async initializeMetaMask() {
@@ -169,7 +179,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
           state: 'secondary',
           message: 'Loading App...'
         });
-        // $('#loadingModal').modal('show');
         const contractAddresses = await this.getContractAddresses();
         const allListedTokens = await this.fetchAllMarkets();
         this.initAllContracts(contractAddresses);
@@ -299,8 +308,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
         // token.tokenBorrowBalance = parseFloat(await this.getUserBorrowBalance(cTokenContract, token)) / 10 ** 18;
         // token.approved = await this.checkApproved(tokenContract, token.cTokenAddress);
         // token.availableBorrow = await this.getAvailableBorrow(cTokenContract);
-        this.callCount++;
-        this.afterInitToken();
+        // this.callCount++;
+        // this.afterInitToken();
     }
 
     private initAllContracts(contractAddresses) {
@@ -420,7 +429,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
     public toDecimal(val, decimal) {
         if (val === undefined || val === null) {
-            return;
+            return 0;
         }
         val = val.toString();
         val = parseFloat(val);

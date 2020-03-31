@@ -65,9 +65,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async afterInitToken() {
-    if (this.callCount < this.tokenData.length) {
-      return;
-    }
+    // if (this.callCount < this.tokenData.length) {
+    //   return;
+    // }
     cApp.unblockPage();
   }
 
@@ -104,17 +104,32 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   private async initToken(token) {
-    const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
-    const cTokenName = await cTokenContract.name();
-    const underlyingTokenAddress = await cTokenContract.underlying();
-    const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
-    token.name = await tokenContract.name();
-    token.tokenAddress = underlyingTokenAddress;
-    token.cTokenName = cTokenName;
     token.isListed = true;
-    token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-    this.callCount++;
-    this.afterInitToken();
+    const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
+    cTokenContract.name().then(cTokenName => {
+      token.cTokenName = cTokenName;
+    });
+    cTokenContract.underlying().then(underlyingTokenAddress => {
+      token.tokenAddress = underlyingTokenAddress;
+      const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+      tokenContract.name().then(name => {
+        token.name = name;
+        this.afterInitToken();
+      });
+    });
+    this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
+      token.collateralFactor = collateralFactor;
+    });
+    // const cTokenName = await cTokenContract.name();
+    // const underlyingTokenAddress = await cTokenContract.underlying();
+    // const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+    // token.name = await tokenContract.name();
+    // token.tokenAddress = underlyingTokenAddress;
+    // token.cTokenName = cTokenName;
+    // token.isListed = true;
+    // token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
+    // this.callCount++;
+    // this.afterInitToken();
 }
 
   public async getCollateralFactor(cTokenAddress) {
