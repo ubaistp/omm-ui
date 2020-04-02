@@ -45,8 +45,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
-    public typeViewSupply = 'withdraw';
-    public typeViewBorrow = 'repay';
+    public typeViewSupply = 'supply';
+    public typeViewBorrow = 'borrow';
     public canvas: any;
     public ctx: any;
     public supplyData = [];
