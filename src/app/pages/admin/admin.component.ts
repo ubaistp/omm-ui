@@ -59,6 +59,13 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const allListedTokens = await this.fetchAllMarkets();
     this.initAllContracts(contractAddresses);
     this.checkAdmin();
+
+    // In case there are no markets
+    if (allListedTokens.length === 0 ) {
+      this.afterInitToken();
+      return;
+    }
+
     this.fetchTokens(allListedTokens);
     // console.log(this.Contracts);
     // console.log(this.tokenData);

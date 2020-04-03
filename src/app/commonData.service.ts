@@ -40,9 +40,9 @@ export class SharedService {
 
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
-    const contractAddresses = await this.getContractAddresses();
+    // const contractAddresses = await this.getContractAddresses();
     // console.log(this.contractAddresses)
-    this.initAllContracts(contractAddresses);
+    // this.initAllContracts(contractAddresses);
     // console.log(this.userAddress, this.Contracts)
     // await this.getExchangeRate();
     // await this.tokenData.forEach(async (token) => {

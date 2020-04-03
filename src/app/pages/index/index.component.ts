@@ -182,6 +182,12 @@ export class IndexComponent implements OnInit, AfterViewInit {
         const contractAddresses = await this.getContractAddresses();
         const allListedTokens = await this.fetchAllMarkets();
         this.initAllContracts(contractAddresses);
+
+        // In case there are no markets
+        if (allListedTokens.length === 0 ) {
+          cApp.unblockPage();
+          return;
+        }
         this.fetchTokens(allListedTokens);
         // console.log(this.tokenData);
     }
@@ -316,10 +322,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.Contracts = {};
         this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
         this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
-        this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
-        this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20Immutable.abi);
-        this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
-        this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
+        // this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
+        // this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20Immutable.abi);
+        // this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
+        // this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
     }
 
     private initContract(contractAddress, abi) {
