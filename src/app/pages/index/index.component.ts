@@ -124,25 +124,26 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
 
     public setSelect2() {
-        $('#supply').select2({
-          data: this.tokenData,
-          dropdownCssClass: 'bigdrop',
-          minimumResultsForSearch: Infinity,
-          templateResult: this.formatCountrySelection,
-          dropdownParent: $('#supplyGroup')
-        });
-        $('#borrow').select2({
+      setTimeout(() => {
+          $('#supply').select2({
             data: this.tokenData,
             dropdownCssClass: 'bigdrop',
             minimumResultsForSearch: Infinity,
             templateResult: this.formatCountrySelection,
-            dropdownParent: $('#borrowGroup')
-        });
-        $('.select2-main').one('select2:open', function (e) {
-            $('input.select2-search__field').prop('placeholder', 'Search');
-        });
-        // setTimeout(() => {
-        // }, 1);
+            dropdownParent: $('#supplyGroup')
+          });
+          $('#borrow').select2({
+              data: this.tokenData,
+              dropdownCssClass: 'bigdrop',
+              minimumResultsForSearch: Infinity,
+              templateResult: this.formatCountrySelection,
+              dropdownParent: $('#borrowGroup')
+          });
+          // tslint:disable-next-line: only-arrow-functions
+          $('.select2-main').one('select2:open', function(e) {
+              $('input.select2-search__field').prop('placeholder', 'Search');
+          });
+        }, 0);
     }
 
     public async initializeMetaMask() {
@@ -570,7 +571,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         $('#supply').val(this.tokenData[i].id);
         this.selectedTokenIndex = $('#supply').val();
         $('#supply').trigger('change');
-        $('#supply').on('change', function () {
+        $('#supply').on('change', function() {
             this.selectedTokenIndex = $('#supply').val();
         }.bind(this));
         $('#supplyModal').modal('show');
@@ -580,7 +581,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         $('#borrow').val(this.tokenData[i].id);
         this.selectedTokenIndex = $('#borrow').val();
         $('#borrow').trigger('change');
-        $('#borrow').on('change', function () {
+        $('#borrow').on('change', function() {
             this.selectedTokenIndex = $('#borrow').val();
         }.bind(this));
         $('#borrowModal').modal('show');

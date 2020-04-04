@@ -203,8 +203,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const erc20Name = await Erc20Token.name();
       const erc20Symbol = await Erc20Token.symbol();
       const admin = await this.Contracts.Comptroller.admin();
-      const cTokenName = 'c' + erc20Name;
-      const cTokenSymbol = 'c' + erc20Symbol;
+      const cTokenName = 'k' + erc20Name;
+      const cTokenSymbol = 'k' + erc20Symbol;
 
       // deploy cToken
       const abi = CErc20Immutable.abi;
