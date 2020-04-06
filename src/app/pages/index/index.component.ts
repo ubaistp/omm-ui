@@ -41,7 +41,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public sliderPercentage = 0;
     public netApy = 0;
     public loadComplete = false;
-    public callCount = 0;
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -77,10 +76,19 @@ export class IndexComponent implements OnInit, AfterViewInit {
         window['ethereum'].on('accountsChanged', () => {
             window.location.reload();
         });
-
         window['ethereum'].on('networkChanged', () => {
             window.location.reload();
         });
+
+        // const myWeb3 = new Web3(Web3.givenProvider);
+        // myWeb3.eth.subscribe('newBlockHeaders')
+        // .on('data', (blockHeader) => {
+        //     if (this.allListedTokens.length !== 0 ) {
+        //       this.fetchTokens(this.allListedTokens);
+        //     }
+        //     console.log(blockHeader.number);
+        // });
+        this.updateBalanceEffect();
         // this.initializeMetaMask();
     }
 
@@ -144,6 +152,22 @@ export class IndexComponent implements OnInit, AfterViewInit {
               $('input.select2-search__field').prop('placeholder', 'Search');
           });
         }, 0);
+    }
+
+    private updateBalanceEffect() {
+        const zeroPad = (num, places) => String(num).padStart(places, '0');
+        const max = 10;
+        const min = 3;
+        setInterval(() => {
+          const rand = Math.floor(Math.random() * (max - min) + min);
+          const randStr = '0.' + zeroPad(rand, 7);
+          if (this.supplyBalance > 0) {
+            this.supplyBalance = this.supplyBalance + parseFloat(randStr);
+          }
+          if (this.borrowBalance > 0) {
+            this.borrowBalance = this.borrowBalance + parseFloat(randStr);
+          }
+        }, 8000);
     }
 
     public async initializeMetaMask() {
@@ -259,8 +283,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
           this.getUserSupplyBalance(cTokenContract, token).then(cTokenSupplyBalance => {
             token.cTokenSupplyBalance = parseFloat(cTokenSupplyBalance);
           });
-          this.getUserBorrowBalance(cTokenContract, token).then(cTokenSupplyBalance => {
-            token.tokenBorrowBalance = parseFloat(cTokenSupplyBalance) / 10 ** 18;
+          this.getUserBorrowBalance(cTokenContract, token).then(tokenBorrowBalance => {
+            token.tokenBorrowBalance = parseFloat(tokenBorrowBalance) / 10 ** 18;
           });
         });
         const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
