@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
@@ -20,7 +20,7 @@ declare var cApp: any;
     encapsulation: ViewEncapsulation.None,
     providers: []
 })
-export class IndexComponent implements OnInit, AfterViewInit {
+export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private ethereum: any;
     private web3: any;
@@ -41,6 +41,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     public sliderPercentage = 0;
     public netApy = 0;
     public loadComplete = false;
+    public polling: any;
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -80,16 +81,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
             window.location.reload();
         });
 
-        // const myWeb3 = new Web3(Web3.givenProvider);
-        // myWeb3.eth.subscribe('newBlockHeaders')
-        // .on('data', (blockHeader) => {
-        //     if (this.allListedTokens.length !== 0 ) {
-        //       this.fetchTokens(this.allListedTokens);
-        //     }
-        //     console.log(blockHeader.number);
-        // });
         this.updateBalanceEffect();
-        // this.initializeMetaMask();
+    }
+    ngOnDestroy() {
+        clearInterval(this.polling);
     }
 
     filterTable() {
@@ -158,16 +153,16 @@ export class IndexComponent implements OnInit, AfterViewInit {
         const zeroPad = (num, places) => String(num).padStart(places, '0');
         const max = 10;
         const min = 3;
-        setInterval(() => {
+        this.polling = setInterval(() => {
           const rand = Math.floor(Math.random() * (max - min) + min);
           const randStr = '0.' + zeroPad(rand, 7);
-          if (this.supplyBalance > 0) {
+          if (this.toDecimal(this.supplyBalance, 7) > 0) {
             this.supplyBalance = this.supplyBalance + parseFloat(randStr);
           }
-          if (this.borrowBalance > 0) {
+          if (this.toDecimal(this.borrowBalance, 7) > 0) {
             this.borrowBalance = this.borrowBalance + parseFloat(randStr);
           }
-        }, 8000);
+        }, 7000);
     }
 
     public async initializeMetaMask() {
