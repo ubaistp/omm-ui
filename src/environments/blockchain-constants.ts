@@ -25,10 +25,10 @@ export const blockchainConstants = {
     // CreditInterestRateModel: '0xaFCB4d6CBd136d4b5fA10c7c255144658314a47F',
 
     // New Deploy
-    Comptroller: '0x0bbBe3Af7a2E31B1C0407Be9D3513d474fc44AB9',
-    cDAI: '0xC7CaFa87D5FE46772858cB7576046547FF7Fa4b3',
-    DynamicInterestRateModel: '0x1237ad42442d98e928fdda93bb1813b0721c59c4',
-    PriceOracleProxy: '0xE5E440C97A9fd76cf441E088151C5D607E9DBFCF',
+    // Comptroller: '0x0bbBe3Af7a2E31B1C0407Be9D3513d474fc44AB9',
+    // cDAI: '0xC7CaFa87D5FE46772858cB7576046547FF7Fa4b3',
+    // DynamicInterestRateModel: '0x1237ad42442d98e928fdda93bb1813b0721c59c4',
+    // PriceOracleProxy: '0xE5E440C97A9fd76cf441E088151C5D607E9DBFCF',
 
     // test
     // Comptroller: '0xF1F36dcF5d11f20c0E9Bd6A9207a2493E3C63A99',
@@ -36,14 +36,10 @@ export const blockchainConstants = {
     // DynamicInterestRateModel: '0x1237ad42442d98e928fdda93bb1813b0721c59c4',
     // cDAI: '0xFFC6340A4D6ED5098Ec2640Af1aB96B9E3BC4559',
 
-    // Comptroller: '0x11a4dd4EA66E022f0bf0aDA01B6a6A937A9FE366',
-    // PriceOracleProxy: '0x0Ea1823c77e7a1fCCb5c2D97832086a76B24438f',
-    // DynamicInterestRateModel: '0xA3a36C6c73EF0243f36645a32b83f5f728eb006A',
-    // cDAI: '0x67718a8ccc6B75FfB81D1A06Ff1cd8D97C075C67',
+    Comptroller: '0x7e3269B320f838e28B5fda206a57b3052f311883',
+    PriceOracleProxy: '0xF35B1Fa83A2feEc4Af73f835f02e091596F92878',
+    DynamicInterestRateModel: '0x8E609D80bfEB8168E00D3AFe09c140903Bb09FC8',
+    kDAI: '0x87E81DE39AC28494b74559C5F225E7222c2b53fF',
 
-    // Comptroller: '0x8bE5B469E27b48dc55E16e18ce7E343001c0771E',
-    // PriceOracleProxy: '0x16061cfe802AA50Ab9aa41C3d0377F6d8eB91A83',
-    // DynamicInterestRateModel: '0x0DA34aa4684D2F4F5E40B894D30b13d68Da24Bd2',
-    // cDAI: '0x6e624dc1CeA0ABf17a63A774785d4eC9E31B5595',
   }
 };

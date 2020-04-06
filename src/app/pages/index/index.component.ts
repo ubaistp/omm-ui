@@ -323,7 +323,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.Contracts = {};
         this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
         this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
-        // this.Contracts.cDAI = this.initContract(contractAddresses.cDAI, CErc20Delegator.abi);
+        // this.Contracts.kDAI = this.initContract(contractAddresses.kDAI, CErc20Delegator.abi);
         // this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20Immutable.abi);
         // this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
         // this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
@@ -335,7 +335,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     public async getPrice(cTokenAddress) {
         let tokenPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
-        let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.cDAI);
+        let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.kDAI);
         tokenPrice = this.getNumber(tokenPrice);
         daiPrice = this.getNumber(daiPrice);
         const price = parseFloat(tokenPrice) / parseFloat(daiPrice);
@@ -452,7 +452,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     // public async getExchangeRate() {
     //     this.ethUsdExchangeRate = null;
-    //     let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.cDAI);
+    //     let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.kDAI);
     //     daiPrice = this.getNumber(daiPrice);
     //     const price = (10 ** 18) / parseFloat(daiPrice);
     //     this.ethUsdExchangeRate = price.toFixed(3);
