@@ -174,11 +174,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             this.ethereum = window['ethereum'];
             await this.ethereum.enable();
             this.web3 = new ethers.providers.Web3Provider(this.ethereum);
-            const network = await this.web3.getNetwork();
-            if (network.name !== 'kovan') {
-                $('#kovanNetModal').modal('show');
-                return;
-            }
             await this.setup();
 
         } catch (error) {
@@ -200,6 +195,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           message: 'Loading App...'
         });
         const contractAddresses = await this.getContractAddresses();
+
+        // In case of unknown networks
+        if (typeof contractAddresses === 'undefined') { return; }
+
         const allListedTokens = await this.fetchAllMarkets();
         this.initAllContracts(contractAddresses);
 

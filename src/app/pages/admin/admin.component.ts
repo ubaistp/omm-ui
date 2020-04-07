@@ -56,6 +56,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
     this.userAddress = await this.web3.getSigner().getAddress();
     const contractAddresses = await this.getContractAddresses();
+
+    // In case of unknown networks
+    if (typeof contractAddresses === 'undefined') { return; }
+
     const allListedTokens = await this.fetchAllMarkets();
     this.initAllContracts(contractAddresses);
     this.checkAdmin();
