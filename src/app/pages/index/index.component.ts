@@ -39,7 +39,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public totalBorrowBalance = 0;
     public amountInput: any;
     public sliderPercentage = 0;
-    public netApy = 0;
+    public apyData = {netApy: 0, posApy: 0, negApy: 0};
     public loadComplete = false;
     public polling: any;
 
@@ -150,19 +150,20 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private updateBalanceEffect() {
-        const zeroPad = (num, places) => String(num).padStart(places, '0');
-        const max = 10;
-        const min = 3;
+        const secondsInYear = 31622400;
+        const updateIntervalInSec = 7;
         this.polling = setInterval(() => {
-          const rand = Math.floor(Math.random() * (max - min) + min);
-          const randStr = '0.' + zeroPad(rand, 7);
-          if (this.toDecimal(this.supplyBalance, 7) > 0) {
-            this.supplyBalance = this.supplyBalance + parseFloat(randStr);
+          if (this.toDecimal(this.supplyBalance, 7) > 0 && this.apyData.posApy > 0) {
+            const posApyPerSec = this.apyData.posApy / secondsInYear;
+            const posApyPerInterval = posApyPerSec * updateIntervalInSec;
+            this.supplyBalance += (this.supplyBalance * posApyPerInterval / 100);
           }
-          if (this.toDecimal(this.borrowBalance, 7) > 0) {
-            this.borrowBalance = this.borrowBalance + parseFloat(randStr);
+          if (this.toDecimal(this.borrowBalance, 7) > 0 && this.apyData.negApy > 0) {
+            const negApyPerSec = this.apyData.negApy / secondsInYear;
+            const negApyPerInterval = negApyPerSec * updateIntervalInSec;
+            this.borrowBalance += (this.borrowBalance * negApyPerInterval / 100);
           }
-        }, 7000);
+        }, updateIntervalInSec * 1000);
     }
 
     public async initializeMetaMask() {
@@ -434,7 +435,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
                 negApy += parseFloat(token.borrowBalance) * parseFloat(token.borrowApy) / parseFloat(this.borrowBalance);
             }
         });
-        this.netApy = posApy - negApy;
+        this.apyData.netApy = posApy - negApy;
+        this.apyData.posApy = posApy;
+        this.apyData.negApy = negApy;
     }
     public async getAccountLiquidity() {
         this.accountLiquidity = 0;
