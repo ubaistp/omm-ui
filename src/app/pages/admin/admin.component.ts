@@ -32,7 +32,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public erc20AddressFull: any;
   public collateralFacFull: any;
   public irModelAddrFull: any;
-  public callCount = 0;
 
   constructor() {
   }
@@ -79,9 +78,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async afterInitToken() {
-    // if (this.callCount < this.tokenData.length) {
-    //   return;
-    // }
     cApp.unblockPage();
   }
 
@@ -134,16 +130,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
       token.collateralFactor = collateralFactor;
     });
-    // const cTokenName = await cTokenContract.name();
-    // const underlyingTokenAddress = await cTokenContract.underlying();
-    // const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
-    // token.name = await tokenContract.name();
-    // token.tokenAddress = underlyingTokenAddress;
-    // token.cTokenName = cTokenName;
-    // token.isListed = true;
-    // token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-    // this.callCount++;
-    // this.afterInitToken();
   }
 
   public fetchIRData() {
