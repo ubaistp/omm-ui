@@ -34,7 +34,35 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="col-md-12">
+                  <div class="portlet portlet--height-full">
+                      <div class="portlet__head">
+                          <div class="portlet__head-caption">
+                              <div class="portlet__head-title">
+                                  <h3 class="portlet__head-text">Interest Rate Models</h3>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="portlet__body py0 px0" style="overflow-x: auto;">
+                          <table class="table">
+                              <thead>
+                                  <tr>
+                                      <th>Address</th>
+                                      <th class="text-center">Base Rate</th>
+                                      <th class="text-center">Utilization Multiplier</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let irObj of irData; let i = index">
+                                      <td>{{ irObj.address }}</td>
+                                      <td class="text-center">{{ toDecimal(irObj.baseRate, 2) }} %</td>
+                                      <td class="text-center">{{ toDecimal(irObj.multiplier, 2) }} %</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
                 <div class="col-md-12">
                   <div class="portlet portlet--height-full">
                       <div class="portlet__head">
@@ -59,6 +87,12 @@
                                           <div class="col-md-8">
                                             <input type="text" class="form-control" [(ngModel)]="collateralFacFull" name="collateralFacFull">
                                           </div>
+                                      </div>
+                                      <div class="form-group row">
+                                        <label class="col-md-4">Interest Rate Model Address</label>
+                                        <div class="col-md-8">
+                                          <input type="text" class="form-control" [(ngModel)]="irModelAddrFull" name="irModelAddrFull">
+                                        </div>
                                       </div>
                                       <div class="mt30 form-group row">
                                           <div class="col-md-4"></div>

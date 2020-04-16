@@ -6,7 +6,7 @@ import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
-// import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+import * as WhitePaperInterestRateModel from '../../../assets/contracts/WhitePaperInterestRateModel.json';
 
 declare var $: any;
 declare var cApp: any;
@@ -24,12 +24,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public Contracts: any;
   public contractAddresses: any;
   public tokenData: any;
+  public irData: any;
   public cTokenAddress: any;
   public cTkCollateralAddress: any;
   public cTokenRatio: any;
   public isUserAdmin = false;
   public erc20AddressFull: any;
   public collateralFacFull: any;
+  public irModelAddrFull: any;
   public callCount = 0;
 
   constructor() {
@@ -71,6 +73,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     }
 
     this.fetchTokens(allListedTokens);
+    this.fetchIRData();
     // console.log(this.Contracts);
     // console.log(this.tokenData);
   }
@@ -141,7 +144,32 @@ export class AdminComponent implements OnInit, AfterViewInit {
     // token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
     // this.callCount++;
     // this.afterInitToken();
-}
+  }
+
+  public fetchIRData() {
+    this.irData = [];
+    const irAddrArray = this.contractAddresses.DynamicInterestRateModel;
+    irAddrArray.forEach(addr => {
+      this.irData.push({address: addr});
+    });
+    this.irData.forEach(irObj => {
+      const White = this.initContract(irObj.address, WhitePaperInterestRateModel.abi);
+      White.baseRatePerBlock().then((baseRate) => {
+        baseRate = parseFloat(this.getNumber(baseRate));
+        let baseRateYear: any = 2102400 * baseRate / 10 ** 18;
+        baseRateYear = baseRateYear.toFixed(2);
+        irObj.baseRate = parseFloat(baseRateYear) * 100;
+      });
+
+      White.multiplierPerBlock().then((multiplier) => {
+        multiplier = parseFloat(this.getNumber(multiplier));
+        let multiplierYear: any = 2102400 * multiplier / 10 ** 18;
+        multiplierYear = multiplierYear.toFixed(2);
+        irObj.multiplier = parseFloat(multiplierYear) * 100;
+      });
+    });
+    // console.log(this.irData);
+  }
 
   public async getCollateralFactor(cTokenAddress) {
     const markets = await this.Contracts.Comptroller.markets(cTokenAddress);
@@ -201,6 +229,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       console.log('invalid');
       return;
     }
+    const irAddrArray = this.contractAddresses.DynamicInterestRateModel;
+    const check = irAddrArray.includes(this.irModelAddrFull);
+    if (!check) { return; }
+
     try {
       // get parameter data
       const Erc20Token = this.initContract(this.erc20AddressFull, IVTDemoABI.abi);
@@ -215,7 +247,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const bytecode = CErc20Immutable.bytecode;
       const factory = new ethers.ContractFactory(abi, bytecode, this.web3.getSigner());
       const cTokenContract = await factory.deploy(this.erc20AddressFull, this.contractAddresses.Comptroller,
-        this.contractAddresses.DynamicInterestRateModel, 0.2 * (10 ** 9), cTokenName, cTokenSymbol, 8, admin);
+        this.irModelAddrFull, 0.2 * (10 ** 9), cTokenName, cTokenSymbol, 8, admin);
       await cTokenContract.deployed();
 
       // call support market in comptroller
@@ -230,6 +262,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
       this.erc20AddressFull = null;
       this.collateralFacFull = null;
+      this.irModelAddrFull = null;
       window.location.reload();
     } catch (error) {
       console.error(error);
@@ -251,4 +284,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
     return allListedTokens;
   }
+
+  public toDecimal(val, decimal) {
+    if (val === undefined || val === null) {
+        return 0;
+    }
+    val = val.toString();
+    val = parseFloat(val);
+    return val.toFixed(decimal);
+  }
+
 }
