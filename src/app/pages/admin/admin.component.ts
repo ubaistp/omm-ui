@@ -32,6 +32,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public erc20AddressFull: any;
   public collateralFacFull: any;
   public irModelAddrFull: any;
+  public updateIr: any = {};
 
   constructor() {
   }
@@ -126,6 +127,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
         token.name = name;
         this.afterInitToken();
       });
+    });
+    cTokenContract.interestRateModel().then(interestRateModel => {
+      token.interestRateModel = interestRateModel;
     });
     this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
       token.collateralFactor = collateralFactor;
@@ -254,6 +258,20 @@ export class AdminComponent implements OnInit, AfterViewInit {
       console.error(error);
     }
   }
+
+  public async updateIrModel() {
+    // checks
+    if (typeof this.updateIr.tokenAddress === 'undefined') { return; }
+    if (!this.contractAddresses.DynamicInterestRateModel.includes(this.updateIr.irAddress)) { return; }
+
+    try {
+      const TokenContract = this.initContract(this.updateIr.tokenAddress, CErc20Delegator.abi);
+      const tx = await TokenContract._setInterestRateModel(this.updateIr.irAddress);
+      await this.web3.waitForTransaction(tx.hash);
+      window.location.reload();
+    } catch (error) { console.error(error); }
+  }
+
   public async fetchAllMarkets() {
     const myWeb3 = new Web3(Web3.givenProvider);
     let abi;
@@ -280,4 +298,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
     return val.toFixed(decimal);
   }
 
+  public trucateAddress(address) {
+    if (address === null || address === undefined) { return; }
+    const start4Digits = address.slice(0, 6);
+    const separator = '...';
+    const last4Digits = address.slice(-4);
+    return (start4Digits.padStart(2, '0') + separator.padStart(2, '0') + last4Digits.padStart(2, '0'));
+  }
 }

@@ -17,9 +17,10 @@
                                 <thead>
                                     <tr>
                                         <th>Token Name</th>
-                                        <th class="text-right">ERC20 Address</th>
-                                        <th class="text-right">CToken Address</th>
-                                        <th class="text-right">Collateralization Ratio</th>
+                                        <th class="text-center">ERC20 Address</th>
+                                        <th class="text-center">CToken Address</th>
+                                        <th class="text-center">Col. Ratio</th>
+                                        <th class="text-right">IR Model</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -28,6 +29,7 @@
                                         <td class="text-right">{{ token.tokenAddress }}</td>
                                         <td class="text-right">{{ token.cTokenAddress }}</td>
                                         <td class="text-right">{{ token.collateralFactor }}</td>
+                                        <td class="text-right">{{ trucateAddress(token.interestRateModel) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -113,7 +115,7 @@
                         <div class="portlet__head">
                             <div class="portlet__head-caption">
                                 <div class="portlet__head-title">
-                                    <h3 class="portlet__head-text">List CToken</h3>
+                                    <h3 class="portlet__head-text">Update Interest Rate Model</h3>
                                 </div>
                             </div>
                         </div>
@@ -121,15 +123,15 @@
                             <form>
                                 <div class="form-group">
                                     <label>CToken Address</label>
-                                    <input type="text" class="form-control" [(ngModel)]="cTokenAddress" name="cTokenAddress">
+                                    <input type="text" class="form-control" [(ngModel)]="updateIr.tokenAddress" name="updateIr.tokenAddress">
                                 </div>
-                                <!-- <div class="form-group">
-                                    <label>Collateralization Ration</label>
-                                    <input type="text" class="form-control" [(ngModel)]="cTokenRatio" name="cTokenRatio">
-                                </div> -->
+                                <div class="form-group">
+                                    <label>IR Model Address</label>
+                                    <input type="text" class="form-control" [(ngModel)]="updateIr.irAddress" name="updateIr.irAddress">
+                                </div>
                                 <div class="mt30">
                                     <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
-                                      (click)="addToken()">Submit</button>
+                                      (click)="updateIrModel()">Submit</button>
                                 </div>
                             </form>
                         </div>
@@ -158,6 +160,29 @@
                               <div class="mt30">
                                   <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
                                     (click)="updateCR()">Submit</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="portlet portlet--height-full">
+                      <div class="portlet__head">
+                          <div class="portlet__head-caption">
+                              <div class="portlet__head-title">
+                                  <h3 class="portlet__head-text">List CToken</h3>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="portlet__body">
+                          <form>
+                              <div class="form-group">
+                                  <label>CToken Address</label>
+                                  <input type="text" class="form-control" [(ngModel)]="cTokenAddress" name="cTokenAddress">
+                              </div>
+                              <div class="mt30">
+                                  <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
+                                    (click)="addToken()">Submit</button>
                               </div>
                           </form>
                       </div>
