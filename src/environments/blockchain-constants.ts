@@ -4,7 +4,10 @@ export const blockchainConstants = {
     Comptroller: '0x959Fb43EF08F415da0AeA39BEEf92D96f41E41b3',
     PriceOracleProxy: '0x22Ef914f6EFbe6c52c8Ec3d10BE97331Cc22F000',
     kDAI: '0x235d02C9E7909B7Cc42ffA10Ef591Ea670346F42',
-    DynamicInterestRateModel: ['0x52948A1BC72a0E4320E84d4A24458314520FAae5'],
+    DynamicInterestRateModel: [
+      '0x52948A1BC72a0E4320E84d4A24458314520FAae5',
+      '0xbb69477638E962275c89CAa8f03DA0941675177d',
+    ],
   },
   ropsten: {
     Comptroller: '0x7bE62feEa8A027F254b09e1b9429eE95ed65ed57',
