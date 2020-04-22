@@ -105,12 +105,19 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async fetchTokens(allListedTokens) {
+    // Mainnet default Dai fix
+    let removeAddr = '0x235d02C9E7909B7Cc42ffA10Ef591Ea670346F42';
+    removeAddr = removeAddr.toLowerCase();
+
     this.tokenData = [];
     for (const cTokenAddress of allListedTokens) {
-      const token = {} as any;
-      token.cTokenAddress = cTokenAddress;
-      this.initToken(token);
-      this.tokenData.push(token);
+      // Mainnet default Dai fix
+      if (cTokenAddress.toLowerCase() !== removeAddr) {
+        const token = {} as any;
+        token.cTokenAddress = cTokenAddress;
+        this.initToken(token);
+        this.tokenData.push(token);
+      }
     }
   }
 

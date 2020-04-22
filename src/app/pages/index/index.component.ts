@@ -260,15 +260,22 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public fetchTokens(allListedTokens) {
+      // Mainnet default Dai fix
+      let removeAddr = '0x235d02C9E7909B7Cc42ffA10Ef591Ea670346F42';
+      removeAddr = removeAddr.toLowerCase();
+
       this.tokenData = [];
       for (const cTokenAddress of allListedTokens) {
-        const token = {} as any;
-        token.id = this.tokenData.length;
-        token.enabled = false;
-        token.approved = false;
-        token.cTokenAddress = cTokenAddress;
-        this.initToken(token);
-        this.tokenData.push(token);
+        // Mainnet default Dai fix
+        if (cTokenAddress.toLowerCase() !== removeAddr) {
+          const token = {} as any;
+          token.id = this.tokenData.length;
+          token.enabled = false;
+          token.approved = false;
+          token.cTokenAddress = cTokenAddress;
+          this.initToken(token);
+          this.tokenData.push(token);
+        }
       }
     }
 
@@ -363,10 +370,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async getPrice(cTokenAddress) {
         let tokenPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
-        let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.kDAI);
         tokenPrice = this.getNumber(tokenPrice);
-        daiPrice = this.getNumber(daiPrice);
-        const price = parseFloat(tokenPrice) / parseFloat(daiPrice);
+        // let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.kDAI);
+        // daiPrice = this.getNumber(daiPrice);
+        // const price = parseFloat(tokenPrice) / parseFloat(daiPrice);
+
+        // when default deployed Dai was removed
+        const price = parseFloat(tokenPrice) / this.DECIMAL_18;
         const priceStr = price.toFixed(3);
         return priceStr;
     }
