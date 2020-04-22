@@ -16,7 +16,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Token Name</th>
+                                        <th>Token</th>
                                         <th class="text-center">ERC20 Address</th>
                                         <th class="text-center">CToken Address</th>
                                         <th class="text-center">Col. Ratio</th>
@@ -25,7 +25,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let token of tokenData; let i = index">
-                                        <td>{{ token.name }}</td>
+                                        <td>{{ token.symbol }}</td>
                                         <td class="text-right">{{ token.tokenAddress }}</td>
                                         <td class="text-right">{{ token.cTokenAddress }}</td>
                                         <td class="text-right">{{ token.collateralFactor }}</td>

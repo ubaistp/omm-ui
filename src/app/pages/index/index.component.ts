@@ -290,9 +290,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         cTokenContract.underlying().then(underlyingTokenAddress => {
           token.tokenAddress = underlyingTokenAddress;
           const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+          tokenContract.symbol().then((symbol) => {
+            symbol = this.capitalize(symbol);
+            token.symbol = symbol;
+            token.text = token.symbol;
+          });
           tokenContract.name().then(async (name) => {
             token.name = name;
-            token.text = token.name;
             this.afterInitToken();
 
           });
@@ -474,6 +478,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         const separator = '...';
         const last4Digits = address.slice(-4);
         return (start4Digits.padStart(2, '0') + separator.padStart(2, '0') + last4Digits.padStart(2, '0'));
+    }
+    public capitalize(s) {
+        return s && s[0].toUpperCase() + s.slice(1);
     }
 
     // public async getExchangeRate() {

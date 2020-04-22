@@ -123,6 +123,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     cTokenContract.underlying().then(underlyingTokenAddress => {
       token.tokenAddress = underlyingTokenAddress;
       const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+      tokenContract.symbol().then((symbol) => {
+        token.symbol = this.capitalize(symbol);
+      });
       tokenContract.name().then(name => {
         token.name = name;
         this.afterInitToken();
@@ -298,5 +301,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const separator = '...';
     const last4Digits = address.slice(-4);
     return (start4Digits.padStart(2, '0') + separator.padStart(2, '0') + last4Digits.padStart(2, '0'));
+  }
+
+  public capitalize(s) {
+    return s && s[0].toUpperCase() + s.slice(1);
   }
 }
