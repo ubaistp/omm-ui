@@ -191,17 +191,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async updateCR() {
-    if (this.cTkCollateralAddress === undefined || this.cTkCollateralAddress === null) {
-      return;
-    }
-    if (this.cTokenRatio === undefined || this.cTokenRatio === null) {
-      return;
-    }
+    if (this.cTkCollateralAddress === undefined || this.cTkCollateralAddress === null) { return; }
+    if (this.cTokenRatio === undefined || this.cTokenRatio === null) { return; }
     const colFac = parseFloat(this.cTokenRatio);
-    if (colFac <= 0) {
-      console.log('invalid');
-      return;
-    }
+    if (colFac < 0) { return; }
+
     try {
       const colFacStr = (colFac * (10 ** 16)).toString();
       const tx = await this.Contracts.Comptroller._setCollateralFactor(this.cTkCollateralAddress, colFacStr);

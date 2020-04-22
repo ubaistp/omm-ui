@@ -9,6 +9,7 @@ import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 // import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
+import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
@@ -295,8 +296,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             this.afterInitToken();
 
           });
-          this.getUserTokenBalance(tokenContract).then(tokenBalance => {
-            token.tokenBalance = parseFloat(tokenBalance) / 10 ** 18;
+          tokenContract.decimals().then(async (decimals) => {
+            const divBy = 10 ** parseFloat(decimals);
+            token.erc20Decimals = decimals;
+            this.getUserTokenBalance(tokenContract).then(tokenBalance => {
+              token.tokenBalance = parseFloat(tokenBalance) / divBy;
+            });
           });
           this.checkApproved(tokenContract, token.cTokenAddress).then(approved => {
             token.approved = approved;
@@ -537,11 +542,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async mint() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
+
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.mint(ethers.utils.parseEther(this.amountInput));
+        const tx = await cTokenContract.mint(amountInDec);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
