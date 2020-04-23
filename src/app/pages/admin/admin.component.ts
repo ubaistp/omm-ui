@@ -232,16 +232,21 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const Erc20Token = this.initContract(this.erc20AddressFull, IVTDemoABI.abi);
       const erc20Name = await Erc20Token.name();
       const erc20Symbol = await Erc20Token.symbol();
+      const erc20Decimals = await Erc20Token.decimals();
       const admin = await this.Contracts.Comptroller.admin();
       const cTokenName = 'k' + erc20Name;
       const cTokenSymbol = 'k' + erc20Symbol;
+      const cTokenDecimals = 8;
+      const totalDecimals = parseFloat(erc20Decimals) + cTokenDecimals;
+      let initialExcRateMantissaStr = '2';
+      initialExcRateMantissaStr = initialExcRateMantissaStr.padEnd(totalDecimals + 1, '0');
 
       // deploy cToken
       const abi = CErc20Immutable.abi;
       const bytecode = CErc20Immutable.bytecode;
       const factory = new ethers.ContractFactory(abi, bytecode, this.web3.getSigner());
       const cTokenContract = await factory.deploy(this.erc20AddressFull, this.contractAddresses.Comptroller,
-        this.irModelAddrFull, 0.2 * (10 ** 9), cTokenName, cTokenSymbol, 8, admin);
+        this.irModelAddrFull, initialExcRateMantissaStr, cTokenName, cTokenSymbol, cTokenDecimals, admin);
       await cTokenContract.deployed();
 
       // call support market in comptroller
