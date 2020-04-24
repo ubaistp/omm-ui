@@ -30,7 +30,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public Contracts: any;
     public contractAddresses: any;
     public BLOCKS_YEAR = 2102400;
-    public DECIMAL_8 = 10 ** 8;
+    // public DECIMAL_8 = 10 ** 8;
     public DECIMAL_18 = 10 ** 18;
     public tokenData: any;
     public accountLiquidity = 0;
@@ -43,6 +43,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public apyData = {netApy: 0, posApy: 0, negApy: 0};
     public loadComplete = false;
     public polling: any;
+    public callCount = 0;
+    public numListedMarkets = 0;
+    public networkData = {name: null, isMainnet: false};
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -191,6 +194,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async setup() {
         this.userAddress = await this.web3.getSigner().getAddress();
+        // this.userAddress = '0x5a995f45CcE03670D94a0c89572dc74598d57581';
         cApp.blockPage({
           overlayColor: '#000000',
           state: 'secondary',
@@ -214,18 +218,24 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async afterInitToken() {
-        // if (this.callCount < this.tokenData.length) {
-        //   return;
-        // }
-        await this.getEnteredMarkets();
-        this.filterTable();
-        await this.getAccountLiquidity();
-        this.calcNetApy();
-        this.setSelect2();
-        if (this.accountLiquidity !== 0) {
-            this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
+        const ignoredMarkets = 1;
+        this.callCount++;
+        if (this.callCount < this.numListedMarkets - ignoredMarkets) {
+          return;
         }
-        this.loadComplete = true;
+
+        // timeout for all async calls to resolve
+        setTimeout(async () => {
+          await this.getEnteredMarkets();
+          this.filterTable();
+          await this.getAccountLiquidity();
+          this.calcNetApy();
+          this.setSelect2();
+          if (this.accountLiquidity !== 0) {
+              this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
+          }
+          this.loadComplete = true;
+        }, 1200);
         cApp.unblockPage();
     }
 
@@ -234,8 +244,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.contractAddresses = {};
         const network = await this.web3.getNetwork();
         if (network.name === 'homestead') {
+            this.networkData.name = 'mainnet';
             contractAddresses = blockchainConstants.mainnet;
         } else {
+            this.networkData.name = network.name;
             contractAddresses = blockchainConstants[network.name];
         }
         this.contractAddresses = contractAddresses;
@@ -256,6 +268,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       result.forEach(log => {
         allListedTokens.push(log.returnValues.cToken);
       });
+      this.numListedMarkets = allListedTokens.length;
       return allListedTokens;
     }
 
@@ -281,22 +294,30 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private async initToken(token) {
         token.isListed = true;
+        const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
         this.getPrice(token.cTokenAddress).then(priceUsd => {
           token.priceUsd = priceUsd;
           this.getUserSupplyBalance(cTokenContract, token).then(cTokenSupplyBalance => {
             token.cTokenSupplyBalance = parseFloat(cTokenSupplyBalance);
           });
           this.getUserBorrowBalance(cTokenContract, token).then(tokenBorrowBalance => {
-            token.tokenBorrowBalance = parseFloat(tokenBorrowBalance) / 10 ** 18;
+            token.tokenBorrowBalance = parseFloat(tokenBorrowBalance);
           });
         });
-        const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
         cTokenContract.name().then(cTokenName => {
           token.cTokenName = cTokenName;
         });
         cTokenContract.underlying().then(underlyingTokenAddress => {
           token.tokenAddress = underlyingTokenAddress;
           const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+          tokenContract.decimals().then(async (decimals) => {
+            const divBy = 10 ** parseFloat(decimals);
+            token.erc20Decimals = decimals;
+            this.getUserTokenBalance(tokenContract).then(tokenBalance => {
+              token.tokenBalance = parseFloat(tokenBalance) / divBy;
+              this.afterInitToken();
+            });
+          });
           tokenContract.symbol().then((symbol) => {
             symbol = this.capitalize(symbol);
             token.symbol = symbol;
@@ -304,15 +325,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           });
           tokenContract.name().then(async (name) => {
             token.name = name;
-            this.afterInitToken();
-
-          });
-          tokenContract.decimals().then(async (decimals) => {
-            const divBy = 10 ** parseFloat(decimals);
-            token.erc20Decimals = decimals;
-            this.getUserTokenBalance(tokenContract).then(tokenBalance => {
-              token.tokenBalance = parseFloat(tokenBalance) / divBy;
-            });
+            // this.afterInitToken();
           });
           this.checkApproved(tokenContract, token.cTokenAddress).then(approved => {
             token.approved = approved;
@@ -424,9 +437,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         tokenBalance = this.getNumber(tokenBalance);
 
         if (parseFloat(tokenBalance) > 0) {
+            const underlying = await cTokenContract.underlying();
+            const tokenContract = this.initContract(underlying, ERC20Detailed.abi);
+            const tokenDecimals = await tokenContract.decimals();
+            const divBy = this.DECIMAL_18 * (10 ** parseFloat(tokenDecimals));
+
             let exchangeRateStored = await cTokenContract.exchangeRateStored();
             exchangeRateStored = this.getNumber(exchangeRateStored);
-            const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / 10 ** 36;
+            const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / divBy;
             tokenBalance = bal;
             const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
             this.totalSupplyBalance += supplyBal;
@@ -438,11 +456,17 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
         tokenBalance = this.getNumber(tokenBalance);
         if (parseFloat(tokenBalance) > 0) {
-            const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 8);
+            const underlying = await cTokenContract.underlying();
+            const tokenContract = this.initContract(underlying, ERC20Detailed.abi);
+            const tokenDecimals = await tokenContract.decimals();
+
+            tokenBalance = parseFloat(tokenBalance) / 10 ** parseFloat(tokenDecimals);
+            const borrowBal = parseFloat(token.priceUsd) * parseFloat(tokenBalance);
             this.totalBorrowBalance += borrowBal;
         }
         return tokenBalance;
     }
+
     public calcNetApy() {
         let posApy = 0;
         let negApy = 0;
@@ -517,9 +541,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async getAvailableBorrow(cTokenContract) {
+        const underlying = await cTokenContract.underlying();
+        const tokenContract = this.initContract(underlying, ERC20Detailed.abi);
+        const tokenDecimals = await tokenContract.decimals();
+
         let cash = await cTokenContract.getCash();
         cash = this.getNumber(cash);
-        const availableBorrow = parseFloat(cash) / this.DECIMAL_18;
+        const availableBorrow = parseFloat(cash) / (10 ** parseFloat(tokenDecimals));
         return availableBorrow.toString();
     }
     public async checkApproved(tokenContract, allowanceOf) {
@@ -527,14 +555,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         approvedBal = this.getNumber(approvedBal);
         return approvedBal !== '0' ? true : false;
     }
-    // public getUsdPrice(val) {
-    //     return (parseFloat(val) * parseFloat(this.ethUsdExchangeRate)).toString();
-    // }
 
     public getNumber(hexNum) {
         return ethers.utils.bigNumberify(hexNum).toString();
     }
-
 
     public async erc20Approve() {
         const amountStr = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
@@ -574,31 +598,46 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async withdrawUnderlying() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
+
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.redeemUnderlying(ethers.utils.parseEther(this.amountInput));
+        const tx = await cTokenContract.redeemUnderlying(amountInDec);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async borrow() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
+
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.borrow(ethers.utils.parseEther(this.amountInput), { gasLimit: 400000 });
+        const tx = await cTokenContract.borrow(amountInDec, { gasLimit: 400000 });
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async repayBorrow() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
+
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.repayBorrow(ethers.utils.parseEther(this.amountInput), { gasLimit: 350000 });
+        const tx = await cTokenContract.repayBorrow(amountInDec, { gasLimit: 350000 });
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
