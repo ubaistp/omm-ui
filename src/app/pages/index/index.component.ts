@@ -35,7 +35,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public tokenData: any;
     public accountLiquidity = 0;
     public selectedTokenIndex = 0;
-    // public ethUsdExchangeRate: any;
     public totalSupplyBalance = 0;
     public totalBorrowBalance = 0;
     public amountInput: any;
@@ -71,7 +70,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
-        // this.initializeMetaMask();
     }
     ngAfterViewInit() {
         if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
@@ -348,37 +346,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getAvailableBorrow(cTokenContract).then(availableBorrow => {
           token.availableBorrow = availableBorrow;
         });
-        // const cTokenName = await cTokenContract.name();
-        // const underlyingTokenAddress = await cTokenContract.underlying();
-        // const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
-        // token.name = await tokenContract.name();
-        // token.text = token.name;
-        // token.tokenAddress = underlyingTokenAddress;
-        // token.cTokenName = cTokenName;
-        // token.isListed = true;
-        // token.priceUsd = await this.getPrice(token.cTokenAddress);
-        // token.collateralFactor = await this.getCollateralFactor(token.cTokenAddress);
-        // const apy = await this.getAPY(cTokenContract);
-        // token.borrowApy = apy[0];
-        // token.supplyApy = apy[1];
-        // token.utilizationRate = parseFloat(await this.getUtilizationRate(cTokenContract)) / 10 ** 18;
-        // token.tokenBalance = parseFloat(await this.getUserTokenBalance(tokenContract)) / 10 ** 18;
-        // token.cTokenSupplyBalance = parseFloat(await this.getUserSupplyBalance(cTokenContract, token));
-        // token.tokenBorrowBalance = parseFloat(await this.getUserBorrowBalance(cTokenContract, token)) / 10 ** 18;
-        // token.approved = await this.checkApproved(tokenContract, token.cTokenAddress);
-        // token.availableBorrow = await this.getAvailableBorrow(cTokenContract);
-        // this.callCount++;
-        // this.afterInitToken();
     }
 
     private initAllContracts(contractAddresses) {
         this.Contracts = {};
         this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
         this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
-        // this.Contracts.kDAI = this.initContract(contractAddresses.kDAI, CErc20Delegator.abi);
-        // this.Contracts.cIVTDemo = this.initContract(contractAddresses.cIVTDemo, CErc20Immutable.abi);
-        // this.Contracts.DAI = this.initContract(contractAddresses.DAI, EIP20Interface.abi);
-        // this.Contracts.IVTDemo = this.initContract(contractAddresses.IVTDemo, EIP20Interface.abi);
     }
 
     private initContract(contractAddress, abi) {
@@ -493,14 +466,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.supplyBalance) / 100);
             }
         });
-        // console.log(this.accountLiquidity);
-        // const liquidityData = await this.Contracts.Comptroller.getAccountLiquidity(this.userAddress);
-        // if (this.getNumber(liquidityData[0]) === '0') {
-        //   const val = this.getNumber(liquidityData[1]);
-        //   const valInEth = ethers.utils.formatEther(val);
-        //   this.accountLiquidity = this.getUsdPrice(valInEth);
-        //   // console.log(this.accountLiquidity)
-        // }
     }
     public toDecimal(val, decimal) {
         if (val === undefined || val === null) {
@@ -520,14 +485,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public capitalize(s) {
         return s && s[0].toUpperCase() + s.slice(1);
     }
-
-    // public async getExchangeRate() {
-    //     this.ethUsdExchangeRate = null;
-    //     let daiPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(this.contractAddresses.kDAI);
-    //     daiPrice = this.getNumber(daiPrice);
-    //     const price = (10 ** 18) / parseFloat(daiPrice);
-    //     this.ethUsdExchangeRate = price.toFixed(3);
-    // }
 
     public async getEnteredMarkets() {
         const assetsInArray = await this.Contracts.Comptroller.getAssetsIn(this.userAddress);
@@ -647,9 +604,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async faucet() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const tokenAddress = this.contractAddresses[tokenName];
-        // const IvtContract = this.initContract(tokenAddress, IVTDemoABI.abi);
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const tokenContract = this.initContract(tokenAddress, IVTDemoABI.abi);
         const tx = await tokenContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'));
