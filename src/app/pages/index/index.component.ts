@@ -317,6 +317,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
               token.tokenBalance = parseFloat(tokenBalance) / divBy;
               this.afterInitToken();
             });
+            tokenContract.totalSupply().then((totalSupply) => {
+              totalSupply = this.getNumber(totalSupply);
+              token.erc20TotalSupply = parseFloat(totalSupply) / 10 ** parseFloat(token.erc20Decimals);
+            });
           });
           tokenContract.symbol().then((symbol) => {
             symbol = this.capitalize(symbol);
