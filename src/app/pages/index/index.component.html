@@ -49,7 +49,7 @@
     <section>
         <div class="container-lg">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="portlet portlet--height-full">
                         <div class="portlet__head">
                             <div class="portlet__head-caption">
@@ -147,7 +147,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <div class="portlet portlet--height-full">
                         <div class="portlet__head">
                             <div class="portlet__head-caption">
@@ -240,7 +240,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
@@ -340,9 +340,6 @@
                                         *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
                                     <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
                                         *ngIf="typeViewSupply == 'supply'">Supply</button>
-                                    <div *ngIf="networkData.name != 'mainnet'" class="text-center my20" (click)="faucet()">
-                                        <a href="#" class="link">Faucet</a>
-                                    </div>
                                 </div>
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
