@@ -92,8 +92,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     filterTable() {
         this.supplyData = this.tokenData;
         this.borrowData = this.tokenData;
-        this.supplyTokenData = this.tokenData;
-        this.borrowTokenData = this.tokenData;
+        // this.supplyTokenData = this.tokenData;
+        this.supplyTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
+        this.borrowTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
         this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
         if (this.supplyData.length > 0) {
             this.dataObj['showSupply'] = true;
@@ -131,14 +132,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public setSelect2() {
       setTimeout(() => {
           $('#supply').select2({
-            data: this.tokenData,
+            // data: this.tokenData,
+            data: this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" ),
             dropdownCssClass: 'bigdrop',
             minimumResultsForSearch: Infinity,
             templateResult: this.formatCountrySelection,
             dropdownParent: $('#supplyGroup')
           });
           $('#borrow').select2({
-              data: this.tokenData,
+              // data: this.tokenData,
+              data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
               dropdownCssClass: 'bigdrop',
               minimumResultsForSearch: Infinity,
               templateResult: this.formatCountrySelection,

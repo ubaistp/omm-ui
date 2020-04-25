@@ -1,9 +1,14 @@
-<div *ngIf="networkString.show" class="text-center px10 py10">
+<!-- <div *ngIf="networkString.show" class="text-center px10 py10">
   Note: You are currently connected to the {{ networkString.name }} Network
-</div>
+</div> -->
 <header>
     <div class="toolbar" role="banner">
-        <img height="40" src="assets/img/Konkrete-logo.png" />
+        <div class="spacer"></div>
+        <span class="dot"></span>
+        <span style="font-size: 0.9rem;">{{ networkString.name }}</span>
+    </div>
+    <div class="toolbar" role="banner">
+        <!-- <img height="40" src="assets/img/Konkrete-logo.png" /> -->
         <div class="spacer"></div>
         <!-- <a id="select-currency">USD</a> -->
         <!-- <a class="d-none d-sm-block" id="account">{{ trucateAddress(userAddress) }}</a> -->

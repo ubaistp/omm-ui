@@ -26,13 +26,22 @@ body {
   background: $body-color;
 }
 
+.dot {
+  height: 14px;
+  width: 14px;
+  margin-right: 9px;
+  background-color: #6ecacf;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .spacer {
   flex: 1;
 }
 header {
   background: $body-color;
   .toolbar {
-    height: 60px;
+    height: 47px;
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -67,7 +76,7 @@ header {
     width: 100%;
     &.hero {
       // background: $color-dark;
-      padding: 2rem 0 2rem;
+      padding: 1.4rem 0 1.7rem;
     }
     .container {
       margin: 0 auto;
@@ -101,7 +110,7 @@ label {
 .borrow-balance,
 .supply-balance {
   font-weight: 400;
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .portlet {
@@ -329,3 +338,8 @@ label.error{
     border-radius: 50%;
   }
 }
+.token-logos{
+    margin-top: -2px;
+    margin-right: 12px;
+    max-height: 30px;
+  }

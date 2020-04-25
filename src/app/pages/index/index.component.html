@@ -5,10 +5,10 @@
                 <div class="col-sm-4 col-5 mb30">
                     <label class="mb0" style="color: #1AD9C6;">Supply Balance</label>
                     <div class="supply-balance">${{toDecimal(supplyBalance, 7)}}</div>
-                    <div class="d-block d-sm-none">
+                    <!-- <div class="d-block d-sm-none">
                         <label class="color-danger mb0">Borrow Balance</label>
                         <div class="borrow-balance">$0.0000</div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-sm-4 col-7 mb30">
                     <div class="progress-circle--container">
@@ -28,12 +28,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-5 mb30 d-none d-sm-block">
+                <!-- <div class="col-sm-4 col-5 mb30 d-none d-sm-block">
                     <label class="color-danger mb0">Borrow Balance</label>
                     <div class="borrow-balance">${{toDecimal(borrowBalance, 7)}}</div>
+                </div> -->
+                <div class="col-sm-12 col-md-4 mb30">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-12">
+                            <label class="color-danger mb0">Total Collateral on Market</label>
+                            <div class="borrow-balance">${{toDecimal(borrowBalance, 7)}}</div>
+                        </div>
+                        <div class="col-sm-6 col-md-12" style="margin-top: 0.7em;">
+                            <label class="color-danger mb0">Total Loans on Market</label>
+                            <div class="borrow-balance">${{toDecimal(0, 7)}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 <div class="progress-bar--container mb20">
                     <label class="progress-title">Borrow&nbsp;Limit</label>
                     <label class="progress-percent mr10">{{toDecimal(sliderPercentage, 2)}}%</label>
@@ -43,13 +55,13 @@
                     </div>
                     <label class="ml10">${{ toDecimal(accountLiquidity, 2) }}</label>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
     <section>
         <div class="container-lg">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="portlet portlet--height-full">
                         <div class="portlet__head">
                             <div class="portlet__head-caption">
@@ -91,7 +103,7 @@
                                         <div class="col-4 col-sm-3 text-right">
                                             <div class="balance">
                                                 <div>${{ toDecimal(token.supplyBalance,2) }}</div>
-                                                <div>{{toDecimal(token.cTokenSupplyBalance,2)}} {{ token.symbol }}</div>
+                                                <div>{{toDecimal(token.cTokenSupplyBalance,2)}} <!-- {{ token.symbol }} --></div>
                                             </div>
                                         </div>
                                         <div class="col-4 col-sm-2 text-right">
@@ -122,7 +134,8 @@
                                         (click)="openSupplyModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <div>{{token.symbol}}</div>
+                                                <img src="assets/img/{{ token.symbol }}_logo.svg" class="token-logos" />
+                                                <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
@@ -133,7 +146,7 @@
                                         </div>
                                         <div class="col-4 col-sm-3 text-right">
                                             <div class="balance">
-                                                <div>{{ toDecimal(token.tokenBalance, 2) }} {{ token.symbol }}</div>
+                                                <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
                                             </div>
                                         </div>
                                         <div class="col-4 col-sm-2 text-right">
@@ -142,6 +155,58 @@
                                             </mat-slide-toggle>
                                         </div>
                                     </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="portlet portlet--height-full">
+                        <div class="portlet__head">
+                            <div class="portlet__head-caption">
+                                <div class="portlet__head-title">
+                                    <h3 class="portlet__head-text">Asset Explorer</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="portlet__body py0 px0">
+                            <div *ngIf="dataObj.showSupplyToken" class="asset-list">
+                                <div class="labels row">
+                                    <div class="col-sm-2 col-3">
+                                        <label>Asset</label>
+                                    </div>
+                                    <div class="col-sm-4 col-4 text-left">
+                                        <label>Type</label>
+                                    </div>
+                                    <div class="col-sm-4 col-3 text-left">
+                                        <label>Collateral Value</label>
+                                    </div>
+                                    <div class="col-sm-2 col-2 text-left">
+                                        <label>Tokens</label>
+                                    </div>
+                                </div>
+                                <div class="assets">
+                                    <div class="asset" *ngFor="let token of borrowTokenData; let i = index">
+                                        <div class="col-sm-2 col-3">
+                                            <div class="balance">
+                                                <img src="assets/img/ether_logo.svg" style="max-height: 30px;" />
+                                                <div style="display: inline-block;">{{token.symbol}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 col-4 text-left">
+                                            <div class="balance">
+                                                <div><a href="https://www.konkrete.finance/queen-street">Mortgage, Real Estate</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 col-3 text-left">
+                                            <div class="balance">
+                                                <div>{{token.erc20TotalSupply}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 col-2 text-left">
+                                            <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5">Link</a></div> 
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -361,7 +426,7 @@
     </div>
 </div>
 
-<div *ngIf="loadComplete" class="modal fade" id="borrowModal" tabindex="-1" role="dialog" aria-labelledby="borrowModalLabel"
+<!-- <div *ngIf="loadComplete" class="modal fade" id="borrowModal" tabindex="-1" role="dialog" aria-labelledby="borrowModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content" style="background-color: #E6EDF6;">
@@ -430,11 +495,11 @@
                                                 <input type="text" class="form-control form-control-lg text-center"
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>
-                                            <!-- <div class="col-3 text-center">
+                                            <div class="col-3 text-center">
                           <a href="" class="link">
                             SAFE MAX
                           </a>
-                        </div> -->
+                        </div>
                                         </div>
                                     </form>
                                     <div class="mt30">
@@ -472,7 +537,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div class="modal fade" id="kovanNetModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
     aria-labelledby="kovanNetModalLabel" aria-hidden="true">
