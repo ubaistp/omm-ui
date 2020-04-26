@@ -64,6 +64,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public borrowTokenData = [];
     public supplyBalance;
     public borrowBalance;
+    public assetTokenData = [];
 
     constructor(private httpClient: HttpClient) {
         this.initializeMetaMask();
@@ -95,6 +96,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         // this.supplyTokenData = this.tokenData;
         this.supplyTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
         this.borrowTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
+        this.assetTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
         this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
         if (this.supplyData.length > 0) {
             this.dataObj['showSupply'] = true;

@@ -92,11 +92,11 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.borrowData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC");
         this.supplyTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
         this.borrowTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC");
-        this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
+        this.supplyData = this.supplyData.filter(el => el.tokenBorrowBalance > 0);
         if (this.supplyData.length > 0) {
             this.dataObj['showSupply'] = true;
         }
-        this.borrowData = this.borrowData.filter(el => el.tokenBorrowBalance > 0);
+        this.borrowData = this.borrowData.filter(el => el.cTokenSupplyBalance > 0);
         if (this.borrowData.length > 0) {
             this.dataObj['showBorrow'] = true;
         }

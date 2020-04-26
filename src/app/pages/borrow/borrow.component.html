@@ -179,7 +179,8 @@
                                         (click)="openBorrowModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <div>{{token.symbol}}</div>
+                                                <img src="assets/img/{{ token.symbol }}_logo.svg" alt="{{ token.symbol }} logo" class="token-logos" />
+                                                <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
                                             </div>
                                         </div>
