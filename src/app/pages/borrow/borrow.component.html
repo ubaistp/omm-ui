@@ -79,7 +79,8 @@
                                         (click)="openSupplyModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <div>{{token.symbol}}</div>
+                                                <img style="max-height: 30px;" src="assets/img/ether_logo.svg" alt="Ether logo" />
+                                                <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
@@ -103,7 +104,7 @@
                                 </div>
                             </div>
                             <div *ngIf="dataObj.showSupplyToken" class="asset-list">
-                                <div class="labels row">
+                                <div *ngIf="dataObj.showSupply == false" class="labels row">
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
@@ -122,7 +123,7 @@
                                         (click)="openSupplyModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <img height="40" src="assets/img/ether_logo.svg" />
+                                                <img  style="max-height: 30px;" src="assets/img/ether_logo.svg" alt="Ether logo" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
@@ -200,7 +201,7 @@
                                 </div>
                             </div>
                             <div *ngIf="dataObj.showBorrowToken" class="asset-list">
-                                <div class="labels row">
+                                <div *ngIf="dataObj.showBorrow == false" class="labels row">
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
@@ -219,7 +220,7 @@
                                         (click)="openBorrowModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <img src="assets/img/{{ token.symbol }}_logo.svg" class="token-logos" />
+                                                <img src="assets/img/{{ token.symbol }}_logo.svg" alt="{{ token.symbol }} logo" class="token-logos" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
                                             </div>
@@ -307,7 +308,7 @@
                                 <div class="my30">
                                     <form>
                                         <div class="row align-items-center">
-                                            <div class="col-9">
+                                            <div class="col-12">
                                                 <input type="text" class="form-control form-control-lg text-center"
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>
@@ -428,7 +429,7 @@
                                 <div class="my30">
                                     <form>
                                         <div class="row align-items-center">
-                                            <div class="col-9">
+                                            <div class="col-12">
                                                 <input type="text" class="form-control form-control-lg text-center"
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>

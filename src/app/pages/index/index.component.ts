@@ -90,8 +90,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     filterTable() {
-        this.supplyData = this.tokenData;
-        this.borrowData = this.tokenData;
+        this.supplyData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
+        this.borrowData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
         // this.supplyTokenData = this.tokenData;
         this.supplyTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
         this.borrowTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");

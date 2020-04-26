@@ -79,62 +79,19 @@
                                     <div class="col-sm-3 col-4 text-right d-none d-sm-block">
                                         <label>APY</label>
                                     </div>
-                                    <div class="col-sm-3 col-4 text-right">
+                                    <div class="col-sm-3 offset-sm-1 col-4 text-right">
                                         <label>Wallet</label>
                                     </div>
-                                    <div class="col-sm-2 col-4 text-right">
+                                    <!-- <div class="col-sm-2 col-4 text-right">
                                         <label>Collateral</label>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="assets">
                                     <a class="asset" *ngFor="let token of supplyData; let i = index"
                                         (click)="openSupplyModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <div>{{token.symbol}}</div>
-                                                <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 text-right d-none d-sm-block">
-                                            <div class="balance">
-                                                <div>{{token.supplyApy}}%</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4 col-sm-3 text-right">
-                                            <div class="balance">
-                                                <div>${{ toDecimal(token.supplyBalance,2) }}</div>
-                                                <div>{{toDecimal(token.cTokenSupplyBalance,2)}} <!-- {{ token.symbol }} --></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4 col-sm-2 text-right">
-                                            <mat-slide-toggle [checked]="token.enabled" [disabled]="false"
-                                                (change)="enterExitMarket(token)">
-                                            </mat-slide-toggle>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div *ngIf="dataObj.showSupplyToken" class="asset-list">
-                                <div class="labels row">
-                                    <div class="col-sm-4 col-4">
-                                        <label>Asset</label>
-                                    </div>
-                                    <div class="col-sm-3 col-4 text-right d-none d-sm-block">
-                                        <label>APY</label>
-                                    </div>
-                                    <div class="col-sm-3 col-4 text-right">
-                                        <label>Wallet</label>
-                                    </div>
-                                    <div class="col-sm-2 col-4 text-right">
-                                        <label>Collateral</label>
-                                    </div>
-                                </div>
-                                <div class="assets">
-                                    <a class="asset" *ngFor="let token of supplyTokenData; let i = index"
-                                        (click)="openSupplyModal(token.id)">
-                                        <div class="col-4 col-sm-4">
-                                            <div class="balance">
-                                                <img src="assets/img/{{ token.symbol }}_logo.svg" class="token-logos" />
+                                                <img src="assets/img/{{ token.symbol }}_logo.svg" class="token-logos" alt="{{ token.symbol }} logo" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
@@ -144,16 +101,60 @@
                                                 <div>{{token.supplyApy}}%</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-3 text-right">
+                                        <div class="col-4 col-sm-3 offset-sm-1 text-right">
+                                            <div class="balance">
+                                                <div>${{ toDecimal(token.supplyBalance,2) }}</div>
+                                                <div>{{toDecimal(token.cTokenSupplyBalance,2)}} <!-- {{ token.symbol }} --></div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-4 col-sm-2 text-right">
+                                            <mat-slide-toggle [checked]="token.enabled" [disabled]="false"
+                                                (change)="enterExitMarket(token)">
+                                            </mat-slide-toggle>
+                                        </div> -->
+                                    </a>
+                                </div>
+                            </div>
+                            <div *ngIf="dataObj.showSupplyToken" class="asset-list">
+                                <div *ngIf="dataObj.showSupply == false" class="labels row">
+                                    <div class="col-sm-4 col-4">
+                                        <label>Asset</label>
+                                    </div>
+                                    <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                                        <label>APY</label>
+                                    </div>
+                                    <div class="col-sm-3 offset-sm-1 col-4 text-right">
+                                        <label>Wallet</label>
+                                    </div>
+                                    <!-- <div class="col-sm-2 col-4 text-right">
+                                        <label>Collateral</label>
+                                    </div> -->
+                                </div>
+                                <div class="assets">
+                                    <a class="asset" *ngFor="let token of supplyTokenData; let i = index"
+                                        (click)="openSupplyModal(token.id)">
+                                        <div class="col-4 col-sm-4">
+                                            <div class="balance">
+                                                <img src="assets/img/{{ token.symbol }}_logo.svg" alt="{{ token.symbol }} logo" class="token-logos" />
+                                                <div style="display: inline-block;">{{token.symbol}}</div>
+                                                <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 text-right d-none d-sm-block">
+                                            <div class="balance">
+                                                <div>{{token.supplyApy}}%</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 col-sm-3 offset-sm-1 text-right">
                                             <div class="balance">
                                                 <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-2 text-right">
+                                        <!-- <div class="col-4 col-sm-2 text-right">
                                             <mat-slide-toggle [checked]="token.enabled" [disabled]="false"
                                                 (change)="enterExitMarket(token)">
                                             </mat-slide-toggle>
-                                        </div>
+                                        </div> -->
                                     </a>
                                 </div>
                             </div>
@@ -170,7 +171,7 @@
                             </div>
                         </div>
                         <div class="portlet__body py0 px0">
-                            <div *ngIf="dataObj.showSupplyToken" class="asset-list">
+                            <div class="asset-list">
                                 <div class="labels row">
                                     <div class="col-sm-2 col-3">
                                         <label>Asset</label>
@@ -186,10 +187,10 @@
                                     </div>
                                 </div>
                                 <div class="assets">
-                                    <div class="asset" *ngFor="let token of borrowTokenData; let i = index">
+                                    <div class="asset" style="cursor: default;" *ngFor="let token of borrowTokenData; let i = index">
                                         <div class="col-sm-2 col-3">
                                             <div class="balance">
-                                                <img src="assets/img/ether_logo.svg" style="max-height: 30px;" />
+                                                <img src="assets/img/ether_logo.svg" style="max-height: 30px;" alt="Ether logo" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                             </div>
                                         </div>
@@ -370,7 +371,7 @@
                                 <div class="my30">
                                     <form>
                                         <div class="row align-items-center">
-                                            <div class="col-9">
+                                            <div class="col-12">
                                                 <input type="text" class="form-control form-control-lg text-center"
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>

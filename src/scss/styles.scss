@@ -210,7 +210,7 @@ table {
 }
 .asset-list {
   &:not(:first-child){
-    border-top: 3px solid rgba($color: $color-dark, $alpha: 0.1);
+    border-top: 3px solid rgba($color: $color-dark, $alpha: 0.2);
   }
   [class*="col"] {
     padding: 0;
