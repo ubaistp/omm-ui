@@ -76,11 +76,14 @@
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
-                                    <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                                    <div class="col-sm-3 col-3 text-left d-none d-sm-block">
                                         <label>APY</label>
                                     </div>
-                                    <div class="col-sm-3 offset-sm-1 col-4 text-right">
-                                        <label>Wallet</label>
+                                    <div class="col-sm-3 col-3 text-left">
+                                        <label>Non Deployed</label>
+                                    </div>
+                                    <div class="col-sm-2 col-3 text-left">
+                                        <label>Deployed</label>
                                     </div>
                                     <!-- <div class="col-sm-2 col-4 text-right">
                                         <label>Collateral</label>
@@ -89,19 +92,24 @@
                                 <div class="assets">
                                     <a class="asset" *ngFor="let token of supplyData; let i = index"
                                         (click)="openSupplyModal(token.id)">
-                                        <div class="col-4 col-sm-4">
+                                        <div class="col-sm-4 col-4">
                                             <div class="balance">
                                                 <img src="assets/img/{{ token.symbol }}_logo.svg" class="token-logos" alt="{{ token.symbol }} logo" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 text-right d-none d-sm-block">
+                                        <div class="col-sm-3 col-3 text-left d-none d-sm-block">
                                             <div class="balance">
                                                 <div>{{token.supplyApy}}%</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-3 offset-sm-1 text-right">
+                                        <div class="col-sm-3 col-3 text-left">
+                                            <div class="balance">
+                                                <div>{{toDecimal(token.tokenBalance, 2)}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 col-3 text-left">
                                             <div class="balance">
                                                 <div>${{ toDecimal(token.supplyBalance,2) }}</div>
                                                 <div>{{toDecimal(token.cTokenSupplyBalance,2)}} <!-- {{ token.symbol }} --></div>
@@ -120,11 +128,14 @@
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
-                                    <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                                    <div class="col-sm-3 col-3 text-left d-none d-sm-block">
                                         <label>APY</label>
                                     </div>
-                                    <div class="col-sm-3 offset-sm-1 col-4 text-right">
-                                        <label>Wallet</label>
+                                    <div class="col-sm-3 col-3 text-left">
+                                        <label>Non Deployed</label>
+                                    </div>
+                                    <div class="col-sm-2 col-3 text-left">
+                                        <label>Deployed</label>
                                     </div>
                                     <!-- <div class="col-sm-2 col-4 text-right">
                                         <label>Collateral</label>
@@ -140,14 +151,19 @@
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 text-right d-none d-sm-block">
+                                        <div class="col-sm-3 col-3 text-left d-none d-sm-block">
                                             <div class="balance">
                                                 <div>{{token.supplyApy}}%</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-3 offset-sm-1 text-right">
+                                        <div class="col-sm-3 col-3 text-left">
                                             <div class="balance">
-                                                <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
+                                                <div>{{toDecimal(token.tokenBalance, 2)}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 col-3 text-left">
+                                            <div class="balance">
+                                                <div>${{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
                                             </div>
                                         </div>
                                         <!-- <div class="col-4 col-sm-2 text-right">
@@ -196,7 +212,7 @@
                                         </div>
                                         <div class="col-sm-4 col-4 text-left">
                                             <div class="balance">
-                                                <div><a href="https://www.konkrete.finance/queen-street">Mortgage, Real Estate</a></div>
+                                                <div><a href="https://www.konkrete.finance/queen-street" target="_blank">Mortgage, Real Estate</a></div>
                                             </div>
                                         </div>
                                         <div class="col-sm-4 col-3 text-left">
@@ -205,7 +221,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-2 col-2 text-left">
-                                            <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5">Link</a></div> 
+                                            <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5" target="_blank">Link</a></div> 
                                         </div>
                                     </div>
                                 </div>
@@ -338,12 +354,17 @@
                                 <span class="description">Price</span>
                                 <span>$ {{tokenData[selectedTokenIndex].priceUsd}}</span>
                             </div>
-                            <div class="calculation">
+                            <!-- <div class="calculation">
                                 <span class="description">Collateral Factor</span>
                                 <span>{{tokenData[selectedTokenIndex].collateralFactor}}%</span>
+                            </div> -->
+                            <div class="calculation">
+                                <span class="description">Available to Withdraw</span>
+                                <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
+                                    {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                             <div class="calculation">
-                                <span class="description">Wallet</span>
+                                <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
@@ -384,7 +405,7 @@
                                     </form>
                                     <div class="mt30">
                                         <div class="calculation">
-                                            <span class="description">Supply Balance</span>
+                                            <span class="description">Deployed</span>
                                             <span>
                                                 ${{toDecimal(tokenData[selectedTokenIndex].supplyBalance, 3)}}
                                                 <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>
@@ -408,13 +429,12 @@
                                         *ngIf="typeViewSupply == 'supply'">Supply</button>
                                 </div>
                             </div>
-                            <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
+                            <div class="form mt70" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
-                                    <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
+                                    <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.svg" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
-                                    To use {{tokenData[selectedTokenIndex].symbol}} with the Konkrete, you need to enable
-                                    it first.
+                                    To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
                                 </div>
                                 <button class="btn btn-lg btn-full btn-secondary"
                                     (click)="enableSupplyCollateral()">Enable</button>
