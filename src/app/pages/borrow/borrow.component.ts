@@ -67,8 +67,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
-        
     }
+
     ngAfterViewInit() {
         if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
             return;
@@ -521,6 +521,31 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async mint() {
+    //     const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+    //     const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+    //     const decimals = await TokenContract.decimals();
+    //     const mulBy = 10 ** parseFloat(decimals);
+    //     let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+    //     amountInDec = amountInDec.toString();
+
+    //     const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+    //     const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
+    //     const tx = await cTokenContract.mint(amountInDec);
+    //     await this.web3.waitForTransaction(tx.hash);
+    //     window.location.reload();
+    }
+
+    public async withdrawUnderlying() {
+    //     // const tokenName = this.tokenData[this.selectedTokenIndex].name;
+    //     // const cTokenContract = this.Contracts[`c${tokenName}`];
+    //     const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+    //     const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
+    //     const tx = await cTokenContract.redeemUnderlying(ethers.utils.parseEther(this.amountInput));
+    //     await this.web3.waitForTransaction(tx.hash);
+    //     window.location.reload();
+    }
+
+    public async borrow() {
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
         const decimals = await TokenContract.decimals();
@@ -530,37 +555,22 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.mint(amountInDec);
-        await this.web3.waitForTransaction(tx.hash);
-        window.location.reload();
-    }
-
-    public async withdrawUnderlying() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
-        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
-        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.redeemUnderlying(ethers.utils.parseEther(this.amountInput));
-        await this.web3.waitForTransaction(tx.hash);
-        window.location.reload();
-    }
-
-    public async borrow() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
-        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
-        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.borrow(ethers.utils.parseEther(this.amountInput), { gasLimit: 400000 });
+        const tx = await cTokenContract.borrow(amountInDec, { gasLimit: 500000 });
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
 
     public async repayBorrow() {
-        // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-        // const cTokenContract = this.Contracts[`c${tokenName}`];
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
+
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.repayBorrow(ethers.utils.parseEther(this.amountInput), { gasLimit: 350000 });
+        const tx = await cTokenContract.repayBorrow(amountInDec, { gasLimit: 450000 });
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
