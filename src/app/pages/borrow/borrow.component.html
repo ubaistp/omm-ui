@@ -346,13 +346,12 @@
                                         *ngIf="typeViewSupply == 'supply'">Supply</button>
                                 </div>
                             </div>
-                            <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
+                            <div class="form mt70" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
-                                    <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
+                                    <img src="assets/img/ether_logo.svg" style="max-height: 80px;" alt="Ether logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
-                                    To use {{tokenData[selectedTokenIndex].symbol}} with the Konkrete, you need to enable
-                                    it first.
+                                    To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
                                 </div>
                                 <button class="btn btn-lg btn-full btn-secondary"
                                     (click)="enableSupplyCollateral()">Enable</button>
@@ -461,11 +460,10 @@
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
-                                    <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
+                                    <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.svg" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
-                                    To use {{tokenData[selectedTokenIndex].symbol}} with the Konkrete, you need to enable
-                                    it first.
+                                    To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
                                 </div>
                                 <button class="btn btn-lg btn-full btn-danger"
                                     (click)="enableBorrowCollateral()">Enable</button>
