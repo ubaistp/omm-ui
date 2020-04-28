@@ -25,7 +25,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private ethereum: any;
     private web3: any;
-    public provider: any;
+    // public provider: any;
     public userAddress: any;
     public Contracts: any;
     public contractAddresses: any;
@@ -45,28 +45,32 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public callCount = 0;
     public numListedMarkets = 0;
     public networkData = {name: null, isMainnet: false};
+    public cashTokenSymbols = [];
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
-    public canvas: any;
-    public ctx: any;
-    public supplyData = [];
-    public borrowData = [];
-    public dataObj = {
-        showBorrow: false,
-        showBorrowToken: false,
-        showSupply: false,
-        showSupplyToken: false
-    };
-    public supplyTokenData = [];
-    public borrowTokenData = [];
-    public supplyBalance;
-    public borrowBalance;
+    public cashTokenData = [];
     public assetTokenData = [];
+    // public canvas: any;
+    // public ctx: any;
+    // public supplyData = [];
+    // public borrowData = [];
+    // public dataObj = {
+    //     showBorrow: false,
+    //     showBorrowToken: false,
+    //     showSupply: false,
+    //     showSupplyToken: false
+    // };
+    // public supplyTokenData = [];
+    // public borrowTokenData = [];
+    // public supplyBalance;
+    // public borrowBalance;
+    // public assetTokenData = [];
 
     constructor(private httpClient: HttpClient) {
+        this.cashTokenSymbols = ['DAI', 'USDC', 'USDT'];
         this.initializeMetaMask();
     }
 
@@ -91,64 +95,92 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     filterTable() {
-        this.supplyData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
-        this.borrowData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
+        this.cashTokenData = this.filterCashTokenArray();
+        this.assetTokenData = this.filterAssetTokenArray();
+        // this.supplyData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
+        // this.borrowData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
         // this.supplyTokenData = this.tokenData;
-        this.supplyTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
-        this.borrowTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        this.assetTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
-        if (this.supplyData.length > 0) {
-            this.dataObj['showSupply'] = true;
-        }
-        this.borrowData = this.borrowData.filter(el => el.tokenBorrowBalance > 0);
-        if (this.borrowData.length > 0) {
-            this.dataObj['showBorrow'] = true;
-        }
-        this.supplyTokenData = this.supplyTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0);
-        if (this.supplyTokenData.length > 0) {
-            this.dataObj['showSupplyToken'] = true;
-        }
-        this.borrowTokenData = this.borrowTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0);
-        if (this.borrowTokenData.length > 0) {
-            this.dataObj['showBorrowToken'] = true;
-        }
+        // this.supplyTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
+        // this.borrowTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
+        // this.assetTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
+        // this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
+        // if (this.supplyData.length > 0) {
+        //     this.dataObj['showSupply'] = true;
+        // }
+        // this.borrowData = this.borrowData.filter(el => el.tokenBorrowBalance > 0);
+        // if (this.borrowData.length > 0) {
+        //     this.dataObj['showBorrow'] = true;
+        // }
+        // this.supplyTokenData = this.supplyTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0);
+        // if (this.supplyTokenData.length > 0) {
+        //     this.dataObj['showSupplyToken'] = true;
+        // }
+        // this.borrowTokenData = this.borrowTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0);
+        // if (this.borrowTokenData.length > 0) {
+        //     this.dataObj['showBorrowToken'] = true;
+        // }
+      }
 
-        this.tokenData.filter(el => el['supplyBalance'] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)));
-        this.supplyBalance = 0;
-        this.tokenData.filter(el => {
-          if (parseFloat(el.supplyBalance) >= 0) {
-            this.supplyBalance = this.supplyBalance + el.supplyBalance;
+    // private calcTotalSupplyBorrows() {
+        // this.tokenData.filter(el => el['supplyBalance'] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)));
+        // this.supplyBalance = 0;
+        // this.tokenData.filter(el => {
+        //   if (parseFloat(el.cTokenSupplyBalance) >= 0) {
+        //     this.supplyBalance = this.supplyBalance + el.cTokenSupplyBalance;
+        //   }
+        // });
+
+        // this.tokenData.filter(el => el['borrowBalance'] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)));
+        // this.borrowBalance = 0;
+        // this.tokenData.filter(el => {
+        //   if (parseFloat(el.tokenBorrowBalance) >= 0) {
+        //     this.borrowBalance = this.borrowBalance + el.tokenBorrowBalance;
+        //   }
+        // });
+    // }
+
+    public isCashToken(token) {
+        if (token === undefined) { return false; }
+
+        this.cashTokenSymbols.forEach(cashSymbol => {
+          if (cashSymbol.toUpperCase() === token.symbol.toUpperCase()) {
+            return true;
           }
         });
+        return false;
+    }
 
-        this.tokenData.filter(el => el['borrowBalance'] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)));
-        this.borrowBalance = 0;
-        this.tokenData.filter(el => {
-          if (parseFloat(el.borrowBalance) >= 0) {
-            this.borrowBalance = this.borrowBalance + el.borrowBalance;
-          }
-        });
+    public filterCashTokenArray() {
+        if (this.tokenData.length === 0) { return; }
+
+        const result = this.tokenData.filter(token => this.cashTokenSymbols.includes(token.symbol));
+        return result;
+    }
+
+    public filterAssetTokenArray() {
+      if (this.tokenData.length === 0) { return; }
+
+      const result = this.tokenData.filter(token => !this.cashTokenSymbols.includes(token.symbol));
+      return result;
     }
 
     public setSelect2() {
       setTimeout(() => {
           $('#supply').select2({
-            // data: this.tokenData,
-            data: this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" ),
+            data: this.cashTokenData,
             dropdownCssClass: 'bigdrop',
             minimumResultsForSearch: Infinity,
             templateResult: this.formatCountrySelection,
             dropdownParent: $('#supplyGroup')
           });
-          $('#borrow').select2({
-              // data: this.tokenData,
-              data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
-              dropdownCssClass: 'bigdrop',
-              minimumResultsForSearch: Infinity,
-              templateResult: this.formatCountrySelection,
-              dropdownParent: $('#borrowGroup')
-          });
+          // $('#borrow').select2({
+          //     // data: this.tokenData,
+          //     data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
+          //     dropdownCssClass: 'bigdrop',
+          //     minimumResultsForSearch: Infinity,
+          //     templateResult: this.formatCountrySelection,
+          //     dropdownParent: $('#borrowGroup')
+          // });
           // tslint:disable-next-line: only-arrow-functions
           $('.select2-main').one('select2:open', function(e) {
               $('input.select2-search__field').prop('placeholder', 'Search');
@@ -160,15 +192,15 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         const secondsInYear = 31622400;
         const updateIntervalInSec = 7;
         this.polling = setInterval(() => {
-          if (this.toDecimal(this.supplyBalance, 7) > 0 && this.apyData.posApy > 0) {
+          if (this.toDecimal(this.totalSupplyBalance, 7) > 0 && this.apyData.posApy > 0) {
             const posApyPerSec = this.apyData.posApy / secondsInYear;
             const posApyPerInterval = posApyPerSec * updateIntervalInSec;
-            this.supplyBalance += (this.supplyBalance * posApyPerInterval / 100);
+            this.totalSupplyBalance += (this.totalSupplyBalance * posApyPerInterval / 100);
           }
-          if (this.toDecimal(this.borrowBalance, 7) > 0 && this.apyData.negApy > 0) {
+          if (this.toDecimal(this.totalBorrowBalance, 7) > 0 && this.apyData.negApy > 0) {
             const negApyPerSec = this.apyData.negApy / secondsInYear;
             const negApyPerInterval = negApyPerSec * updateIntervalInSec;
-            this.borrowBalance += (this.borrowBalance * negApyPerInterval / 100);
+            this.totalBorrowBalance += (this.totalBorrowBalance * negApyPerInterval / 100);
           }
         }, updateIntervalInSec * 1000);
     }
@@ -217,7 +249,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         this.fetchTokens(allListedTokens);
-        // console.log(this.tokenData);
+        console.log(this.tokenData);
     }
 
     public async afterInitToken() {
@@ -235,7 +267,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.calcNetApy();
           this.setSelect2();
           if (this.accountLiquidity !== 0) {
-              this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
+              this.sliderPercentage = (this.totalBorrowBalance) / (this.accountLiquidity) * 100;
           }
           this.loadComplete = true;
         }, 1200);
@@ -453,11 +485,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         let posApy = 0;
         let negApy = 0;
         this.tokenData.forEach(token => {
-            if (parseFloat(token.supplyBalance) > 0 && parseFloat(token.supplyApy) > 0 && parseFloat(this.supplyBalance) > 0) {
-                posApy += parseFloat(token.supplyBalance) * parseFloat(token.supplyApy) / parseFloat(this.supplyBalance);
+            if (parseFloat(token.cTokenSupplyBalance) > 0 && parseFloat(token.supplyApy) > 0 && (this.totalSupplyBalance) > 0) {
+                posApy += parseFloat(token.cTokenSupplyBalance) * parseFloat(token.supplyApy) / (this.totalSupplyBalance);
             }
-            if (parseFloat(token.borrowBalance) > 0 && parseFloat(token.borrowApy) > 0 && parseFloat(this.borrowBalance) > 0) {
-                negApy += parseFloat(token.borrowBalance) * parseFloat(token.borrowApy) / parseFloat(this.borrowBalance);
+            if (parseFloat(token.tokenBorrowBalance) > 0 && parseFloat(token.borrowApy) > 0 && (this.totalBorrowBalance) > 0) {
+                negApy += parseFloat(token.tokenBorrowBalance) * parseFloat(token.borrowApy) / (this.totalBorrowBalance);
             }
         });
         this.apyData.netApy = posApy - negApy;
@@ -626,16 +658,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         }.bind(this));
         $('#supplyModal').modal('show');
     }
-    openBorrowModal(i) {
-        this.amountInput = null;
-        $('#borrow').val(this.tokenData[i].id);
-        this.selectedTokenIndex = $('#borrow').val();
-        $('#borrow').trigger('change');
-        $('#borrow').on('change', function() {
-            this.selectedTokenIndex = $('#borrow').val();
-        }.bind(this));
-        $('#borrowModal').modal('show');
-    }
+    // openBorrowModal(i) {
+    //     this.amountInput = null;
+    //     $('#borrow').val(this.tokenData[i].id);
+    //     this.selectedTokenIndex = $('#borrow').val();
+    //     $('#borrow').trigger('change');
+    //     $('#borrow').on('change', function() {
+    //         this.selectedTokenIndex = $('#borrow').val();
+    //     }.bind(this));
+    //     $('#borrowModal').modal('show');
+    // }
 
     enableSupplyCollateral() {
         this.collateralSupplyEnable = true;
