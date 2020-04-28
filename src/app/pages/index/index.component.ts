@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
@@ -46,13 +45,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public numListedMarkets = 0;
     public networkData = {name: null, isMainnet: false};
     public cashTokenSymbols = [];
+    public cashTokenData = [];
+    public assetTokenData = [];
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
-    public cashTokenData = [];
-    public assetTokenData = [];
     // public canvas: any;
     // public ctx: any;
     // public supplyData = [];
@@ -69,7 +68,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     // public borrowBalance;
     // public assetTokenData = [];
 
-    constructor(private httpClient: HttpClient) {
+    constructor() {
         this.cashTokenSymbols = ['DAI', 'USDC', 'USDT'];
         this.initializeMetaMask();
     }
@@ -249,7 +248,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         this.fetchTokens(allListedTokens);
-        console.log(this.tokenData);
+        // console.log(this.tokenData);
     }
 
     public async afterInitToken() {
@@ -499,8 +498,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public async getAccountLiquidity() {
         this.accountLiquidity = 0;
         this.tokenData.forEach(token => {
-            if (parseFloat(token.supplyBalance) > 0 && token.enabled === true) {
-                this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.supplyBalance) / 100);
+            if (parseFloat(token.cTokenSupplyBalance) > 0 && token.enabled === true) {
+                this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.cTokenSupplyBalance) / 100);
             }
         });
     }

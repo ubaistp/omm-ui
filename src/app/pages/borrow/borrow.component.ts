@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
@@ -25,12 +24,12 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private ethereum: any;
     private web3: any;
-    public provider: any;
+    // public provider: any;
     public userAddress: any;
     public Contracts: any;
     public contractAddresses: any;
     public BLOCKS_YEAR = 2102400;
-    public DECIMAL_8 = 10 ** 8;
+    // public DECIMAL_8 = 10 ** 8;
     public DECIMAL_18 = 10 ** 18;
     public tokenData: any;
     public accountLiquidity = 0;
@@ -42,28 +41,21 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     public apyData = {netApy: 0, posApy: 0, negApy: 0};
     public loadComplete = false;
     public polling: any;
+    public callCount = 0;
+    public numListedMarkets = 0;
+    public networkData = {name: null, isMainnet: false};
+    public cashTokenSymbols = [];
+    public cashTokenData = [];
+    public assetTokenData = [];
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
-    public canvas: any;
-    public ctx: any;
-    public supplyData = [];
-    public borrowData = [];
-    public dataObj = {
-        showBorrow: false,
-        showBorrowToken: false,
-        showSupply: false,
-        showSupplyToken: false
-    };
-    public supplyTokenData = [];
-    public borrowTokenData = [];
-    public supplyBalance;
-    public borrowBalance;
 
-    constructor(private httpClient: HttpClient) {
-        this.initializeMetaMask();
+    constructor() {
+      this.cashTokenSymbols = ['DAI', 'USDC', 'USDT'];
+      this.initializeMetaMask();
     }
 
     ngOnInit() {
@@ -88,59 +80,47 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     filterTable() {
-        this.supplyData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        this.borrowData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC");
-        this.supplyTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        this.borrowTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC");
-        this.supplyData = this.supplyData.filter(el => el.tokenBorrowBalance > 0);
-        if (this.supplyData.length > 0) {
-            this.dataObj['showSupply'] = true;
-        }
-        this.borrowData = this.borrowData.filter(el => el.cTokenSupplyBalance > 0);
-        if (this.borrowData.length > 0) {
-            this.dataObj['showBorrow'] = true;
-        }
-        // this.supplyTokenData = this.supplyTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0);
-        this.supplyTokenData = this.supplyTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0);
-        if (this.supplyTokenData.length > 0) {
-            this.dataObj['showSupplyToken'] = true;
-        }
-        // this.borrowTokenData = this.borrowTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0);
-        this.borrowTokenData = this.borrowTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0);
-        if (this.borrowTokenData.length > 0) {
-            this.dataObj['showBorrowToken'] = true;
-        }
+        this.cashTokenData = this.filterCashTokenArray();
+        this.assetTokenData = this.filterAssetTokenArray();
+    }
 
-        this.tokenData.filter(el => el['supplyBalance'] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)));
-        this.supplyBalance = 0;
-        this.tokenData.filter(el => {
-          if (parseFloat(el.supplyBalance) >= 0) {
-            this.supplyBalance = this.supplyBalance + el.supplyBalance;
-          }
-        });
+    public isCashToken(token) {
+      if (token === undefined) { return false; }
 
-        this.tokenData.filter(el => el['borrowBalance'] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)));
-        this.borrowBalance = 0;
-        this.tokenData.filter(el => {
-          if (parseFloat(el.borrowBalance) >= 0) {
-            this.borrowBalance = this.borrowBalance + el.borrowBalance;
-          }
-        });
+      this.cashTokenSymbols.forEach(cashSymbol => {
+        if (cashSymbol.toUpperCase() === token.symbol.toUpperCase()) {
+          return true;
+        }
+      });
+      return false;
+    }
+
+    public filterCashTokenArray() {
+        if (this.tokenData.length === 0) { return; }
+
+        const result = this.tokenData.filter(token => this.cashTokenSymbols.includes(token.symbol));
+        return result;
+    }
+
+    public filterAssetTokenArray() {
+      if (this.tokenData.length === 0) { return; }
+
+      const result = this.tokenData.filter(token => !this.cashTokenSymbols.includes(token.symbol));
+      return result;
     }
 
     public setSelect2() {
       setTimeout(() => {
           $('#supply').select2({
-            // data: this.tokenData,
-            data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
+            data: this.assetTokenData,
+            // data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
             dropdownCssClass: 'bigdrop',
             minimumResultsForSearch: Infinity,
             templateResult: this.formatCountrySelection,
             dropdownParent: $('#supplyGroup')
           });
           $('#borrow').select2({
-              // data: this.tokenData,
-              data: this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" ),
+              data: this.cashTokenData,
               dropdownCssClass: 'bigdrop',
               minimumResultsForSearch: Infinity,
               templateResult: this.formatCountrySelection,
@@ -157,15 +137,15 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         const secondsInYear = 31622400;
         const updateIntervalInSec = 7;
         this.polling = setInterval(() => {
-          if (this.toDecimal(this.supplyBalance, 7) > 0 && this.apyData.posApy > 0) {
+          if (this.toDecimal(this.totalSupplyBalance, 7) > 0 && this.apyData.posApy > 0) {
             const posApyPerSec = this.apyData.posApy / secondsInYear;
             const posApyPerInterval = posApyPerSec * updateIntervalInSec;
-            this.supplyBalance += (this.supplyBalance * posApyPerInterval / 100);
+            this.totalSupplyBalance += (this.totalSupplyBalance * posApyPerInterval / 100);
           }
-          if (this.toDecimal(this.borrowBalance, 7) > 0 && this.apyData.negApy > 0) {
+          if (this.toDecimal(this.totalBorrowBalance, 7) > 0 && this.apyData.negApy > 0) {
             const negApyPerSec = this.apyData.negApy / secondsInYear;
             const negApyPerInterval = negApyPerSec * updateIntervalInSec;
-            this.borrowBalance += (this.borrowBalance * negApyPerInterval / 100);
+            this.totalBorrowBalance += (this.totalBorrowBalance * negApyPerInterval / 100);
           }
         }, updateIntervalInSec * 1000);
     }
@@ -217,18 +197,23 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async afterInitToken() {
-        // if (this.callCount < this.tokenData.length) {
-        //   return;
-        // }
-        await this.getEnteredMarkets();
-        this.filterTable();
-        await this.getAccountLiquidity();
-        this.calcNetApy();
-        this.setSelect2();
-        if (this.accountLiquidity !== 0) {
-            this.sliderPercentage = parseFloat(this.borrowBalance) / (this.accountLiquidity) * 100;
+        const ignoredMarkets = 1;
+        this.callCount++;
+        if (this.callCount < this.numListedMarkets - ignoredMarkets) {
+          return;
         }
-        this.loadComplete = true;
+        // timeout for all async calls to resolve
+        setTimeout(async () => {
+          await this.getEnteredMarkets();
+          this.filterTable();
+          await this.getAccountLiquidity();
+          this.calcNetApy();
+          this.setSelect2();
+          if (this.accountLiquidity !== 0) {
+              this.sliderPercentage = (this.totalBorrowBalance) / (this.accountLiquidity) * 100;
+          }
+          this.loadComplete = true;
+        }, 1200);
         cApp.unblockPage();
     }
 
@@ -237,8 +222,10 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.contractAddresses = {};
         const network = await this.web3.getNetwork();
         if (network.name === 'homestead') {
+            this.networkData.name = 'mainnet';
             contractAddresses = blockchainConstants.mainnet;
         } else {
+            this.networkData.name = network.name;
             contractAddresses = blockchainConstants[network.name];
         }
         this.contractAddresses = contractAddresses;
@@ -283,57 +270,61 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private async initToken(token) {
-        token.isListed = true;
-        this.getPrice(token.cTokenAddress).then(priceUsd => {
-          token.priceUsd = priceUsd;
-          this.getUserSupplyBalance(cTokenContract, token).then(cTokenSupplyBalance => {
-            token.cTokenSupplyBalance = parseFloat(cTokenSupplyBalance);
-          });
-          this.getUserBorrowBalance(cTokenContract, token).then(tokenBorrowBalance => {
-            token.tokenBorrowBalance = parseFloat(tokenBorrowBalance) / 10 ** 18;
-          });
+      token.isListed = true;
+      const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
+      this.getPrice(token.cTokenAddress).then(priceUsd => {
+        token.priceUsd = priceUsd;
+        this.getUserSupplyBalance(cTokenContract, token).then(cTokenSupplyBalance => {
+          token.cTokenSupplyBalance = parseFloat(cTokenSupplyBalance);
         });
-        const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
-        cTokenContract.name().then(cTokenName => {
-          token.cTokenName = cTokenName;
+        this.getUserBorrowBalance(cTokenContract, token).then(tokenBorrowBalance => {
+          token.tokenBorrowBalance = parseFloat(tokenBorrowBalance);
         });
-        cTokenContract.underlying().then(underlyingTokenAddress => {
-          token.tokenAddress = underlyingTokenAddress;
-          const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
-          tokenContract.symbol().then((symbol) => {
-            symbol = this.capitalize(symbol);
-            token.symbol = symbol;
-            token.text = token.symbol;
-          });
-          tokenContract.name().then(async (name) => {
-            token.name = name;
+      });
+      cTokenContract.name().then(cTokenName => {
+        token.cTokenName = cTokenName;
+      });
+      cTokenContract.underlying().then(underlyingTokenAddress => {
+        token.tokenAddress = underlyingTokenAddress;
+        const tokenContract = this.initContract(underlyingTokenAddress, IVTDemoABI.abi);
+        tokenContract.decimals().then(async (decimals) => {
+          const divBy = 10 ** parseFloat(decimals);
+          token.erc20Decimals = decimals;
+          this.getUserTokenBalance(tokenContract).then(tokenBalance => {
+            token.tokenBalance = parseFloat(tokenBalance) / divBy;
             this.afterInitToken();
-
           });
-          tokenContract.decimals().then(async (decimals) => {
-            const divBy = 10 ** parseFloat(decimals);
-            token.erc20Decimals = decimals;
-            this.getUserTokenBalance(tokenContract).then(tokenBalance => {
-              token.tokenBalance = parseFloat(tokenBalance) / divBy;
-            });
-          });
-          this.checkApproved(tokenContract, token.cTokenAddress).then(approved => {
-            token.approved = approved;
+          tokenContract.totalSupply().then((totalSupply) => {
+            totalSupply = this.getNumber(totalSupply);
+            token.erc20TotalSupply = parseFloat(totalSupply) / 10 ** parseFloat(token.erc20Decimals);
           });
         });
-        this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
-          token.collateralFactor = collateralFactor;
+        tokenContract.symbol().then((symbol) => {
+          symbol = this.capitalize(symbol);
+          token.symbol = symbol;
+          token.text = token.symbol;
         });
-        this.getAPY(cTokenContract).then(apy => {
-          token.borrowApy = apy[0];
-          token.supplyApy = apy[1];
+        tokenContract.name().then(async (name) => {
+          token.name = name;
+          // this.afterInitToken();
         });
-        this.getUtilizationRate(cTokenContract).then(utilizationRate => {
-          token.utilizationRate = parseFloat(utilizationRate) / 10 ** 18;
+        this.checkApproved(tokenContract, token.cTokenAddress).then(approved => {
+          token.approved = approved;
         });
-        this.getAvailableBorrow(cTokenContract).then(availableBorrow => {
-          token.availableBorrow = availableBorrow;
-        });
+      });
+      this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
+        token.collateralFactor = collateralFactor;
+      });
+      this.getAPY(cTokenContract).then(apy => {
+        token.borrowApy = apy[0];
+        token.supplyApy = apy[1];
+      });
+      this.getUtilizationRate(cTokenContract).then(utilizationRate => {
+        token.utilizationRate = parseFloat(utilizationRate) / 10 ** 18;
+      });
+      this.getAvailableBorrow(cTokenContract).then(availableBorrow => {
+        token.availableBorrow = availableBorrow;
+      });
     }
 
     private initAllContracts(contractAddresses) {
@@ -398,38 +389,49 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         return tokenBalance;
     }
     public async getUserSupplyBalance(cTokenContract, token) {
-        let tokenBalance = await cTokenContract.balanceOf(this.userAddress);
-        tokenBalance = this.getNumber(tokenBalance);
+      let tokenBalance = await cTokenContract.balanceOf(this.userAddress);
+      tokenBalance = this.getNumber(tokenBalance);
 
-        if (parseFloat(tokenBalance) > 0) {
-            let exchangeRateStored = await cTokenContract.exchangeRateStored();
-            exchangeRateStored = this.getNumber(exchangeRateStored);
-            const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / 10 ** 36;
-            tokenBalance = bal;
-            const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
-            this.totalSupplyBalance += supplyBal;
-        }
-        return tokenBalance;
+      if (parseFloat(tokenBalance) > 0) {
+          const underlying = await cTokenContract.underlying();
+          const tokenContract = this.initContract(underlying, ERC20Detailed.abi);
+          const tokenDecimals = await tokenContract.decimals();
+          const divBy = this.DECIMAL_18 * (10 ** parseFloat(tokenDecimals));
+
+          let exchangeRateStored = await cTokenContract.exchangeRateStored();
+          exchangeRateStored = this.getNumber(exchangeRateStored);
+          const bal = (parseFloat(tokenBalance) * parseFloat(exchangeRateStored)) / divBy;
+          tokenBalance = bal;
+          const supplyBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance));
+          this.totalSupplyBalance += supplyBal;
+      }
+      return tokenBalance;
     }
 
     public async getUserBorrowBalance(cTokenContract, token) {
-        let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
-        tokenBalance = this.getNumber(tokenBalance);
-        if (parseFloat(tokenBalance) > 0) {
-            const borrowBal = parseFloat(token.priceUsd) * (parseFloat(tokenBalance) / 10 ** 8);
-            this.totalBorrowBalance += borrowBal;
-        }
-        return tokenBalance;
+      let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
+      tokenBalance = this.getNumber(tokenBalance);
+      if (parseFloat(tokenBalance) > 0) {
+          const underlying = await cTokenContract.underlying();
+          const tokenContract = this.initContract(underlying, ERC20Detailed.abi);
+          const tokenDecimals = await tokenContract.decimals();
+
+          tokenBalance = parseFloat(tokenBalance) / 10 ** parseFloat(tokenDecimals);
+          const borrowBal = parseFloat(token.priceUsd) * parseFloat(tokenBalance);
+          this.totalBorrowBalance += borrowBal;
+      }
+      return tokenBalance;
     }
+
     public calcNetApy() {
         let posApy = 0;
         let negApy = 0;
         this.tokenData.forEach(token => {
-            if (parseFloat(token.supplyBalance) > 0 && parseFloat(token.supplyApy) > 0 && parseFloat(this.supplyBalance) > 0) {
-                posApy += parseFloat(token.supplyBalance) * parseFloat(token.supplyApy) / parseFloat(this.supplyBalance);
+            if (parseFloat(token.cTokenSupplyBalance) > 0 && parseFloat(token.supplyApy) > 0 && (this.totalSupplyBalance) > 0) {
+                posApy += parseFloat(token.cTokenSupplyBalance) * parseFloat(token.supplyApy) / (this.totalSupplyBalance);
             }
-            if (parseFloat(token.borrowBalance) > 0 && parseFloat(token.borrowApy) > 0 && parseFloat(this.borrowBalance) > 0) {
-                negApy += parseFloat(token.borrowBalance) * parseFloat(token.borrowApy) / parseFloat(this.borrowBalance);
+            if (parseFloat(token.tokenBorrowBalance) > 0 && parseFloat(token.borrowApy) > 0 && (this.totalBorrowBalance) > 0) {
+                negApy += parseFloat(token.tokenBorrowBalance) * parseFloat(token.borrowApy) / (this.totalBorrowBalance);
             }
         });
         this.apyData.netApy = posApy - negApy;
@@ -439,8 +441,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     public async getAccountLiquidity() {
         this.accountLiquidity = 0;
         this.tokenData.forEach(token => {
-            if (parseFloat(token.supplyBalance) > 0 && token.enabled === true) {
-                this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.supplyBalance) / 100);
+            if (parseFloat(token.cTokenSupplyBalance) > 0 && token.enabled === true) {
+                this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.cTokenSupplyBalance) / 100);
             }
         });
     }
@@ -479,9 +481,13 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async getAvailableBorrow(cTokenContract) {
+        const underlying = await cTokenContract.underlying();
+        const tokenContract = this.initContract(underlying, ERC20Detailed.abi);
+        const tokenDecimals = await tokenContract.decimals();
+
         let cash = await cTokenContract.getCash();
         cash = this.getNumber(cash);
-        const availableBorrow = parseFloat(cash) / this.DECIMAL_18;
+        const availableBorrow = parseFloat(cash) / (10 ** parseFloat(tokenDecimals));
         return availableBorrow.toString();
     }
     public async checkApproved(tokenContract, allowanceOf) {
@@ -489,9 +495,6 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         approvedBal = this.getNumber(approvedBal);
         return approvedBal !== '0' ? true : false;
     }
-    // public getUsdPrice(val) {
-    //     return (parseFloat(val) * parseFloat(this.ethUsdExchangeRate)).toString();
-    // }
 
     public getNumber(hexNum) {
         return ethers.utils.bigNumberify(hexNum).toString();
@@ -521,30 +524,34 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async mint() {
-    //     const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
-    //     const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
-    //     const decimals = await TokenContract.decimals();
-    //     const mulBy = 10 ** parseFloat(decimals);
-    //     let amountInDec: any = parseFloat(this.amountInput) * mulBy;
-    //     amountInDec = amountInDec.toString();
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
 
-    //     const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
-    //     const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-    //     const tx = await cTokenContract.mint(amountInDec);
-    //     await this.web3.waitForTransaction(tx.hash);
-    //     window.location.reload();
+        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
+        const tx = await cTokenContract.mint(amountInDec);
+        await this.web3.waitForTransaction(tx.hash);
+        window.location.reload();
     }
 
     public async withdrawUnderlying() {
-    //     // const tokenName = this.tokenData[this.selectedTokenIndex].name;
-    //     // const cTokenContract = this.Contracts[`c${tokenName}`];
-    //     const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
-    //     const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-    //     const tx = await cTokenContract.redeemUnderlying(ethers.utils.parseEther(this.amountInput));
-    //     await this.web3.waitForTransaction(tx.hash);
-    //     window.location.reload();
-    }
+        const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
+        const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const mulBy = 10 ** parseFloat(decimals);
+        let amountInDec: any = parseFloat(this.amountInput) * mulBy;
+        amountInDec = amountInDec.toString();
 
+        const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
+        const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
+        const tx = await cTokenContract.redeemUnderlying(amountInDec);
+        await this.web3.waitForTransaction(tx.hash);
+        window.location.reload();
+    }
     public async borrow() {
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
