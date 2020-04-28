@@ -174,6 +174,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async setup() {
         this.userAddress = await this.web3.getSigner().getAddress();
+        // this.userAddress = '0x5a995f45CcE03670D94a0c89572dc74598d57581';
         cApp.blockPage({
           overlayColor: '#000000',
           state: 'secondary',
