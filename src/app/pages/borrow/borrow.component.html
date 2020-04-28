@@ -68,7 +68,7 @@
                                         <label>APY</label>
                                     </div>
                                     <div class="col-sm-3 col-4 text-right">
-                                        <label>Wallet</label>
+                                        <label>Non Deployed</label>
                                     </div>
                                     <div class="col-sm-2 col-4 text-right">
                                         <label>Collateral</label>
@@ -190,12 +190,12 @@
                                 <span class="description">Price</span>
                                 <span>$ {{tokenData[selectedTokenIndex].priceUsd}}</span>
                             </div>
-                            <div class="calculation">
+                            <!-- <div class="calculation">
                                 <span class="description">Collateral Factor</span>
                                 <span>{{tokenData[selectedTokenIndex].collateralFactor}}%</span>
-                            </div>
+                            </div> -->
                             <div class="calculation">
-                                <span class="description">Wallet</span>
+                                <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
@@ -228,10 +228,8 @@
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>
                                             <!-- <div class="col-3 text-center">
-                          <a href="" class="link">
-                            SAFE MAX
-                          </a>
-                        </div> -->
+                                              <a href="" class="link">SAFE MAX</a>
+                                            </div> -->
                                         </div>
                                     </form>
                                     <div class="mt30">
@@ -239,18 +237,16 @@
                                             <span class="description">Supply Balance</span>
                                             <span>
                                                 ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalance, 3)}}
-                                                <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>
-                          $0.00 -->
+                                                <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00 -->
                                             </span>
                                         </div>
-                                        <div class="calculation">
+                                        <!-- <div class="calculation">
                                             <span class="description">Borrow Limit</span>
                                             <span>
                                                 $ {{ toDecimal(accountLiquidity, 2) }}
-                                                <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>
-                          $0.00 -->
+                                                <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00
                                             </span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div>
@@ -261,15 +257,14 @@
                                 </div>
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
-                                <div class="text-center">
-                                    <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
-                                </div>
-                                <div class="mt20 mb30" style="font-weight: 500;">
-                                    To use {{tokenData[selectedTokenIndex].symbol}} with the Konkrete, you need to enable
-                                    it first.
-                                </div>
-                                <button class="btn btn-lg btn-full btn-secondary"
-                                    (click)="enableSupplyCollateral()">Enable</button>
+                              <div class="text-center">
+                                <img src="assets/img/ether_logo.svg" style="max-height: 80px;" alt="Ether logo" />
+                              </div>
+                              <div class="mt20 mb30" style="font-weight: 500;">
+                                  To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
+                              </div>
+                              <button class="btn btn-lg btn-full btn-secondary"
+                                  (click)="enableSupplyCollateral()">Enable</button>
                             </div>
                         </div>
                     </div>
@@ -311,12 +306,12 @@
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                             <div class="calculation">
-                                <span class="description">Wallet</span>
+                                <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                             <div class="calculation">
-                                <span class="description">Available to Borrow</span>
+                                <span class="description">Liquidity</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
@@ -348,18 +343,13 @@
                                                 <input type="text" class="form-control form-control-lg text-center"
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>
-                                            <!-- <div class="col-3 text-center">
-                          <a href="" class="link">
-                            SAFE MAX
-                          </a>
-                        </div> -->
                                         </div>
                                     </form>
                                     <div class="mt30">
-                                        <div class="calculation">
+                                        <!-- <div class="calculation">
                                             <span class="description">Borrow Limit</span>
                                             <span>$ {{ toDecimal(accountLiquidity, 2) }}</span>
-                                        </div>
+                                        </div> -->
                                         <div class="calculation">
                                             <span class="description">Borrow Balance</span>
                                             <span>$ {{toDecimal(totalBorrowBalance, 3)}}</span>
@@ -375,13 +365,12 @@
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
-                                    <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
+                                    <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.svg" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
-                                    To use {{tokenData[selectedTokenIndex].symbol}} with the Konkrete, you need to enable
-                                    it first.
+                                    To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
                                 </div>
-                                <button class="btn btn-lg btn-full btn-danger"
+                                <button class="btn btn-lg btn-full btn-secondary"
                                     (click)="enableBorrowCollateral()">Enable</button>
                             </div>
                         </div>

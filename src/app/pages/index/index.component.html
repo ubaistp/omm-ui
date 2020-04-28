@@ -76,15 +76,15 @@
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
-                                    <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                                    <div class="col-sm-3 col-3 text-left d-none d-sm-block">
                                         <label>APY</label>
                                     </div>
-                                    <div class="col-sm-3 offset-sm-1 col-4 text-right">
-                                        <label>Wallet</label>
+                                    <div class="col-sm-3 col-3 text-left">
+                                        <label>Non Deployed</label>
                                     </div>
-                                    <!-- <div class="col-sm-2 col-4 text-right">
-                                        <label>Collateral</label>
-                                    </div> -->
+                                    <div class="col-sm-2 col-3 text-left">
+                                        <label>Deployed</label>
+                                    </div>
                                 </div>
                                 <div class="assets">
                                     <a class="asset" *ngFor="let token of cashTokenData; let i = index"
@@ -96,15 +96,20 @@
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 text-right d-none d-sm-block">
+                                        <div class="col-sm-3 col-3 text-left d-none d-sm-block">
                                             <div class="balance">
                                                 <div>{{token.supplyApy}}%</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-3 offset-sm-1 text-right">
+                                        <div class="col-sm-3 col-3 text-left">
                                             <div class="balance">
                                                 <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
                                             </div>
+                                        </div>
+                                        <div class="col-sm-3 col-3 text-left">
+                                          <div class="balance">
+                                              <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} <!-- {{ token.symbol }} --></div>
+                                          </div>
                                         </div>
                                         <!-- <div class="col-4 col-sm-2 text-right">
                                             <mat-slide-toggle [checked]="token.enabled" [disabled]="false"
@@ -294,12 +299,12 @@
                                 <span class="description">Price</span>
                                 <span>$ {{tokenData[selectedTokenIndex].priceUsd}}</span>
                             </div>
-                            <div class="calculation">
+                            <!-- <div class="calculation">
                                 <span class="description">Collateral Factor</span>
                                 <span>{{tokenData[selectedTokenIndex].collateralFactor}}%</span>
-                            </div>
+                            </div> -->
                             <div class="calculation">
-                                <span class="description">Wallet</span>
+                                <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
@@ -347,14 +352,13 @@
                           $0.00 -->
                                             </span>
                                         </div>
-                                        <div class="calculation">
+                                        <!-- <div class="calculation">
                                             <span class="description">Borrow Limit</span>
                                             <span>
                                                 $ {{ toDecimal(accountLiquidity, 2) }}
-                                                <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>
-                          $0.00 -->
+                                                <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00
                                             </span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div>
@@ -366,11 +370,10 @@
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
-                                    <mat-icon style="font-size: 3rem;" aria-hidden="false">error_outline</mat-icon>
+                                  <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.svg" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
-                                    To use {{tokenData[selectedTokenIndex].symbol}} with the Konkrete, you need to enable
-                                    it first.
+                                    To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
                                 </div>
                                 <button class="btn btn-lg btn-full btn-secondary"
                                     (click)="enableSupplyCollateral()">Enable</button>
