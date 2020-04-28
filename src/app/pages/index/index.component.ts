@@ -47,6 +47,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public cashTokenSymbols = [];
     public cashTokenData = [];
     public assetTokenData = [];
+    public totalAssetTokenSupply = 0;
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -137,7 +138,23 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         //   }
         // });
     // }
+    private calcTotalAssetTokenSupply() {
+        this.totalAssetTokenSupply = 0;
+        this.assetTokenData.forEach(token => {
+          if (parseFloat(token.erc20TotalSupply) >= 0) {
+            this.totalAssetTokenSupply += parseFloat(token.erc20TotalSupply);
+          }
+        });
+    }
 
+    private calcTotalLoanAmount() {
+      this.cashTokenData.forEach(token => {
+        // console.log(token.availableBorrow, token.utilizationRate)
+        // if (parseFloat(token.erc20TotalSupply) >= 0) {
+        //   this.totalAssetTokenSupply += parseFloat(token.erc20TotalSupply);
+        // }
+      });
+    }
     public isCashToken(token) {
         if (token === undefined) { return false; }
 
@@ -262,6 +279,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(async () => {
           await this.getEnteredMarkets();
           this.filterTable();
+          this.calcTotalAssetTokenSupply();
+          this.calcTotalLoanAmount();
           await this.getAccountLiquidity();
           this.calcNetApy();
           this.setSelect2();
