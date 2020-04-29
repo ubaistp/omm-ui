@@ -64,13 +64,13 @@
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
-                                    <div class="col-sm-3 col-4 text-right d-none d-sm-block">
+                                    <!-- <div class="col-sm-3 col-4 text-right d-none d-sm-block">
                                         <label>APY</label>
-                                    </div>
-                                    <div class="col-sm-3 col-4 text-right">
+                                    </div> -->
+                                    <div class="col-sm-4 col-4 text-right">
                                         <label>Non Deployed</label>
                                     </div>
-                                    <div class="col-sm-2 col-4 text-right">
+                                    <div class="col-sm-4 col-4 text-right">
                                         <label>Collateral</label>
                                     </div>
                                 </div>
@@ -84,17 +84,17 @@
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 text-right d-none d-sm-block">
+                                        <!-- <div class="col-sm-3 text-right d-none d-sm-block">
                                             <div class="balance">
                                                 <div>{{token.supplyApy}}%</div>
                                             </div>
-                                        </div>
-                                        <div class="col-4 col-sm-3 text-right">
+                                        </div> -->
+                                        <div class="col-4 col-sm-4 text-right">
                                             <div class="balance">
                                                 <div>{{ toDecimal(token.tokenBalance, 2) }}</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-2 text-right">
+                                        <div class="col-4 col-sm-4 text-right">
                                             <mat-slide-toggle [checked]="token.enabled" [disabled]="false"
                                                 (change)="enterExitMarket(token)">
                                             </mat-slide-toggle>
@@ -126,12 +126,12 @@
                                     <!-- <div class="col-sm-3 col-4 text-right">
                                         <label>Wallet</label>
                                     </div> -->
-                                    <div class="col-sm-3 col-4 text-right">
+                                    <div class="col-sm-4 col-4 text-right">
                                       <label>Available to Borrow</label>
                                     </div>
-                                    <div class="col-sm-2 col-4 text-right">
+                                    <!-- <div class="col-sm-2 col-4 text-right">
                                         <label>% Of Limit</label>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="assets">
                                     <a class="asset" *ngFor="let token of cashTokenData; let i = index"
@@ -148,7 +148,7 @@
                                                 <div>{{token.borrowApy}}%</div>
                                             </div>
                                         </div>
-                                        <div class="col-4 col-sm-3 text-right">
+                                        <div class="col-4 col-sm-4 text-right">
                                           <div class="balance">
                                               <div>{{ toDecimal(token.availableBorrow, 3) }}</div>
                                           </div>
@@ -158,9 +158,9 @@
                                                 <div>{{ toDecimal(token.tokenBalance, 3) }}</div>
                                             </div>
                                         </div> -->
-                                        <div class="col-4 col-sm-2 text-right">
-                                            0%
-                                        </div>
+                                        <!-- <div class="col-4 col-sm-2 text-right">
+                                          {{toDecimal(sliderPercentage, 2)}}%
+                                        </div> -->
                                     </a>
                                 </div>
                             </div>

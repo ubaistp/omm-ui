@@ -36,11 +36,11 @@
                     <div class="row">
                         <div class="col-sm-6 col-md-12">
                             <label class="color-danger mb0">Total Collateral on Market</label>
-                            <div class="borrow-balance">${{toDecimal(totalAssetTokenSupply, 7)}}</div>
+                            <div class="borrow-balance">${{localeString(totalAssetTokenSupply, 0)}}</div>
                         </div>
                         <div class="col-sm-6 col-md-12" style="margin-top: 0.7em;">
                             <label class="color-danger mb0">Total Loans on Market</label>
-                            <div class="borrow-balance">${{toDecimal(0, 7)}}</div>
+                            <div class="borrow-balance">${{localeString(totalCashLoans, 0)}}</div>
                         </div>
                     </div>
                 </div>
@@ -166,8 +166,10 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-2 col-2 text-left">
-                                            <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div>
-                                            <!-- <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5">Link</a></div> -->
+                                            <!-- <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div> -->
+                                            <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5#readContract"
+                                              target="_blank">Link</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
