@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row align-items-center justify-content-center text-center">
                 <div class="col-sm-4 col-5 mb30">
-                    <label class="mb0" style="color: #1AD9C6;">Supply Balance</label>
+                    <label class="mb0" style="color: #1AD9C6;">Deployed Balance</label>
                     <div class="supply-balance">${{toDecimal(totalSupplyBalance, 7)}}</div>
                     <!-- <div class="d-block d-sm-none">
                         <label class="color-danger mb0">Borrow Balance</label>
@@ -66,7 +66,7 @@
                         <div class="portlet__head">
                             <div class="portlet__head-caption">
                                 <div class="portlet__head-title">
-                                    <h3 class="portlet__head-text">Supply</h3>
+                                    <h3 class="portlet__head-text">Deploy</h3>
                                 </div>
                             </div>
                         </div>
@@ -162,11 +162,12 @@
                                         </div>
                                         <div class="col-sm-4 col-3 text-left">
                                             <div class="balance">
-                                                <div>{{token.erc20TotalSupply}}</div>
+                                                <div>{{toDecimal(token.erc20TotalSupply, 0)}}</div>
                                             </div>
                                         </div>
                                         <div class="col-sm-2 col-2 text-left">
-                                            <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5">Link</a></div>
+                                            <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div>
+                                            <!-- <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5">Link</a></div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -292,7 +293,7 @@
                         </div>
                         <div class="px15">
                             <div class="calculation">
-                                <span class="description">Supply APY</span>
+                                <span class="description">Deployed APY</span>
                                 <span class="color-success">{{tokenData[selectedTokenIndex].supplyApy}}%</span>
                             </div>
                             <div class="calculation">
@@ -307,6 +308,11 @@
                                 <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
+                            </div>
+                            <div class="calculation">
+                              <span class="description">Liquidity</span>
+                              <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
+                                  {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                         </div>
                     </div>
@@ -326,7 +332,7 @@
                                     <div class="col-6">
                                         <button [ngClass]="{'active': typeViewSupply == 'supply'}"
                                             class="btn btn-lg btn-full btn-secondary"
-                                            (click)="viewSupplyForm()">Supply</button>
+                                            (click)="viewSupplyForm()">Deploy</button>
                                     </div>
                                 </div>
                                 <div class="my30">
@@ -343,7 +349,7 @@
                                     </form>
                                     <div class="mt30">
                                         <div class="calculation">
-                                            <span class="description">Supply Balance</span>
+                                            <span class="description">Deployed Balance</span>
                                             <span>
                                                 ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalance, 3)}}
                                                 <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00 -->
@@ -362,7 +368,7 @@
                                     <button class="btn btn-lg btn-full btn-secondary" (click)="withdrawUnderlying()"
                                         *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
                                     <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
-                                        *ngIf="typeViewSupply == 'supply'">Supply</button>
+                                        *ngIf="typeViewSupply == 'supply'">Deploy</button>
                                 </div>
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">

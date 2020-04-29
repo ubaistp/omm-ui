@@ -123,8 +123,11 @@
                                     <div class="col-sm-3 col-4 text-right d-none d-sm-block">
                                         <label>APY</label>
                                     </div>
-                                    <div class="col-sm-3 col-4 text-right">
+                                    <!-- <div class="col-sm-3 col-4 text-right">
                                         <label>Wallet</label>
+                                    </div> -->
+                                    <div class="col-sm-3 col-4 text-right">
+                                      <label>Available to Borrow</label>
                                     </div>
                                     <div class="col-sm-2 col-4 text-right">
                                         <label>% Of Limit</label>
@@ -146,10 +149,15 @@
                                             </div>
                                         </div>
                                         <div class="col-4 col-sm-3 text-right">
+                                          <div class="balance">
+                                              <div>{{ toDecimal(token.availableBorrow, 3) }}</div>
+                                          </div>
+                                        </div>
+                                        <!-- <div class="col-4 col-sm-3 text-right">
                                             <div class="balance">
                                                 <div>{{ toDecimal(token.tokenBalance, 3) }}</div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-4 col-sm-2 text-right">
                                             0%
                                         </div>
@@ -305,11 +313,11 @@
                                 <span>{{toDecimal((tokenData[selectedTokenIndex].tokenBorrowBalance), 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
-                            <div class="calculation">
+                            <!-- <div class="calculation">
                                 <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
-                            </div>
+                            </div> -->
                             <div class="calculation">
                                 <span class="description">Liquidity</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
@@ -350,10 +358,10 @@
                                             <span class="description">Borrow Limit</span>
                                             <span>$ {{ toDecimal(accountLiquidity, 2) }}</span>
                                         </div> -->
-                                        <div class="calculation">
+                                        <!-- <div class="calculation">
                                             <span class="description">Borrow Balance</span>
                                             <span>$ {{toDecimal(totalBorrowBalance, 3)}}</span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div>

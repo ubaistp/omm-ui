@@ -387,6 +387,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.checkApproved(tokenContract, token.cTokenAddress).then(approved => {
             token.approved = approved;
           });
+          this.genTokenLink(token.tokenAddress).then(link => {
+            token.erc20Link = link;
+          });
         });
         this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
           token.collateralFactor = collateralFactor;
@@ -497,6 +500,20 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             this.totalBorrowBalance += borrowBal;
         }
         return tokenBalance;
+    }
+
+    private async genTokenLink(tokenAddress) {
+        if (tokenAddress === undefined) { return; }
+
+        let base: string;
+        const network = await this.web3.getNetwork();
+        if (network.name === 'homestead') {
+            base = 'https://etherscan.io';
+        } else {
+            base = `https://${network.name}.etherscan.io`;
+        }
+        const url = `${base}/address/${tokenAddress}`;
+        return url;
     }
 
     public calcNetApy() {
