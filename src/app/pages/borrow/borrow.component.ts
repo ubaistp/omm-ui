@@ -214,7 +214,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
               this.sliderPercentage = (this.totalBorrowBalance) / (this.accountLiquidity) * 100;
           }
           this.loadComplete = true;
-        }, 1200);
+        }, 100);
         cApp.unblockPage();
     }
 
