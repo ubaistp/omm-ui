@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'Konkrete'`, () => {
+  it(`should have as title 'Open Token Lending'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('Konkrete');
+    expect(app.title).toEqual('Open Token Lending');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('Konkrete app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('open-token-lending app is running!');
   });
 });

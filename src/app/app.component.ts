@@ -10,13 +10,11 @@ declare var $: any;
 })
 
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'Konkrete';
+  title = 'Open Token Lending';
 
-  ngOnInit(){
-
+  ngOnInit() {
   }
-  ngAfterViewInit(){
-    
+  ngAfterViewInit() {
   }
 
 }

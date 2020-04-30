@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Konkrete": {
+    "open-token-lending": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/Konkrete",
+            "outputPath": "dist/open-token-lending",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -75,18 +75,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "Konkrete:build"
+            "browserTarget": "open-token-lending:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "Konkrete:build:production"
+              "browserTarget": "open-token-lending:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Konkrete:build"
+            "browserTarget": "open-token-lending:build"
           }
         },
         "test": {
@@ -124,16 +124,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "Konkrete:serve"
+            "devServerTarget": "open-token-lending:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "Konkrete:serve:production"
+              "devServerTarget": "open-token-lending:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "Konkrete"
+  "defaultProject": "open-token-lending"
 }
