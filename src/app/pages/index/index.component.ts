@@ -29,7 +29,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public Contracts: any;
     public contractAddresses: any;
     public BLOCKS_YEAR = 2102400;
-    // public DECIMAL_8 = 10 ** 8;
+    public GAS_PRICE = ethers.utils.parseUnits('20', 'gwei');
     public DECIMAL_18 = 10 ** 18;
     public tokenData: any;
     public accountLiquidity = 0;
@@ -640,7 +640,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         const amountStr = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const tokenContract = this.initContract(tokenAddress, IVTDemoABI.abi);
-        const tx = await tokenContract.approve(this.tokenData[this.selectedTokenIndex].cTokenAddress, amountStr);
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+        };
+        const tx = await tokenContract.approve(this.tokenData[this.selectedTokenIndex].cTokenAddress, amountStr, overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
@@ -649,10 +652,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         let addressArray = [];
         addressArray.push(token.cTokenAddress);
         let tx;
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+        };
         if (token.enabled === true) {
-            tx = await this.Contracts.Comptroller.exitMarket(token.cTokenAddress);
+            tx = await this.Contracts.Comptroller.exitMarket(token.cTokenAddress, overrides);
         } else {
-            tx = await this.Contracts.Comptroller.enterMarkets(addressArray);
+            tx = await this.Contracts.Comptroller.enterMarkets(addressArray, overrides);
         }
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
@@ -668,7 +674,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.mint(amountInDec);
+
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+        };
+        const tx = await cTokenContract.mint(amountInDec, overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
@@ -683,7 +693,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.redeemUnderlying(amountInDec);
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+        };
+        const tx = await cTokenContract.redeemUnderlying(amountInDec, overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
@@ -698,7 +711,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.borrow(amountInDec, { gasLimit: 400000 });
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+          gasLimit: 500000,
+        };
+        const tx = await cTokenContract.borrow(amountInDec, overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
@@ -713,7 +730,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
-        const tx = await cTokenContract.repayBorrow(amountInDec, { gasLimit: 350000 });
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+          gasLimit: 350000,
+        };
+        const tx = await cTokenContract.repayBorrow(amountInDec, overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }
@@ -721,7 +742,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public async faucet() {
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const tokenContract = this.initContract(tokenAddress, IVTDemoABI.abi);
-        const tx = await tokenContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'));
+        const overrides = {
+          gasPrice: this.GAS_PRICE,
+        };
+        const tx = await tokenContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'), overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
     }

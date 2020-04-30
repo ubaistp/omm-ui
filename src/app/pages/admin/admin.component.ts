@@ -24,6 +24,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public Contracts: any;
   public contractAddresses: any;
   public tokenData: any;
+  public GAS_PRICE = ethers.utils.parseUnits('20', 'gwei');
   public irData: any;
   public cTokenAddress: any;
   public cTkCollateralAddress: any;
@@ -194,7 +195,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       return;
     }
     try {
-      const tx = await this.Contracts.Comptroller._supportMarket(this.cTokenAddress);
+      const overrides = {
+        gasPrice: this.GAS_PRICE,
+      };
+      const tx = await this.Contracts.Comptroller._supportMarket(this.cTokenAddress, overrides);
       await this.web3.waitForTransaction(tx.hash);
       window.location.reload();
     } catch (error) { console.error(error); }
@@ -208,7 +212,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
     try {
       const colFacStr = (colFac * (10 ** 16)).toString();
-      const tx = await this.Contracts.Comptroller._setCollateralFactor(this.cTkCollateralAddress, colFacStr);
+      const overrides = {
+        gasPrice: this.GAS_PRICE,
+      };
+      const tx = await this.Contracts.Comptroller._setCollateralFactor(this.cTkCollateralAddress, colFacStr, overrides);
       await this.web3.waitForTransaction(tx.hash);
       window.location.reload();
     } catch (error) { console.error(error); }
@@ -227,6 +234,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const check = irAddrArray.includes(this.irModelAddrFull);
     if (!check) { return; }
 
+    const overrides = {
+      gasPrice: this.GAS_PRICE,
+    };
     try {
       // get parameter data
       const Erc20Token = this.initContract(this.erc20AddressFull, IVTDemoABI.abi);
@@ -246,17 +256,17 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const bytecode = CErc20Immutable.bytecode;
       const factory = new ethers.ContractFactory(abi, bytecode, this.web3.getSigner());
       const cTokenContract = await factory.deploy(this.erc20AddressFull, this.contractAddresses.Comptroller,
-        this.irModelAddrFull, initialExcRateMantissaStr, cTokenName, cTokenSymbol, cTokenDecimals, admin);
-      await cTokenContract.deployed();
+        this.irModelAddrFull, initialExcRateMantissaStr, cTokenName, cTokenSymbol, cTokenDecimals, admin, overrides);
+      // await cTokenContract.deployed();
 
       // call support market in comptroller
-      const tx = await this.Contracts.Comptroller._supportMarket(cTokenContract.address);
-      await this.web3.waitForTransaction(tx.hash);
+      const tx = await this.Contracts.Comptroller._supportMarket(cTokenContract.address, overrides);
+      // await this.web3.waitForTransaction(tx.hash);
 
       // update collateral factor in comptroller
       const colFac = parseFloat(this.collateralFacFull);
       const colFacStr = (colFac * (10 ** 16)).toString();
-      const tx2 = await this.Contracts.Comptroller._setCollateralFactor(cTokenContract.address, colFacStr);
+      const tx2 = await this.Contracts.Comptroller._setCollateralFactor(cTokenContract.address, colFacStr, overrides);
       await this.web3.waitForTransaction(tx2.hash);
 
       this.erc20AddressFull = null;
@@ -275,7 +285,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
     try {
       const TokenContract = this.initContract(this.updateIr.tokenAddress, CErc20Delegator.abi);
-      const tx = await TokenContract._setInterestRateModel(this.updateIr.irAddress);
+      const overrides = {
+        gasPrice: this.GAS_PRICE,
+      };
+      const tx = await TokenContract._setInterestRateModel(this.updateIr.irAddress, overrides);
       await this.web3.waitForTransaction(tx.hash);
       window.location.reload();
     } catch (error) { console.error(error); }
