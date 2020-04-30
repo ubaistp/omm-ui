@@ -49,6 +49,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public assetTokenData = [];
     public totalAssetTokenSupply = 0;
     public totalCashLoans = 0;
+    public totalCashDeployed = 0;
 
     public collateralSupplyEnable = false;
     public collateralBorrowEnable = false;
@@ -156,6 +157,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         });
     }
+
+    private calcTotalDeployedAmount() {
+        this.totalCashDeployed = 0;
+        this.cashTokenData.forEach(token => {
+          if (parseFloat(token.totalErc20Supply) >= 0) {
+            this.totalCashDeployed += parseFloat(token.totalErc20Supply);
+          }
+        });
+    }
+
     public isCashToken(token) {
         if (token === undefined) { return false; }
 
@@ -282,6 +293,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.filterTable();
           this.calcTotalAssetTokenSupply();
           this.calcTotalLoanAmount();
+          this.calcTotalDeployedAmount();
           await this.getAccountLiquidity();
           this.calcNetApy();
           this.setSelect2();
@@ -390,6 +402,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.getCtokenBorrows(cTokenContract, tokenContract).then(totalErc20Borrows => {
             token.totalErc20Borrows = totalErc20Borrows;
           });
+          this.getCtokenSupply(cTokenContract, tokenContract).then(totalErc20Supply => {
+            token.totalErc20Supply = totalErc20Supply;
+          });
           this.genTokenLink(token.tokenAddress).then(link => {
             token.erc20Link = link;
           });
@@ -466,12 +481,21 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async getCtokenBorrows(cTokenContract, tokenContract) {
-        const name = await cTokenContract.symbol();
         const borrow = await cTokenContract.totalBorrows();
         const erc20Decimals = await tokenContract.decimals();
         const erc20Borrows = parseFloat(borrow) / 10 ** parseFloat(erc20Decimals);
-        // console.log(name, parseFloat(borrow), erc20Decimals, erc20Borrows);
         return erc20Borrows;
+    }
+
+    public async getCtokenSupply(cTokenContract, tokenContract) {
+        const erc20Decimals = await tokenContract.decimals();
+        const borrow = await cTokenContract.totalBorrows();
+        const cash = await cTokenContract.getCash();
+        const reserves = await cTokenContract.totalReserves();
+        const added = (parseFloat(cash) + parseFloat(borrow) + parseFloat(reserves));
+        const divBy = 10 ** parseFloat(erc20Decimals);
+        const result = added / divBy;
+        return result;
     }
 
     public async getUserTokenBalance(tokenContract) {
