@@ -530,7 +530,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         const decimals = await TokenContract.decimals();
         const mulBy = 10 ** parseFloat(decimals);
         let amountInDec: any = parseFloat(this.amountInput) * mulBy;
-        amountInDec = amountInDec.toString();
+        amountInDec = amountInDec.toLocaleString('fullwide', {useGrouping: false});
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
@@ -545,7 +545,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         const decimals = await TokenContract.decimals();
         const mulBy = 10 ** parseFloat(decimals);
         let amountInDec: any = parseFloat(this.amountInput) * mulBy;
-        amountInDec = amountInDec.toString();
+        amountInDec = amountInDec.toLocaleString('fullwide', {useGrouping: false});
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
@@ -559,7 +559,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         const decimals = await TokenContract.decimals();
         const mulBy = 10 ** parseFloat(decimals);
         let amountInDec: any = parseFloat(this.amountInput) * mulBy;
-        amountInDec = amountInDec.toString();
+        amountInDec = amountInDec.toLocaleString('fullwide', {useGrouping: false});
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
@@ -574,7 +574,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         const decimals = await TokenContract.decimals();
         const mulBy = 10 ** parseFloat(decimals);
         let amountInDec: any = parseFloat(this.amountInput) * mulBy;
-        amountInDec = amountInDec.toString();
+        amountInDec = amountInDec.toLocaleString('fullwide', {useGrouping: false});
 
         const cTokenAddress = this.tokenData[this.selectedTokenIndex].cTokenAddress;
         const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
