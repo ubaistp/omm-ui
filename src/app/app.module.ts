@@ -8,6 +8,7 @@ import { HeaderComponent } from './header/header.component';
 import { IndexComponent } from './pages/index/index.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { BorrowComponent } from './pages/borrow/borrow.component';
+import { FaqComponent } from './pages/faq/faq.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -19,6 +20,7 @@ const appRoutes: Routes = [
   { path: '', component: IndexComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'borrow', component: BorrowComponent },
+  { path: 'faq', component: FaqComponent },
 ];
 
 @NgModule({
@@ -27,7 +29,8 @@ const appRoutes: Routes = [
     HeaderComponent,
     IndexComponent,
     AdminComponent,
-    BorrowComponent
+    BorrowComponent,
+    FaqComponent
   ],
   imports: [
     BrowserModule,
