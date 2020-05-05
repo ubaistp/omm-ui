@@ -115,12 +115,7 @@
                                         </div>
                                         <div class="col-sm-3 col-3 text-left">
                                             <div class="balance">
-                                                <div>{{toDecimal(token.tokenBalance, 2)}}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2 col-3 text-left">
-                                            <div class="balance">
-                                                <div>${{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
+                                                <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3 col-3 text-left">
@@ -392,7 +387,7 @@
                                         *ngIf="typeViewSupply == 'supply'">Deploy</button>
                                 </div>
                             </div>
-                            <div class="form mt70" *ngIf="!tokenData[selectedTokenIndex].approved">
+                            <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
                                   <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.svg" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
