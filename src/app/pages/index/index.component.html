@@ -176,7 +176,7 @@
                                         </div>
                                         <div class="col-sm-4 col-3 text-left">
                                             <div class="balance">
-                                                <div>{{toDecimal(token.erc20TotalSupply, 0)}}</div>
+                                                <div>{{localeString(token.erc20TotalSupply, 0)}}</div>
                                             </div>
                                         </div>
                                         <div class="col-sm-2 col-2 text-left">
@@ -286,6 +286,206 @@
                     </div>
                 </div> -->
             </div>
+            <!-- <div class="row text-center" style="margin-bottom: 1em; margin-top: -0.8em;">
+                <div class="col-md-12">
+                    <a href="/faq" style="font-size: 1.2em; font-weight: 500;" target="_blank">FAQs</a><br>
+                </div>
+            </div> -->
+        </div>
+    </section>
+    <section class="hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-title text-center wow zoomIn">
+                        <h1>Frequently Asked Questions</h1>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="row">               
+                <div class="col-md-12">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        What is the OTL?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <p>OTL stands for Open Token Lending. Right now we are in the alpha version of a proposed uniswap style fully decentralized and censorship resistant token lending protocol in which any token can be lent against any other token as collateral. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        How do I interact with the OTL?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                <div class="panel-body">
+                                    <p>You can connect via metamask to the OTL and supply DAI, USDC and USDT to the platform and start earning interest immediately. You may withdraw your deployed tokens at any time, including accrued interest (provided there is liquidity, which we are working towards improving). <br><br> In due course we will be adding support for other wallets such as Ledger, Trezor etc as well. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingThree">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        What can I lend with?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                    <p>While eventually it should be possible to lend any token against any token, right now we allow DAI, USDC and USDT. More currency pegged tokens will be added in the coming days on the lending side.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingFour">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        Who can borrow from the platform? What is being used as collateral?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                <div class="panel-body">
+                                    <p>Eventually anyone with tokenised assets can borrow from the platform by using the asset as collateral. Right now we have tokenized a commercial property loan in Victoria, Australia and are using that as collateral. You can check details of the property and the loan from the Asset Explorer. To ensure a good amount of over collateralization for lenders we have picked a loan which is only lending to 60% of the property’s value. On top of that, we have a collateral factor of 80% of the value of the loan on the system. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingFive">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                        What is the Asset Explorer?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                <div class="panel-body">
+                                    <p>The asset explorer is where you can view the tokenized assets being used as collateral on the system. It includes the token name, the type of asset, it’s collateral value on the system, and the link to the token contract itself. By clicking the link under asset Type, you will be directed to an information page with more details on the asset including any relevant loan agreements. </p>
+                                    <br>
+                                    <img src="assets/img/faqs/asset_explorer.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingSix">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                        How often is interest calculated? Can I take my deployed funds out any time?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                                <div class="panel-body">
+                                    <p>Interest is calculated per each ethererum block which is roughly every 15 seconds. You can take out your funds, including interest, anytime - provided there is enough liquidity in the pool. Liquidity of a particular asset is shown when you click the asset. In the example below, it shows that 10 USDT can be withdrawn from the pool. </p>
+                                    <br>
+                                    <img src="assets/img/faqs/sample_modal.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingSeven">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                        What is the road map for allowing other tokens as collateral?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                                <div class="panel-body">
+                                    <p>We have created an admin module via which new tokens can be added as collateral. You can check it here at <a href="https://app.konkrete.finance/admin"> https://app.konkrete.finance/admin </a> <br> <br> As soon as initial testing is complete, we will be opening up the new token addition to be done via a community vote. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingEight">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                        What is the expected process for adding new collateral?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                                <div class="panel-body">
+                                    <p>We are planning to distribute platform tokens which would entitle its holders to any fees generated from the platform and the right to vote on any decisions about the platform. <br><br> Any token holder will be able to put up executable code as a proposal which would be put up to community vote and if approved will lead to updates to the platform. <br><br> Adding new tokens as collateral would follow the same process. <br><br> Eventually we expect the need for an admin signed off process to be eliminated with an architecture that allows any token to be borrowed against any token. <br><br> <a href="https://medium.com/konkrete/borrowing-any-token-using-any-token-as-collateral-742f6e33495f?source=collection_home---4------8-----------------------" target="_blank"> Read more </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingNine">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseEight">
+                                        Where can I find the platform tokens?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                                <div class="panel-body">
+                                    <p>Once the alpha is complete, platform tokens will be distributed to investors, advisors, core team and to the community. Stay tuned for updates. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTen">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseNine">
+                                        Is the OTL meant to allow real world tokens as collateral?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                                <div class="panel-body">
+                                    <p>The OTL is agnostic of what kinds of assets are represented via the tokens. It is meant to be a decentralized and censorship resistant lending protocol. What assets are added to it are expected to be determined by the community once the alpha is complete and soon after that even those permissions will not be needed. <br><br> In terms of how real world asset tokenization can be achieved and our thoughts around it <a href="https://medium.com/konkrete/real-world-asset-tokenization-protocol-6778047ca578"> please refer to this article. </a> <br><br> Note that the OTL and the real world asset tokenization efforts are independent of each other. Composability makes it possible for them to talk to each other. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingEleven">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+                                        What are kTokens?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseEleven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEleven">
+                                <div class="panel-body">
+                                    <p>kTokens are similar to cTokens, or aTokens and iTokens etc from other money market platforms out there. They represent your claim to the money you have deployed on the platform and its interest. <br><br> Once you deploy DAI, USDC, USDT to the platform you will receive an ERC20 kDAI, kUSDC, kUSDT respectively. These are interest bearing tokens and steadily rise in value. <br><br> While on the platform interface they are not visible, you may check them in your metamask by adding those custom tokens. </p> <br> The addresses are <br><br>
+                                    <table class="table table-bordered col-md-10 offset-md-1 col-sm-12 text-justify">
+                                        <tbody>
+                                          <tr>
+                                            <td>kDAI</td>
+                                            <td>0xE5C6c14F466A4F3A73eCEc7F3aAaA15c5EcBc769</td>
+                                          </tr>
+                                          <tr>
+                                            <td>kUSDC</td>
+                                            <td>0x882Ec5A4a22b110BE602762E85758A02943de187</td>
+                                          </tr>
+                                          <tr>
+                                            <td>kUSDT</td>
+                                            <td>0x5eddA8366d9221fc8aF079248f03c82763f0C193</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                    <br>
+                                    Eventually these kTokens should be freely tradeable themselves and can serve as a medium of exchange.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--- END COL -->     
+            </div><!--- END ROW -->         
         </div>
     </section>
 </div>
