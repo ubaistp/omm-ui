@@ -187,6 +187,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const allListedTokens = await this.fetchAllMarkets();
         await this.initAllContracts(contractAddresses);
+        this.estimateGasPrice();
 
         // In case there are no markets
         if (allListedTokens.length === 0 ) {
@@ -216,6 +217,16 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
           this.loadComplete = true;
         }, 100);
         cApp.unblockPage();
+    }
+
+    private async estimateGasPrice() {
+        let gasPrice = await this.web3.getGasPrice();
+        gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
+
+        let proposedGP: any = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.5;  // 50% extra
+        proposedGP = proposedGP.toFixed();
+
+        this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
     }
 
     private async getContractAddresses() {
