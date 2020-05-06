@@ -2,7 +2,6 @@ export const blockchainConstants = {
 
   mainnet : {
     Comptroller: '0x959Fb43EF08F415da0AeA39BEEf92D96f41E41b3',
-    PriceOracleProxy: '0x22Ef914f6EFbe6c52c8Ec3d10BE97331Cc22F000',
     DynamicInterestRateModel: [
       '0x52948A1BC72a0E4320E84d4A24458314520FAae5',
       '0xbb69477638E962275c89CAa8f03DA0941675177d',
@@ -10,12 +9,10 @@ export const blockchainConstants = {
   },
   ropsten: {
     Comptroller: '0x7bE62feEa8A027F254b09e1b9429eE95ed65ed57',
-    PriceOracleProxy: '0xc87b92D1dC75B2fdC31Ba2C4714Ee41b47eb0450',
     DynamicInterestRateModel: ['0xb4CFACe8c502f2F4767d9C6831c00cb0736B0250'],
   },
   rinkeby: {
     Comptroller: '0x7bE62feEa8A027F254b09e1b9429eE95ed65ed57',
-    PriceOracleProxy: '0xc87b92D1dC75B2fdC31Ba2C4714Ee41b47eb0450',
     DynamicInterestRateModel: ['0xb4CFACe8c502f2F4767d9C6831c00cb0736B0250'],
   },
   kovan: {
@@ -40,7 +37,6 @@ export const blockchainConstants = {
       // '0xC922990128E12BE7AFb7424aCFd2CbFcd5a09a0a',
       // '0x35E47C949d064B85F60Aa4c6D66f72F2fEF72362',
     ],
-    PriceOracleProxy: '0xE5E440C97A9fd76cf441E088151C5D607E9DBFCF',
 
     // test
     // Comptroller: '0xF1F36dcF5d11f20c0E9Bd6A9207a2493E3C63A99',

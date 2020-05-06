@@ -170,7 +170,7 @@
                       <div class="portlet__head">
                           <div class="portlet__head-caption">
                               <div class="portlet__head-title">
-                                  <h3 class="portlet__head-text">List CToken</h3>
+                                  <h3 class="portlet__head-text">Set CToken Price</h3>
                               </div>
                           </div>
                       </div>
@@ -178,11 +178,15 @@
                           <form>
                               <div class="form-group">
                                   <label>CToken Address</label>
-                                  <input type="text" class="form-control" [(ngModel)]="cTokenAddress" name="cTokenAddress">
+                                  <input type="text" class="form-control" [(ngModel)]="updatePrice.cTokenAddress" name="updatePrice.cTokenAddress">
+                              </div>
+                              <div class="form-group">
+                                <label>Price in USD</label>
+                                <input type="text" class="form-control" [(ngModel)]="updatePrice.price" name="updatePrice.price">
                               </div>
                               <div class="mt30">
-                                  <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
-                                    (click)="addToken()">Submit</button>
+                                  <button [disabled]="!isUserAdmin" class="btn btn-lg btn-full btn-secondary" [ngClass]="{'loader': updatePrice.loader}"
+                                    (click)="updateCtokenPrice()">Submit</button>
                               </div>
                           </form>
                       </div>

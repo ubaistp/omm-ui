@@ -7,6 +7,7 @@ import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as WhitePaperInterestRateModel from '../../../assets/contracts/WhitePaperInterestRateModel.json';
+import * as PriceOracleOTL from '../../../assets/contracts/PriceOracleOTL.json';
 
 declare var $: any;
 declare var cApp: any;
@@ -24,9 +25,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public Contracts: any;
   public contractAddresses: any;
   public tokenData: any;
+  public DECIMAL_18 = 10 ** 18;
   public GAS_PRICE = ethers.utils.parseUnits('20', 'gwei');
   public irData: any;
-  public cTokenAddress: any;
+  public updatePrice: any = {};
   public cTkCollateralAddress: any;
   public cTokenRatio: any;
   public isUserAdmin = false;
@@ -64,8 +66,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     if (typeof contractAddresses === 'undefined') { return; }
 
     const allListedTokens = await this.fetchAllMarkets();
-    this.initAllContracts(contractAddresses);
+    await this.initAllContracts(contractAddresses);
     this.checkAdmin();
+    this.estimateGasPrice();
 
     // In case there are no markets
     if (allListedTokens.length === 0 ) {
@@ -77,10 +80,25 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.fetchIRData();
     // console.log(this.Contracts);
     // console.log(this.tokenData);
+    setTimeout(() => {
+      this.tokenData.forEach(token => {
+        console.log(token.symbol, token.priceUsd);
+      });
+    }, 3500);
   }
 
   public async afterInitToken() {
     cApp.unblockPage();
+  }
+
+  private async estimateGasPrice() {
+    let gasPrice = await this.web3.getGasPrice();
+    gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
+
+    let proposedGP: any = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.5;  // 50% extra
+    proposedGP = proposedGP.toFixed();
+
+    this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
   }
 
   private async getContractAddresses() {
@@ -96,9 +114,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
       return contractAddresses;
   }
 
-  private initAllContracts(contractAddresses) {
+  private async initAllContracts(contractAddresses) {
     this.Contracts = {};
     this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
+
+    const oracleAddress = await this.Contracts.Comptroller.oracle();
+    this.Contracts.PriceOracleProxy = this.initContract(oracleAddress, PriceOracleOTL.abi);
   }
 
   private initContract(contractAddress, abi) {
@@ -145,6 +166,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
       token.collateralFactor = collateralFactor;
     });
+    this.getPrice(token.cTokenAddress).then(priceUsd => {
+      token.priceUsd = priceUsd;
+    });
   }
 
   public fetchIRData() {
@@ -180,6 +204,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
     return colFactorStr.toFixed(2).toString();
   }
 
+  public async getPrice(cTokenAddress) {
+    let tokenPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
+    tokenPrice = this.getNumber(tokenPrice);
+    const price = parseFloat(tokenPrice) / this.DECIMAL_18;
+    const priceStr = price.toFixed(3);
+    return priceStr;
+  }
+
   public getNumber(hexNum) {
     return ethers.utils.bigNumberify(hexNum).toString();
   }
@@ -190,16 +222,23 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.isUserAdmin = (admin.toLowerCase() === user.toLowerCase()) ? true : false;
   }
 
-  public async addToken() {
-    if (this.cTokenAddress === undefined || this.cTokenAddress === null) {
-      return;
-    }
+  public async updateCtokenPrice() {
+    if (typeof this.updatePrice.cTokenAddress === 'undefined') { return; }
+    if (typeof this.updatePrice.price === 'undefined') { return; }
+    if (parseFloat(this.updatePrice.price) < 0) { return; }
+
     try {
       const overrides = {
         gasPrice: this.GAS_PRICE,
       };
-      const tx = await this.Contracts.Comptroller._supportMarket(this.cTokenAddress, overrides);
+      const priceMantissa = ethers.utils.parseEther(this.updatePrice.price);
+      const oracleAddress = await this.Contracts.Comptroller.oracle();
+      const PriceOracle = this.initContract(oracleAddress, PriceOracleOTL.abi);
+      // const PriceOracle = this.initContract(this.contractAddresses.PriceOracleProxy, PriceOracleOTL.abi);
+      const tx = await PriceOracle.setUnderlyingPrice(this.updatePrice.cTokenAddress, priceMantissa, overrides);
+      this.updatePrice.loader = true;
       await this.web3.waitForTransaction(tx.hash);
+      this.updatePrice.loader = false;
       window.location.reload();
     } catch (error) { console.error(error); }
   }

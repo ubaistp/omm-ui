@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
-import * as PriceOracleProxy from '../../../assets/contracts/PriceOracleProxy.json';
+import * as PriceOracle from '../../../assets/contracts/PriceOracle.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
 // import * as CErc20 from '../../../assets/contracts/CErc20.json';
@@ -186,7 +186,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         if (typeof contractAddresses === 'undefined') { return; }
 
         const allListedTokens = await this.fetchAllMarkets();
-        this.initAllContracts(contractAddresses);
+        await this.initAllContracts(contractAddresses);
 
         // In case there are no markets
         if (allListedTokens.length === 0 ) {
@@ -328,10 +328,12 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
 
-    private initAllContracts(contractAddresses) {
+    private async initAllContracts(contractAddresses) {
         this.Contracts = {};
         this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
-        this.Contracts.PriceOracleProxy = this.initContract(contractAddresses.PriceOracleProxy, PriceOracleProxy.abi);
+
+        const oracleAddress = await this.Contracts.Comptroller.oracle();
+        this.Contracts.PriceOracleProxy = this.initContract(oracleAddress, PriceOracle.abi);
     }
 
     private initContract(contractAddress, abi) {
