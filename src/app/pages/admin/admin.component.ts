@@ -80,11 +80,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.fetchIRData();
     // console.log(this.Contracts);
     // console.log(this.tokenData);
-    setTimeout(() => {
-      this.tokenData.forEach(token => {
-        console.log(token.symbol, token.priceUsd);
-      });
-    }, 3500);
   }
 
   public async afterInitToken() {
