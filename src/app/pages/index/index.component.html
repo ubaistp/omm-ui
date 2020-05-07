@@ -120,7 +120,7 @@
                                         </div>
                                         <div class="col-sm-3 col-3 text-left">
                                           <div class="balance">
-                                              <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} <!-- {{ token.symbol }} --></div>
+                                              <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
                                           </div>
                                         </div>
                                         <!-- <div class="col-4 col-sm-2 text-right">
@@ -303,7 +303,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">               
+            <div class="row">
                 <div class="col-md-12">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default">
@@ -484,8 +484,8 @@
                             </div>
                         </div>
                     </div>
-                </div><!--- END COL -->     
-            </div><!--- END ROW -->         
+                </div><!--- END COL -->
+            </div><!--- END ROW -->
         </div>
     </section>
 </div>

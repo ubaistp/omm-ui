@@ -376,9 +376,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           token.priceUsd = priceUsd;
           this.getUserSupplyBalance(cTokenContract, token).then(cTokenSupplyBalance => {
             token.cTokenSupplyBalance = parseFloat(cTokenSupplyBalance);
+            token.cTokenSupplyBalanceUSD = this.getUserSupplyBalanceUSD(token);
           });
           this.getUserBorrowBalance(cTokenContract, token).then(tokenBorrowBalance => {
             token.tokenBorrowBalance = parseFloat(tokenBorrowBalance);
+            token.tokenBorrowBalanceUSD = this.getUserBorrowBalanceUSD(token);
           });
         });
         cTokenContract.name().then(cTokenName => {
@@ -536,6 +538,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         return tokenBalance;
     }
 
+    private getUserSupplyBalanceUSD(token) {
+        return parseFloat(token.cTokenSupplyBalance) * parseFloat(token.priceUsd);
+    }
+
     public async getUserBorrowBalance(cTokenContract, token) {
         let tokenBalance = await cTokenContract.borrowBalanceStored(this.userAddress);
         tokenBalance = this.getNumber(tokenBalance);
@@ -549,6 +555,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             this.totalBorrowBalance += borrowBal;
         }
         return tokenBalance;
+    }
+
+    private getUserBorrowBalanceUSD(token) {
+        return parseFloat(token.tokenBorrowBalance) * parseFloat(token.priceUsd);
     }
 
     private async genTokenLink(tokenAddress) {
