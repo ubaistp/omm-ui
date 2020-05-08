@@ -54,7 +54,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     public typeViewBorrow = 'borrow';
 
     constructor() {
-      this.cashTokenSymbols = ['DAI', 'USDC', 'USDT'];
+      this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
       this.initializeMetaMask();
     }
 

@@ -72,7 +72,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     // public assetTokenData = [];
 
     constructor() {
-        this.cashTokenSymbols = ['DAI', 'USDC', 'USDT'];
+        this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
         this.initializeMetaMask();
     }
 
