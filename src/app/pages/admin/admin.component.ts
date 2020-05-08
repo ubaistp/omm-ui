@@ -35,6 +35,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public erc20AddressFull: any;
   public collateralFacFull: any;
   public irModelAddrFull: any;
+  public priceFull: any;
   public updateIr: any = {};
 
   constructor() {
@@ -267,6 +268,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const irAddrArray = this.contractAddresses.DynamicInterestRateModel;
     const check = irAddrArray.includes(this.irModelAddrFull);
     if (!check) { return; }
+    if (typeof this.priceFull === 'undefined') { return; }
+    if (parseFloat(this.priceFull) < 0) { return; }
 
     const overrides = {
       gasPrice: this.GAS_PRICE,
@@ -282,8 +285,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const cTokenSymbol = 'k' + erc20Symbol;
       const cTokenDecimals = 8;
       const totalDecimals = parseFloat(erc20Decimals) + cTokenDecimals;
-      let initialExcRateMantissaStr = '2';
-      initialExcRateMantissaStr = initialExcRateMantissaStr.padEnd(totalDecimals + 1, '0');
+
+      /* For 1:1 ratio
+      * initialExcRateMantissa = 10 ** (erc20Decimals + cTokenDecimals + 2)
+      */
+
+      // let initialExcRateMantissaStr = '2';   // taken from compound
+      let initialExcRateMantissaStr = '1';
+      initialExcRateMantissaStr = initialExcRateMantissaStr.padEnd(totalDecimals + 3, '0');
 
       // deploy cToken
       const abi = CErc20Immutable.abi;
@@ -291,11 +300,18 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const factory = new ethers.ContractFactory(abi, bytecode, this.web3.getSigner());
       const cTokenContract = await factory.deploy(this.erc20AddressFull, this.contractAddresses.Comptroller,
         this.irModelAddrFull, initialExcRateMantissaStr, cTokenName, cTokenSymbol, cTokenDecimals, admin, overrides);
-      // await cTokenContract.deployed();
+      await cTokenContract.deployed();
 
       // call support market in comptroller
       const tx = await this.Contracts.Comptroller._supportMarket(cTokenContract.address, overrides);
-      // await this.web3.waitForTransaction(tx.hash);
+      await this.web3.waitForTransaction(tx.hash);
+
+      // set price
+      const priceMantissa = ethers.utils.parseEther(this.priceFull);
+      const oracleAddress = await this.Contracts.Comptroller.oracle();
+      const PriceOracle = this.initContract(oracleAddress, PriceOracleOTL.abi);
+      const priceTx = await PriceOracle.setUnderlyingPrice(cTokenContract.address, priceMantissa, overrides);
+      await this.web3.waitForTransaction(priceTx.hash);
 
       // update collateral factor in comptroller
       const colFac = parseFloat(this.collateralFacFull);
