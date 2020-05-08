@@ -140,11 +140,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         //   }
         // });
     // }
+
     private calcTotalAssetTokenSupply() {
         this.totalAssetTokenSupply = 0;
         this.assetTokenData.forEach(token => {
           if (parseFloat(token.erc20TotalSupply) >= 0) {
-            this.totalAssetTokenSupply += parseFloat(token.erc20TotalSupply);
+            this.totalAssetTokenSupply += (parseFloat(token.erc20TotalSupply) * parseFloat(token.priceUsd));
           }
         });
     }
@@ -153,7 +154,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.totalCashLoans = 0;
         this.cashTokenData.forEach(token => {
           if (parseFloat(token.totalErc20Borrows) >= 0) {
-            this.totalCashLoans += parseFloat(token.totalErc20Borrows);
+            this.totalCashLoans += (parseFloat(token.totalErc20Borrows) * parseFloat(token.priceUsd));
           }
         });
     }
@@ -162,7 +163,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.totalCashDeployed = 0;
         this.cashTokenData.forEach(token => {
           if (parseFloat(token.totalErc20Supply) >= 0) {
-            this.totalCashDeployed += parseFloat(token.totalErc20Supply);
+            this.totalCashDeployed += (parseFloat(token.totalErc20Supply) * parseFloat(token.priceUsd));
           }
         });
     }

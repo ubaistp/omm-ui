@@ -122,6 +122,9 @@
                                           <div class="balance">
                                               <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
                                           </div>
+                                          <div class="balance">
+                                            <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} {{ token.symbol }}</div>
+                                          </div>
                                         </div>
                                         <!-- <div class="col-4 col-sm-2 text-right">
                                             <mat-slide-toggle [checked]="token.enabled" [disabled]="false"
@@ -567,7 +570,7 @@
                                         <div class="calculation">
                                             <span class="description">Deployed Balance</span>
                                             <span>
-                                                ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalance, 3)}}
+                                                ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalanceUSD, 3)}}
                                                 <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00 -->
                                             </span>
                                         </div>
