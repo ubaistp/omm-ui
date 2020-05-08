@@ -261,10 +261,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       || this.collateralFacFull === undefined || this.collateralFacFull === null) {
       return;
     }
-    if (parseFloat(this.collateralFacFull) <= 0) {
-      console.log('invalid');
-      return;
-    }
+    if (parseFloat(this.collateralFacFull) < 0) { return; }
     const irAddrArray = this.contractAddresses.DynamicInterestRateModel;
     const check = irAddrArray.includes(this.irModelAddrFull);
     if (!check) { return; }
