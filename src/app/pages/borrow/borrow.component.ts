@@ -451,11 +451,11 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         let posApy = 0;
         let negApy = 0;
         this.tokenData.forEach(token => {
-            if (parseFloat(token.cTokenSupplyBalance) > 0 && parseFloat(token.supplyApy) > 0 && (this.totalSupplyBalance) > 0) {
-                posApy += parseFloat(token.cTokenSupplyBalance) * parseFloat(token.supplyApy) / (this.totalSupplyBalance);
+            if (parseFloat(token.cTokenSupplyBalanceUSD) > 0 && parseFloat(token.supplyApy) > 0 && (this.totalSupplyBalance) > 0) {
+                posApy += parseFloat(token.cTokenSupplyBalanceUSD) * parseFloat(token.supplyApy) / (this.totalSupplyBalance);
             }
-            if (parseFloat(token.tokenBorrowBalance) > 0 && parseFloat(token.borrowApy) > 0 && (this.totalBorrowBalance) > 0) {
-                negApy += parseFloat(token.tokenBorrowBalance) * parseFloat(token.borrowApy) / (this.totalBorrowBalance);
+            if (parseFloat(token.tokenBorrowBalanceUSD) > 0 && parseFloat(token.borrowApy) > 0 && (this.totalBorrowBalance) > 0) {
+                negApy += parseFloat(token.tokenBorrowBalanceUSD) * parseFloat(token.borrowApy) / (this.totalBorrowBalance);
             }
         });
         this.apyData.netApy = posApy - negApy;
@@ -465,8 +465,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     public async getAccountLiquidity() {
         this.accountLiquidity = 0;
         this.tokenData.forEach(token => {
-            if (parseFloat(token.cTokenSupplyBalance) > 0 && token.enabled === true) {
-                this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.cTokenSupplyBalance) / 100);
+            if (parseFloat(token.cTokenSupplyBalanceUSD) > 0 && token.enabled === true) {
+                this.accountLiquidity += (parseFloat(token.collateralFactor) * parseFloat(token.cTokenSupplyBalanceUSD) / 100);
             }
         });
     }
