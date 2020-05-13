@@ -774,6 +774,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         window.location.reload();
     }
 
+    openPreviewModal() {
+        $('#previewModal').modal('show');
+    }
+
     openSupplyModal(i) {
         this.amountInput = null;
         $('#supply').val(this.tokenData[i].id);

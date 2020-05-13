@@ -79,7 +79,7 @@
                                         (click)="openSupplyModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <img  style="max-height: 30px;" src="assets/img/ether_logo.svg" alt="Ether logo" />
+                                                <img  style="max-height: 30px;" src="assets/img/ether_logo.png" alt="Ether logo" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
@@ -138,7 +138,7 @@
                                         (click)="openBorrowModal(token.id)">
                                         <div class="col-4 col-sm-4">
                                             <div class="balance">
-                                                <img src="assets/img/{{ token.symbol }}_logo.svg" alt="{{ token.symbol }} logo" class="token-logos" />
+                                                <img src="assets/img/{{ token.symbol }}_logo.png" alt="{{ token.symbol }} logo" class="token-logos" />
                                                 <div style="display: inline-block;">{{token.symbol}}</div>
                                                 <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
                                             </div>
@@ -266,7 +266,7 @@
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                               <div class="text-center">
-                                <img src="assets/img/ether_logo.svg" style="max-height: 80px;" alt="Ether logo" />
+                                <img src="assets/img/ether_logo.png" style="max-height: 80px;" alt="Ether logo" />
                               </div>
                               <div class="mt20 mb30" style="font-weight: 500;">
                                   To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
@@ -373,7 +373,7 @@
                             </div>
                             <div class="form mt100" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center">
-                                    <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.svg" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
+                                    <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.png" style="max-height: 80px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
                                     To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
