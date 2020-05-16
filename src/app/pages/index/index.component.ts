@@ -10,6 +10,7 @@ import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+import { CookieService } from 'ngx-cookie-service';
 
 declare var $: any;
 declare var cApp: any;
@@ -71,7 +72,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     // public borrowBalance;
     // public assetTokenData = [];
 
-    constructor() {
+    constructor( private cookie:CookieService ) {
         this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
         this.initializeMetaMask();
     }
@@ -91,6 +92,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         this.updateBalanceEffect();
+
+        const cookieExists: boolean = this.cookie.check('first_visit');
+        this.cookie.set("first_visit", "true", 730);
+        if(!cookieExists){
+          $('#previewModal').modal('show');
+        }
     }
     ngOnDestroy() {
         clearInterval(this.polling);
@@ -772,10 +779,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         const tx = await tokenContract.allocateTo(this.userAddress, ethers.utils.parseEther('10000'), overrides);
         await this.web3.waitForTransaction(tx.hash);
         window.location.reload();
-    }
-
-    openPreviewModal() {
-        $('#previewModal').modal('show');
     }
 
     openSupplyModal(i) {

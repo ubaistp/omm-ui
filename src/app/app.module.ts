@@ -14,10 +14,11 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { SharedService } from './commonData.service';
+import { CookieService } from 'ngx-cookie-service';
 
 const appRoutes: Routes = [
   { path: '', component: IndexComponent },
-  { path: 'admin', component: AdminComponent },
+  { path: 'admin', component: AdminComponent   },
   { path: 'borrow', component: BorrowComponent },
 ];
 
@@ -38,7 +39,7 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [ SharedService ],
+  providers: [ SharedService, CookieService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
