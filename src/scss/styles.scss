@@ -428,21 +428,24 @@ label.error{
   max-width: 500px;
 }
 
-#carouselExampleControls {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 3em;
-}
 
 .carousel-control-next,
 .carousel-control-prev {
     filter: invert(100%);
 }
 
-
 .carousel-fade .carousel-item {
  opacity: 0;
  transition-duration: 3.5s;
  transition-property: opacity;
+}
+
+#onboardingCarousel {
+  position: relative;
+  padding: 3em;
+}
+
+#help_btn {
+  margin-right: 2rem; 
+  text-transform: none;
 }
