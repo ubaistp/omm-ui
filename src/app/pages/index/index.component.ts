@@ -72,7 +72,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     // public borrowBalance;
     // public assetTokenData = [];
 
-    constructor( private cookie:CookieService ) {
+    constructor(private cookie: CookieService) {
         this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
         this.initializeMetaMask();
     }
@@ -94,8 +94,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateBalanceEffect();
 
         const cookieExists: boolean = this.cookie.check('first_visit');
-        this.cookie.set("first_visit", "true", 730);
-        if(!cookieExists){
+        this.cookie.set('first_visit', 'true', 730);
+        if (!cookieExists) {
           $('#previewModal').modal('show');
         }
     }

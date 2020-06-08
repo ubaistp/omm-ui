@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ethers } from 'ethers';
 import { ReplaySubject } from 'rxjs';
-
+import { CookieService } from 'ngx-cookie-service';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { blockchainConstants } from '../environments/blockchain-constants';
 import * as Comptroller from '../assets/contracts/Comptroller.json';
@@ -24,12 +24,29 @@ export class SharedService {
   private proceedApp = new ReplaySubject<any>();
   public proceedApp$ = this.proceedApp.asObservable();
 
-  constructor() {
+  constructor(private cookie: CookieService) {
     this.initWalletConnection();
   }
 
   private initWalletConnection() {
-    setTimeout(() => { $('#walletConnectionModal').modal('show'); }, 1);
+    try {
+      const cookieExists: boolean = this.cookie.check('connected_wallet_name');
+
+      if (cookieExists === false) {
+        this.toggleWalletConnectionModal('show');
+        return;
+      }
+
+      const walletName = this.cookie.get('connected_wallet_name');
+      if (walletName) {
+        this.connect(walletName);
+      } else {
+        this.toggleWalletConnectionModal('show');
+      }
+    } catch (error) {
+      console.error(error);
+      this.toggleWalletConnectionModal('show');
+    }
   }
 
   public async connect(walletName) {
@@ -43,6 +60,7 @@ export class SharedService {
         break;
       }
       default: {
+        this.toggleWalletConnectionModal('show');
         break;
       }
     }
@@ -54,6 +72,7 @@ export class SharedService {
         infuraId: blockchainConstants.infuraID // Required
       });
       await wcProvider.enable();
+      await this.setWalletCookie('wallet-connect');
       this.web3 = new ethers.providers.Web3Provider(wcProvider);
       // await wcProvider.close()
       await this.setup();
@@ -72,6 +91,7 @@ export class SharedService {
       this.ethereum = window['ethereum'];
       this.web3 = new ethers.providers.Web3Provider(this.ethereum);
       await this.ethereum.enable();
+      await this.setWalletCookie('metamask');
       await this.setup();
     } catch (error) {
         if (error.code === 4001) {
@@ -82,13 +102,21 @@ export class SharedService {
     }
   }
 
+  private setWalletCookie(value) {
+    this.cookie.set('connected_wallet_name', value, 15);
+  }
+
+  private toggleWalletConnectionModal(operation) {
+    setTimeout(() => { $('#walletConnectionModal').modal(operation); }, 1);
+  }
+
   public getWeb3() {
     return this.web3;
   }
 
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
-    $('#walletConnectionModal').modal('hide');
+    this.toggleWalletConnectionModal('hide');
     this.proceedApp.next(true);
 
     // const contractAddresses = await this.getContractAddresses();
