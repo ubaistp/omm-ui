@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { SharedService } from '../commonData.service';
 
-declare var $:any;
+declare var $: any;
 
 @Component({
-  selector: "app-header",
-  templateUrl: "./header.component.html",
+  selector: 'app-header',
+  templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
-  providers: [SharedService]
+  providers: []
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
 
@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     // this.initialize();
   }
   ngOnInit() {
-    this.sharedService.proceedApp.subscribe((value) => {
+    this.sharedService.proceedApp$.subscribe((value) => {
       if (value === true) {
         this.initialize();
       }

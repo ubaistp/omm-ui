@@ -13,7 +13,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-import { SharedService } from './commonData.service';
 import { CookieService } from 'ngx-cookie-service';
 
 const appRoutes: Routes = [
@@ -39,7 +38,7 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [ SharedService, CookieService ],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

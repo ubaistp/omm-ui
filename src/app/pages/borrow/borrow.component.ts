@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
+import { SharedService } from '../../commonData.service';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as PriceOracle from '../../../assets/contracts/PriceOracle.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
@@ -53,12 +54,20 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
 
-    constructor() {
+    constructor(private sharedService: SharedService) {
       this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
-      this.initializeMetaMask();
+      // this.initializeMetaMask();
     }
 
     ngOnInit() {
+        this.sharedService.proceedApp$.subscribe(
+          value => {
+            if (value === true) {
+                this.initializeProvider();
+            }
+          },
+          error => console.error(error)
+        );
     }
 
     ngAfterViewInit() {
@@ -66,12 +75,12 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
 
-        window['ethereum'].on('accountsChanged', () => {
-            window.location.reload();
-        });
-        window['ethereum'].on('networkChanged', () => {
-            window.location.reload();
-        });
+        // window['ethereum'].on('accountsChanged', () => {
+        //     window.location.reload();
+        // });
+        // window['ethereum'].on('networkChanged', () => {
+        //     window.location.reload();
+        // });
 
         this.updateBalanceEffect();
     }
@@ -150,21 +159,20 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         }, updateIntervalInSec * 1000);
     }
 
-    public async initializeMetaMask() {
+    public async initializeProvider() {
         try {
-            if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-                setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
-                return;
-            }
-            this.ethereum = window['ethereum'];
-            await this.ethereum.enable();
-            this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+            // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+            //     setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
+            //     return;
+            // }
+            // this.ethereum = window['ethereum'];
+            // await this.ethereum.enable();
+            // this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+            this.web3 = await this.sharedService.web3;
             await this.setup();
 
         } catch (error) {
-            if (error.code === 4001) {
-                $('#metaMaskRejectModal').modal('show');
-            } else { console.error(error); }
+            console.error(error);
         }
     }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ethers } from 'ethers';
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { blockchainConstants } from '../environments/blockchain-constants';
 import * as Comptroller from '../assets/contracts/Comptroller.json';
@@ -11,14 +12,17 @@ import * as EIP20Interface from '../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SharedService {
   public ethereum: any;
   public web3: any;
   public userAddress: any;
   public Contracts: any;
   public contractAddresses: any;
-  public proceedApp: Subject<any> = new Subject();
+  private proceedApp = new ReplaySubject<any>();
+  public proceedApp$ = this.proceedApp.asObservable();
 
   constructor() {
     this.initWalletConnection();
@@ -54,6 +58,7 @@ export class SharedService {
       // await wcProvider.close()
       await this.setup();
     } catch (error) {
+      $('#walletRejectModal').modal('show');
       throw(error);
     }
   }
@@ -70,7 +75,7 @@ export class SharedService {
       await this.setup();
     } catch (error) {
         if (error.code === 4001) {
-          $('#metaMaskRejectModal').modal('show');
+          $('#walletRejectModal').modal('show');
         } else {
           throw(error);
         }
