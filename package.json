@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "~9.0.3",
     "@angular/router": "~9.0.3",
     "@types/jquery": "^3.3.33",
+    "@walletconnect/web3-provider": "^1.0.0-beta.47",
     "bignumber.js": "^9.0.0",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",

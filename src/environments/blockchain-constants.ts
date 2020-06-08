@@ -48,5 +48,6 @@ export const blockchainConstants = {
     // PriceOracleProxy: '0xF35B1Fa83A2feEc4Af73f835f02e091596F92878',
     // DynamicInterestRateModel: ['0x8E609D80bfEB8168E00D3AFe09c140903Bb09FC8'],
 
-  }
+  },
+  infuraID: 'e8f20dc6c35d4e50a38aed78cc360f30',
 };

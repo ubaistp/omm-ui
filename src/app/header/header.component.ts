@@ -11,44 +11,54 @@ declare var $:any;
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
 
-  private ethereum: any;
+  // private ethereum: any;
   private web3: any;
   public userAddress;
   public networkString: any;
 
   constructor(private sharedService: SharedService) {
-    this.initialize();
+    // this.initialize();
   }
   ngOnInit() {
-
+    this.sharedService.proceedApp.subscribe((value) => {
+      if (value === true) {
+        this.initialize();
+      }
+    });
   }
   ngAfterViewInit() {
-    if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-      return;
-    }
-    window['ethereum'].on('accountsChanged', () => {
+    // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+    //   return;
+    // }
+    if (typeof this.web3 === 'undefined') { return; }
+
+    this.web3.on('accountsChanged', () => {             // NOT RELOADING
       window.location.reload();
     });
 
-    window['ethereum'].on('networkChanged', () => {
-        window.location.reload();
+    this.web3.on('networkChanged', () => {
+      window.location.reload();
     });
+  }
+
+  public async connect(walletName) {
+    await this.sharedService.connect(walletName);
   }
 
   public async initialize() {
     this.networkString = {};
-    if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-      setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
-      return;
-    }
-    try {
-      await this.sharedService.initializeMetaMask();
-    } catch (error) {
-      if (error.code === 4001) {
-        $('#metaMaskRejectModal').modal('show');
-      } else { console.error(error); }
-    }
-    this.ethereum = await this.sharedService.ethereum;
+    // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+    //   setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
+    //   return;
+    // }
+    // try {
+    //   await this.sharedService.initializeMetaMask();
+    // } catch (error) {
+    //   if (error.code === 4001) {
+    //     $('#metaMaskRejectModal').modal('show');
+    //   } else { console.error(error); }
+    // }
+    // this.ethereum = await this.sharedService.ethereum;
     this.web3 = await this.sharedService.web3;
 
     if (typeof(this.web3) === undefined) { return; }
@@ -84,6 +94,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
 
     this.userAddress = await this.web3.getSigner().getAddress();
+  }
+
+  public disconnectWallet() {
+    if (typeof(this.web3) === undefined) { return; }
+    console.log(this.web3);
+
+    // this.web3.disable();   // async
   }
 
   public reloadPage() {

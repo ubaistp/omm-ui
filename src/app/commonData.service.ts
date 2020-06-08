@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ethers } from 'ethers';
+import { Subject } from 'rxjs';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import { blockchainConstants } from '../environments/blockchain-constants';
 import * as Comptroller from '../assets/contracts/Comptroller.json';
 import * as PriceOracleProxy from '../assets/contracts/PriceOracleProxy.json';
 import * as CErc20Delegator from '../assets/contracts/CErc20Delegator.json';
 import * as CErc20 from '../assets/contracts/CErc20.json';
-import * as IVTDemoABI from '../assets/contracts/IVTDemoABI.json';
 import * as EIP20Interface from '../assets/contracts/EIP20Interface.json';
+
+declare var $: any;
 
 @Injectable()
 export class SharedService {
@@ -15,31 +18,74 @@ export class SharedService {
   public userAddress: any;
   public Contracts: any;
   public contractAddresses: any;
+  public proceedApp: Subject<any> = new Subject();
 
   constructor() {
-    if (typeof window['ethereum'] !== 'undefined' || (typeof window['web3'] !== 'undefined')) {
-      this.ethereum = window['ethereum'];
-      this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+    this.initWalletConnection();
+  }
+
+  private initWalletConnection() {
+    setTimeout(() => { $('#walletConnectionModal').modal('show'); }, 1);
+  }
+
+  public async connect(walletName) {
+    switch (walletName) {
+      case 'metamask': {
+        await this.initializeMetaMask();
+        break;
+      }
+      case 'wallet-connect': {
+        await this.initializeWalletConnect();
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  public async initializeWalletConnect() {
+    try {
+      const wcProvider = new WalletConnectProvider({
+        infuraId: blockchainConstants.infuraID // Required
+      });
+      await wcProvider.enable();
+      this.web3 = new ethers.providers.Web3Provider(wcProvider);
+      // await wcProvider.close()
+      await this.setup();
+    } catch (error) {
+      throw(error);
     }
   }
 
   public async initializeMetaMask() {
     try {
       if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+        setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
         return;
       }
+      this.ethereum = window['ethereum'];
+      this.web3 = new ethers.providers.Web3Provider(this.ethereum);
       await this.ethereum.enable();
       await this.setup();
     } catch (error) {
-        throw(error);
+        if (error.code === 4001) {
+          $('#metaMaskRejectModal').modal('show');
+        } else {
+          throw(error);
+        }
     }
   }
+
   public getWeb3() {
     return this.web3;
   }
 
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
+    $('#walletConnectionModal').modal('hide');
+    this.proceedApp.next(true);
+
     // const contractAddresses = await this.getContractAddresses();
     // console.log(this.contractAddresses)
     // this.initAllContracts(contractAddresses);

@@ -7,14 +7,35 @@
         <a class="asset btn btn-secondary" (click)="viewOnboardingModal()" id="help_btn"><i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>Tutorial</a>
         <!-- <span style="font-size: 0.9rem;">HELP</span> -->
         <span class="dot"></span>
-        <span style="font-size: 0.9rem;">{{ networkString.name }}</span>
+        <span *ngIf="networkString" style="font-size: 0.9rem;">{{ networkString.name }}</span>
     </div>
     <div class="toolbar" role="banner">
         <img height="90" src="assets/img/OTL-logo.png" />
         <div class="spacer"></div>
         <a class="d-none d-sm-block" id="account">{{ trucateAddress(userAddress) }}</a>
     </div>
+    <!-- <div *ngIf="userAddress" class="toolbar" role="banner">
+        <div class="spacer"></div>
+        <a class="asset btn btn-secondary text-right" (click)="disconnectWallet()" id="help_btn">Disconnect</a>
+    </div> -->
 </header>
+
+<div class="modal fade" id="walletConnectionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+    aria-labelledby="walletConnectionModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="py30">
+                    <h2>Connect Wallet</h2>
+                    <a class="asset btn btn-secondary" (click)="connect('metamask')" id="help_btn">
+                      Metamask Extension</a>
+                    <a class="asset btn btn-secondary" (click)="connect('wallet-connect')" id="help_btn">
+                      Wallet Connect</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="unknownNetModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
     aria-labelledby="kovanNetModalLabel" aria-hidden="true">
