@@ -97,10 +97,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   public disconnectWallet() {
-    if (typeof(this.web3) === undefined) { return; }
-    console.log(this.web3);
-
-    // this.web3.disable();   // async
+    this.sharedService.disconnectWallet();
   }
 
   public reloadPage() {

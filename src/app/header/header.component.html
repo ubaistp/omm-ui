@@ -14,10 +14,10 @@
         <div class="spacer"></div>
         <a class="d-none d-sm-block" id="account">{{ trucateAddress(userAddress) }}</a>
     </div>
-    <!-- <div *ngIf="userAddress" class="toolbar" role="banner">
+    <div *ngIf="userAddress" class="toolbar" role="banner">
         <div class="spacer"></div>
         <a class="asset btn btn-secondary text-right" (click)="disconnectWallet()" id="help_btn">Disconnect</a>
-    </div> -->
+    </div>
 </header>
 
 <div class="modal fade" id="walletConnectionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"

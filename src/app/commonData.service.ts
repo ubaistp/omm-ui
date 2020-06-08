@@ -106,8 +106,20 @@ export class SharedService {
     this.cookie.set('connected_wallet_name', value, 15);
   }
 
+  private deleteWalletCookie() {
+    this.cookie.delete('connected_wallet_name');
+  }
+
   private toggleWalletConnectionModal(operation) {
     setTimeout(() => { $('#walletConnectionModal').modal(operation); }, 1);
+  }
+
+  public disconnectWallet() {
+    if (typeof(this.web3) === undefined) { return; }
+
+    this.deleteWalletCookie();
+    this.toggleWalletConnectionModal('show');
+    window.location.reload();
   }
 
   public getWeb3() {
