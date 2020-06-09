@@ -20,7 +20,6 @@ declare var cApp: any;
 })
 export class AdminComponent implements OnInit, AfterViewInit {
 
-  // public ethereum: any;
   public web3: any;
   public userAddress: any;
   public Contracts: any;
@@ -43,7 +42,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    // this.initializeMetaMask();
     this.sharedService.proceedApp$.subscribe(
       value => {
         if (value === true) {
@@ -58,8 +56,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async initializeProvider() {
-    // this.ethereum = window['ethereum'];
-    // this.web3 = new ethers.providers.Web3Provider(this.ethereum);
     this.web3 = await this.sharedService.web3;
     await this.setup();
   }
@@ -240,7 +236,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const priceMantissa = ethers.utils.parseEther(this.updatePrice.price);
       const oracleAddress = await this.Contracts.Comptroller.oracle();
       const PriceOracle = this.initContract(oracleAddress, PriceOracleOTL.abi);
-      // const PriceOracle = this.initContract(this.contractAddresses.PriceOracleProxy, PriceOracleOTL.abi);
       const tx = await PriceOracle.setUnderlyingPrice(this.updatePrice.cTokenAddress, priceMantissa, overrides);
       this.updatePrice.loader = true;
       await this.web3.waitForTransaction(tx.hash);
