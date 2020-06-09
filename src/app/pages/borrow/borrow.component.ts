@@ -71,9 +71,9 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-            return;
-        }
+        // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+        //     return;
+        // }
 
         // window['ethereum'].on('accountsChanged', () => {
         //     window.location.reload();
@@ -253,7 +253,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async fetchAllMarkets() {
-      const myWeb3 = new Web3(Web3.givenProvider);
+      const myWeb3 = new Web3(this.web3.provider);
       let abi;
       abi = Comptroller.abi;
       const web3Contract = new myWeb3.eth.Contract(abi, this.contractAddresses.Comptroller);

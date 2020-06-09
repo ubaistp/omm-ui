@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/co
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
+import { SharedService } from '../../commonData.service';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
 import * as CErc20Delegator from '../../../assets/contracts/CErc20Delegator.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
@@ -19,7 +20,7 @@ declare var cApp: any;
 })
 export class AdminComponent implements OnInit, AfterViewInit {
 
-  public ethereum: any;
+  // public ethereum: any;
   public web3: any;
   public userAddress: any;
   public Contracts: any;
@@ -38,19 +39,28 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public priceFull: any;
   public updateIr: any = {};
 
-  constructor() {
+  constructor(private sharedService: SharedService) {
   }
 
   ngOnInit() {
-    this.initializeMetaMask();
+    // this.initializeMetaMask();
+    this.sharedService.proceedApp$.subscribe(
+      value => {
+        if (value === true) {
+            this.initializeProvider();
+        }
+      },
+      error => console.error(error)
+    );
   }
 
   ngAfterViewInit() {
   }
 
-  public async initializeMetaMask() {
-    this.ethereum = window['ethereum'];
-    this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+  public async initializeProvider() {
+    // this.ethereum = window['ethereum'];
+    // this.web3 = new ethers.providers.Web3Provider(this.ethereum);
+    this.web3 = await this.sharedService.web3;
     await this.setup();
   }
 
@@ -342,7 +352,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   public async fetchAllMarkets() {
-    const myWeb3 = new Web3(Web3.givenProvider);
+    const myWeb3 = new Web3(this.web3.provider);
     let abi;
     abi = Comptroller.abi;
     const web3Contract = new myWeb3.eth.Contract(abi, this.contractAddresses.Comptroller);
