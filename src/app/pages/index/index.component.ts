@@ -10,7 +10,7 @@ import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json
 // import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
-import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+// import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 import { CookieService } from 'ngx-cookie-service';
 
 declare var $: any;
@@ -24,9 +24,7 @@ declare var cApp: any;
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    private ethereum: any;
     private web3: any;
-    // public provider: any;
     public userAddress: any;
     public Contracts: any;
     public contractAddresses: any;
@@ -57,25 +55,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public collateralBorrowEnable = false;
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
-    // public canvas: any;
-    // public ctx: any;
-    // public supplyData = [];
-    // public borrowData = [];
-    // public dataObj = {
-    //     showBorrow: false,
-    //     showBorrowToken: false,
-    //     showSupply: false,
-    //     showSupplyToken: false
-    // };
-    // public supplyTokenData = [];
-    // public borrowTokenData = [];
-    // public supplyBalance;
-    // public borrowBalance;
-    // public assetTokenData = [];
 
     constructor(private sharedService: SharedService, private cookie: CookieService) {
         this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
-        // this.initializeMetaMask();
     }
 
     ngOnInit() {
@@ -89,24 +71,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       );
     }
     ngAfterViewInit() {
-        // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-        //     return;
-        // }
-
-        // window['ethereum'].on('accountsChanged', () => {
-        //     window.location.reload();
-        // });
-        // window['ethereum'].on('networkChanged', () => {
-        //     window.location.reload();
-        // });
-
-        this.updateBalanceEffect();
-
         const cookieExists: boolean = this.cookie.check('first_visit');
         this.cookie.set('first_visit', 'true', 730);
         if (!cookieExists) {
           $('#previewModal').modal('show');
         }
+
+        this.updateBalanceEffect();
     }
     ngOnDestroy() {
         clearInterval(this.polling);
@@ -115,47 +86,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     filterTable() {
         this.cashTokenData = this.filterCashTokenArray();
         this.assetTokenData = this.filterAssetTokenArray();
-        // this.supplyData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
-        // this.borrowData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        // this.supplyTokenData = this.tokenData;
-        // this.supplyTokenData = this.tokenData.filter(el => el.symbol == "DAI" || el.symbol == "USDT" || el.symbol == "USDC" );
-        // this.borrowTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        // this.assetTokenData = this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC");
-        // this.supplyData = this.supplyData.filter(el => el.cTokenSupplyBalance > 0);
-        // if (this.supplyData.length > 0) {
-        //     this.dataObj['showSupply'] = true;
-        // }
-        // this.borrowData = this.borrowData.filter(el => el.tokenBorrowBalance > 0);
-        // if (this.borrowData.length > 0) {
-        //     this.dataObj['showBorrow'] = true;
-        // }
-        // this.supplyTokenData = this.supplyTokenData.filter(el => el.cTokenSupplyBalance == 0 && el.tokenBorrowBalance == 0);
-        // if (this.supplyTokenData.length > 0) {
-        //     this.dataObj['showSupplyToken'] = true;
-        // }
-        // this.borrowTokenData = this.borrowTokenData.filter(el => el.tokenBorrowBalance == 0 && el.cTokenSupplyBalance == 0);
-        // if (this.borrowTokenData.length > 0) {
-        //     this.dataObj['showBorrowToken'] = true;
-        // }
-      }
-
-    // private calcTotalSupplyBorrows() {
-        // this.tokenData.filter(el => el['supplyBalance'] = (el.cTokenSupplyBalance * parseFloat(el.priceUsd)));
-        // this.supplyBalance = 0;
-        // this.tokenData.filter(el => {
-        //   if (parseFloat(el.cTokenSupplyBalance) >= 0) {
-        //     this.supplyBalance = this.supplyBalance + el.cTokenSupplyBalance;
-        //   }
-        // });
-
-        // this.tokenData.filter(el => el['borrowBalance'] = (el.tokenBorrowBalance * parseFloat(el.priceUsd)));
-        // this.borrowBalance = 0;
-        // this.tokenData.filter(el => {
-        //   if (parseFloat(el.tokenBorrowBalance) >= 0) {
-        //     this.borrowBalance = this.borrowBalance + el.tokenBorrowBalance;
-        //   }
-        // });
-    // }
+    }
 
     private calcTotalAssetTokenSupply() {
         this.totalAssetTokenSupply = 0;
@@ -218,14 +149,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             templateResult: this.formatCountrySelection,
             dropdownParent: $('#supplyGroup')
           });
-          // $('#borrow').select2({
-          //     // data: this.tokenData,
-          //     data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
-          //     dropdownCssClass: 'bigdrop',
-          //     minimumResultsForSearch: Infinity,
-          //     templateResult: this.formatCountrySelection,
-          //     dropdownParent: $('#borrowGroup')
-          // });
           // tslint:disable-next-line: only-arrow-functions
           $('.select2-main').one('select2:open', function(e) {
               $('input.select2-search__field').prop('placeholder', 'Search');
@@ -252,16 +175,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async initializeProvider() {
         try {
-            // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-            //     setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
-            //     return;
-            // }
-            // this.ethereum = window['ethereum'];
-            // await this.ethereum.enable();
-            // this.web3 = new ethers.providers.Web3Provider(this.ethereum);
             this.web3 = await this.sharedService.web3;
             await this.setup();
-
         } catch (error) {
             if (error.code === 4001) {
                 $('#metaMaskRejectModal').modal('show');
@@ -690,7 +605,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async enterExitMarket(token) {
-        let addressArray = [];
+        const addressArray = [];
         addressArray.push(token.cTokenAddress);
         let tx;
         const overrides = {
@@ -801,16 +716,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         }.bind(this));
         $('#supplyModal').modal('show');
     }
-    // openBorrowModal(i) {
-    //     this.amountInput = null;
-    //     $('#borrow').val(this.tokenData[i].id);
-    //     this.selectedTokenIndex = $('#borrow').val();
-    //     $('#borrow').trigger('change');
-    //     $('#borrow').on('change', function() {
-    //         this.selectedTokenIndex = $('#borrow').val();
-    //     }.bind(this));
-    //     $('#borrowModal').modal('show');
-    // }
 
     enableSupplyCollateral() {
         this.collateralSupplyEnable = true;
