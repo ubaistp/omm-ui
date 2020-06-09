@@ -64,9 +64,6 @@
                                     <div class="col-sm-4 col-4">
                                         <label>Asset</label>
                                     </div>
-                                    <!-- <div class="col-sm-3 col-4 text-right d-none d-sm-block">
-                                        <label>APY</label>
-                                    </div> -->
                                     <div class="col-sm-4 col-4 text-right">
                                         <label>Non Deployed</label>
                                     </div>
@@ -84,11 +81,6 @@
                                                 <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                             </div>
                                         </div>
-                                        <!-- <div class="col-sm-3 text-right d-none d-sm-block">
-                                            <div class="balance">
-                                                <div>{{token.supplyApy}}%</div>
-                                            </div>
-                                        </div> -->
                                         <div class="col-4 col-sm-4 text-right">
                                             <div class="balance">
                                                 <div>{{ toDecimal(token.tokenBalance, 2) }}</div>
@@ -123,15 +115,9 @@
                                     <div class="col-sm-3 col-4 text-right d-none d-sm-block">
                                         <label>APY</label>
                                     </div>
-                                    <!-- <div class="col-sm-3 col-4 text-right">
-                                        <label>Wallet</label>
-                                    </div> -->
                                     <div class="col-sm-4 col-4 text-right">
                                       <label>Available to Borrow</label>
                                     </div>
-                                    <!-- <div class="col-sm-2 col-4 text-right">
-                                        <label>% Of Limit</label>
-                                    </div> -->
                                 </div>
                                 <div class="assets">
                                     <a class="asset" *ngFor="let token of cashTokenData; let i = index"
@@ -153,14 +139,6 @@
                                               <div>{{ toDecimal(token.availableBorrow, 3) }}</div>
                                           </div>
                                         </div>
-                                        <!-- <div class="col-4 col-sm-3 text-right">
-                                            <div class="balance">
-                                                <div>{{ toDecimal(token.tokenBalance, 3) }}</div>
-                                            </div>
-                                        </div> -->
-                                        <!-- <div class="col-4 col-sm-2 text-right">
-                                          {{toDecimal(sliderPercentage, 2)}}%
-                                        </div> -->
                                     </a>
                                 </div>
                             </div>
@@ -198,10 +176,6 @@
                                 <span class="description">Price</span>
                                 <span>$ {{tokenData[selectedTokenIndex].priceUsd}}</span>
                             </div>
-                            <!-- <div class="calculation">
-                                <span class="description">Collateral Factor</span>
-                                <span>{{tokenData[selectedTokenIndex].collateralFactor}}%</span>
-                            </div> -->
                             <div class="calculation">
                                 <span class="description">Non Deployed</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
@@ -235,9 +209,6 @@
                                                 <input type="text" class="form-control form-control-lg text-center"
                                                     placeholder="0" [(ngModel)]="amountInput" name="amountInput">
                                             </div>
-                                            <!-- <div class="col-3 text-center">
-                                              <a href="" class="link">SAFE MAX</a>
-                                            </div> -->
                                         </div>
                                     </form>
                                     <div class="mt30">
@@ -245,16 +216,8 @@
                                             <span class="description">Supply Balance</span>
                                             <span>
                                                 ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalanceUSD, 3)}}
-                                                <!-- <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00 -->
                                             </span>
                                         </div>
-                                        <!-- <div class="calculation">
-                                            <span class="description">Borrow Limit</span>
-                                            <span>
-                                                $ {{ toDecimal(accountLiquidity, 2) }}
-                                                <mat-icon aria-hidden="false">arrow_forward</mat-icon>$0.00
-                                            </span>
-                                        </div> -->
                                     </div>
                                 </div>
                                 <div>
@@ -313,11 +276,6 @@
                                 <span>{{toDecimal((tokenData[selectedTokenIndex].tokenBorrowBalance), 2)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
-                            <!-- <div class="calculation">
-                                <span class="description">Non Deployed</span>
-                                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
-                                    {{ tokenData[selectedTokenIndex].symbol }}</span>
-                            </div> -->
                             <div class="calculation">
                                 <span class="description">Liquidity</span>
                                 <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
@@ -354,14 +312,6 @@
                                         </div>
                                     </form>
                                     <div class="mt30">
-                                        <!-- <div class="calculation">
-                                            <span class="description">Borrow Limit</span>
-                                            <span>$ {{ toDecimal(accountLiquidity, 2) }}</span>
-                                        </div> -->
-                                        <!-- <div class="calculation">
-                                            <span class="description">Borrow Balance</span>
-                                            <span>$ {{toDecimal(totalBorrowBalance, 3)}}</span>
-                                        </div> -->
                                     </div>
                                 </div>
                                 <div>
@@ -383,36 +333,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="noMetaMaskModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
-    aria-labelledby="noMetaMaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="py30">
-                    <h2>Metamask Not Found!</h2>
-                    <p class="lead">Connection to Blockchain could not be established. Please install Metamask plugin
-                        for your browser from <a href="https://metamask.io/" target="_blank">metamask.io</a> and then
-                        try again.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="metaMaskRejectModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
-    role="dialog" aria-labelledby="metaMaskRejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="py30">
-                    <h2>Metamask Connection Denied!</h2>
-                    <p class="lead">Please Accept Metamask Connection Request.</p>
-                    <button class="btn btn-primary" (click)="reloadPage()">Try Again</button>
                 </div>
             </div>
         </div>

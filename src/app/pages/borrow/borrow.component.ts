@@ -10,7 +10,7 @@ import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json
 // import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
-import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
+// import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
 declare var cApp: any;
@@ -23,9 +23,7 @@ declare var cApp: any;
 })
 export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    private ethereum: any;
     private web3: any;
-    // public provider: any;
     public userAddress: any;
     public Contracts: any;
     public contractAddresses: any;
@@ -56,7 +54,6 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(private sharedService: SharedService) {
       this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
-      // this.initializeMetaMask();
     }
 
     ngOnInit() {
@@ -71,17 +68,6 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-        //     return;
-        // }
-
-        // window['ethereum'].on('accountsChanged', () => {
-        //     window.location.reload();
-        // });
-        // window['ethereum'].on('networkChanged', () => {
-        //     window.location.reload();
-        // });
-
         this.updateBalanceEffect();
     }
     ngOnDestroy() {
@@ -122,7 +108,6 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
       setTimeout(() => {
           $('#supply').select2({
             data: this.assetTokenData,
-            // data: this.tokenData.filter(el => el.symbol !== "DAI" && el.symbol !== "USDT" && el.symbol !== "USDC"),
             dropdownCssClass: 'bigdrop',
             minimumResultsForSearch: Infinity,
             templateResult: this.formatCountrySelection,
@@ -161,13 +146,6 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async initializeProvider() {
         try {
-            // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-            //     setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
-            //     return;
-            // }
-            // this.ethereum = window['ethereum'];
-            // await this.ethereum.enable();
-            // this.web3 = new ethers.providers.Web3Provider(this.ethereum);
             this.web3 = await this.sharedService.web3;
             await this.setup();
 
@@ -532,7 +510,6 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
         return ethers.utils.bigNumberify(hexNum).toString();
     }
 
-
     public async erc20Approve() {
         const amountStr = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
@@ -546,7 +523,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async enterExitMarket(token) {
-        let addressArray = [];
+        const addressArray = [];
         addressArray.push(token.cTokenAddress);
         let tx;
         const overrides = {
