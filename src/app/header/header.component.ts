@@ -17,7 +17,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   private networkName: any;
 
   constructor(private sharedService: SharedService) {
-    // this.initialize();
   }
   ngOnInit() {
     this.sharedService.proceedApp$.subscribe((value) => {
@@ -27,17 +26,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     });
   }
   ngAfterViewInit() {
-    // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-    //   return;
-    // }
-    // if (typeof this.web3 === 'undefined') { return; }
-
-    // this.web3.on('accountsChanged', () => {             // NOT RELOADING
-    //   window.location.reload();
-    // });
-    // this.web3.on('networkChanged', () => {
-    //   window.location.reload();
-    // });
   }
 
   public async connect(walletName) {
@@ -46,18 +34,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   public async initialize() {
     this.networkString = {};
-    // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
-    //   setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
-    //   return;
-    // }
-    // try {
-    //   await this.sharedService.initializeMetaMask();
-    // } catch (error) {
-    //   if (error.code === 4001) {
-    //     $('#metaMaskRejectModal').modal('show');
-    //   } else { console.error(error); }
-    // }
-    // this.ethereum = await this.sharedService.ethereum;
     this.web3 = await this.sharedService.web3;
 
     if (typeof(this.web3) === undefined) { return; }
