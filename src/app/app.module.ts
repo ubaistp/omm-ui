@@ -10,15 +10,16 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { BorrowComponent } from './pages/borrow/borrow.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatIconModule} from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 
 const appRoutes: Routes = [
   { path: '', component: IndexComponent },
-  { path: 'admin', component: AdminComponent   },
+  { path: 'admin', component: AdminComponent },
   { path: 'borrow', component: BorrowComponent },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
