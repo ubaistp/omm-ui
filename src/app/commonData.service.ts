@@ -88,6 +88,7 @@ export class SharedService {
         setTimeout(() => { $('#noMetaMaskModal').modal('show'); }, 1);
         return;
       }
+      window['ethereum'].autoRefreshOnNetworkChange = false;
       this.ethereum = window['ethereum'];
       this.web3 = new ethers.providers.Web3Provider(this.ethereum);
       await this.ethereum.enable();
@@ -124,6 +125,10 @@ export class SharedService {
 
   public getWeb3() {
     return this.web3;
+  }
+
+  public getNewProvider() {
+    return new ethers.providers.Web3Provider(this.web3.provider);
   }
 
   public async setup() {

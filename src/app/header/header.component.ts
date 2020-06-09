@@ -11,10 +11,10 @@ declare var $: any;
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
 
-  // private ethereum: any;
   private web3: any;
   public userAddress;
   public networkString: any;
+  private networkName: any;
 
   constructor(private sharedService: SharedService) {
     // this.initialize();
@@ -30,15 +30,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     // if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
     //   return;
     // }
-    if (typeof this.web3 === 'undefined') { return; }
+    // if (typeof this.web3 === 'undefined') { return; }
 
-    this.web3.on('accountsChanged', () => {             // NOT RELOADING
-      window.location.reload();
-    });
-
-    this.web3.on('networkChanged', () => {
-      window.location.reload();
-    });
+    // this.web3.on('accountsChanged', () => {             // NOT RELOADING
+    //   window.location.reload();
+    // });
+    // this.web3.on('networkChanged', () => {
+    //   window.location.reload();
+    // });
   }
 
   public async connect(walletName) {
@@ -65,6 +64,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
     const network = await this.web3.getNetwork();
     const networkName = network.name;
+    this.networkName = network.name;
 
     switch (networkName) {
       case 'homestead': {
@@ -94,10 +94,27 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
 
     this.userAddress = await this.web3.getSigner().getAddress();
+    this.reloadListener();
   }
 
   public disconnectWallet() {
     this.sharedService.disconnectWallet();
+  }
+
+  private reloadListener() {
+    setInterval(async () => {
+      const provider = await this.sharedService.getNewProvider();
+
+      const currentAddress = await provider.getSigner().getAddress();
+      if (currentAddress.toLowerCase() !== this.userAddress.toLowerCase()) {
+        window.location.reload();
+      }
+
+      const network = (await provider.getNetwork()).name;
+      if (network.toLowerCase() !== this.networkName.toLowerCase()) {
+        window.location.reload();
+      }
+    }, 1000);
   }
 
   public reloadPage() {
