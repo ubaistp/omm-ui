@@ -91,7 +91,25 @@
                         </div>
                         <div id="onboardingCarousel" class="carousel slide" data-interval="false">
                           <div class="carousel-inner">
-                            <div class="carousel-item active">
+                            <div class="carousel-item active onboarding" style="padding: 2.5em; display: none;">
+                              <br><br><br><br>
+                              <h3 class="intro-slideshow-text">This platform is open only to investors who qualify as wholesale, sophisticated, professional, accredited etc as defined in the country of your jurisdiction. Retail investors may not use the platform.</h3>
+                            </div>
+                            <div class="carousel-item onboarding" style="padding: 4em; padding-top: 0em; display: none;">
+                                <h4>Investor Qualification</h4>
+                                <p style="color: rgb(140, 140, 140);">An issue of securities to the public usually requires a disclosure document (like a prospectus) to ensure participants are fully informed about a range of issues including the characteristics of the offer and the present position and future prospects of the entity offering the securities.</p>
+                                <p style="color: rgb(140, 140, 140);">However an issue of securities can be made to particular kind of investors, in the categories described below, without the need for a registered disclosure document. Please tell us which category of investors applies:</p>
+                                <hr>
+                                <b style="font-size: 1.1em;">Which option closely describes you?</b><br>
+                                <div style="margin-left: 1.3em; margin-top: 5px;">
+                                  <form id="myForm">
+                                    <input type="radio" name="wholesale_investing_as" value="Wholesale Investor (Net Asset $2,500,000 plus)" style="margin-right: 6px;" class="wholesale_invest_checkbox"><span class="check1">I have net assets of at least $2,500,000 or a gross income for each of the last two financial years of at least $250,000 a year.</span><br>
+                                    <input type="radio" name="wholesale_investing_as" value="Sophisticated Investor" style="margin-right: 6px;" class="wholesale_invest_checkbox"><span class="check1">I have experience as to: the merits of the offer; the value of the securities; the risk involved in accepting the offer; my own information needs; the adequacy of the information provided.</span><br>
+                                    <input type="radio" name="wholesale_investing_as" value="Inexperienced Investor" style="margin-right: 6px;" class="wholesale_invest_checkbox"><b><span class="check1">I have no experience in property, securities or similar <button type="submit" (click)="submitOnboardingForm()" class="btn btn-primary" style="display: inline-block; margin-left: 5em; font-size: 0.8em; text-transform: none;">Confirm</button></span></b><br>
+                                  </form>
+                                </div>
+                              </div>                              
+                            <div class="carousel-item">
                               <img class="d-block intro-slideshow-img" src="assets/img/slide-show/1.png" alt="First slide">
                               <h3 class="intro-slideshow-text">Welcome to the OTL, a decentralized lending protocol that allows lending of any ERC20 token against any other ERC20 token as collateral.<br><br>You can start lending with USDC, DAI, USDT, and ADR, and earn interest on it right away.
                               </h3>

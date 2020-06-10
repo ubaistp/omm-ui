@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { SharedService } from '../commonData.service';
+import { CookieService } from 'ngx-cookie-service';
+import emailjs from 'emailjs-com';
 
 declare var $: any;
 
@@ -16,7 +18,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   public networkString: any;
   private networkName: any;
 
-  constructor(private sharedService: SharedService) {
+
+  constructor(private sharedService: SharedService, private cookie:CookieService) {
+    this.initialize();
   }
   ngOnInit() {
     this.sharedService.proceedApp$.subscribe((value) => {
@@ -30,6 +34,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   public async connect(walletName) {
     await this.sharedService.connect(walletName);
+    window['ethereum'].on('networkChanged', () => {
+        window.location.reload();
+    });
+    const cookieExists: boolean = this.cookie.check('first_visit');
+    this.cookie.set("first_visit", "true", 730);
+    if(!cookieExists){
+      $('#previewModal').modal('show');
+    }
   }
 
   public async initialize() {
@@ -107,6 +119,35 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   viewOnboardingModal() {
     $('#previewModal').modal('show');
+  }
+
+submitOnboardingForm() {
+    var myform = $("#myform");
+    var investorType = $("input[name='wholesale_investing_as']:checked").val();
+
+      // var params = myform.serializeArray().reduce(function(obj, item) {
+      //    obj[item.name] = item.value;
+      //    return obj;
+      // }, {});
+
+      var params = {
+         "investor_type": investorType
+      }
+
+      var service_id = "sendgrid";
+      var template_id = "template_siNEEQDI";
+      var user_id = "user_CQFZWxNZIFSRRJphtIHwZ";
+      myform.find("button").text("Sending...");
+      emailjs.send(service_id, template_id, params, user_id)
+        .then(function(){ 
+           alert("Sent!");
+           myform.find("button").text("Send");
+         }, function(err) {
+           alert("Oops! Something went wrong. Please try again later.\r\n Response:\n " + JSON.stringify(err));
+           myform.find("button").text("Send");
+        });
+
+      return false;
   }
 
 }

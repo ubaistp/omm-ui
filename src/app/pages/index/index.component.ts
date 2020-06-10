@@ -10,8 +10,8 @@ import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json
 // import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
-// import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 import { CookieService } from 'ngx-cookie-service';
+import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
 declare var cApp: any;
@@ -56,7 +56,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
 
-    constructor(private sharedService: SharedService, private cookie: CookieService) {
+    constructor(private sharedService: SharedService) {
         this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
     }
 
@@ -71,11 +71,17 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       );
     }
     ngAfterViewInit() {
-        const cookieExists: boolean = this.cookie.check('first_visit');
-        this.cookie.set('first_visit', 'true', 730);
-        if (!cookieExists) {
-          $('#previewModal').modal('show');
+
+        if (typeof window['ethereum'] === 'undefined' || (typeof window['web3'] === 'undefined')) {
+            return;
         }
+
+        window['ethereum'].on('accountsChanged', () => {
+            window.location.reload();
+        });
+        window['ethereum'].on('networkChanged', () => {
+            window.location.reload();
+        });
 
         this.updateBalanceEffect();
     }
