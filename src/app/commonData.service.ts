@@ -122,6 +122,7 @@ export class SharedService {
     return this.web3;
   }
 
+
   public getNewProvider() {
     return new ethers.providers.Web3Provider(this.web3.provider);
   }
