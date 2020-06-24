@@ -105,8 +105,13 @@ export class SharedService {
     setTimeout(() => { $('#walletConnectionModal').modal(operation); }, 1);
   }
 
-  public disconnectWallet() {
+  public async disconnectWallet() {
     if (typeof(this.web3) === undefined) { return; }
+
+    const walletName = this.cookie.get('connected_wallet_name');
+    if (walletName === 'wallet-connect') {
+      await this.web3.provider.close();
+    }
 
     this.deleteWalletCookie();
     this.toggleWalletConnectionModal('show');
