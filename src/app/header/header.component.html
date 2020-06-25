@@ -1,20 +1,27 @@
-<header>
+<header style="background: #000000; padding-top: 2.5em; padding-bottom: 3.5em;">
+    <!-- <div class="toolbar" role="banner">
+        <div class="spacer"></div>
+        <a class="asset btn btn-grey-box" (click)="viewOnboardingModal()"><i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>How does it work?</a>
+        <div class="asset btn btn-grey-box">
+          <span class="dot"></span>
+          <span *ngIf="networkString">{{ networkString.name }}</span>
+        </div>
+    </div> -->
     <div class="toolbar" role="banner">
+        <img height="70" src="assets/img/otl-logo-black.PNG" />
         <div class="spacer"></div>
-        <a class="asset btn btn-secondary" (click)="viewOnboardingModal()" id="help_btn"><i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>Tutorial</a>
-        <!-- <span style="font-size: 0.9rem;">HELP</span> -->
-        <span class="dot"></span>
-        <span *ngIf="networkString" style="font-size: 0.9rem;">{{ networkString.name }}</span>
+        <a class="asset btn btn-grey-box" (click)="viewOnboardingModal()"><i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>How does it work?</a>
+        <div class="asset btn btn-grey-box">
+          <span class="dot"></span>
+          <span *ngIf="networkString">{{ networkString.name }}</span>
+        </div>
+        <a class="d-none d-sm-block asset btn btn-grey-box" id="account">{{ trucateAddress(userAddress) }}</a>
+        <a *ngIf="userAddress" class="asset btn text-right btn-grey-box" (click)="disconnectWallet()">Disconnect</a>
     </div>
-    <div class="toolbar" role="banner">
-        <img height="90" src="assets/img/OTL-logo.png" />
+    <!-- <div *ngIf="userAddress" class="toolbar" role="banner">
         <div class="spacer"></div>
-        <a class="d-none d-sm-block" id="account">{{ trucateAddress(userAddress) }}</a>
-    </div>
-    <div *ngIf="userAddress" class="toolbar" role="banner">
-        <div class="spacer"></div>
-        <a class="asset btn btn-secondary text-right" (click)="disconnectWallet()" id="help_btn" style="margin-top: 1.5rem; margin-right: 1rem;">Disconnect</a>
-    </div>
+        <a class="asset btn text-right btn-grey-box" (click)="disconnectWallet()" style="margin-top: 1.5rem; margin-right: 1rem;">Disconnect</a>
+    </div> -->
 </header>
 
 <div class="modal fade" id="walletConnectionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"

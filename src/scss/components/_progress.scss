@@ -33,9 +33,10 @@
 }
 
 .progress-circle--container {
-  background-color: $object-color;
-  padding: 0.5rem 0.5rem;
-  box-shadow: $outer-shadow;
+  // background-color: $object-color;
+  padding: 0.45rem 0.45rem;
+  // box-shadow: $outer-shadow;
+  border: 0.5px solid $color-brand;
   display: inline-block;
   border-radius: 50%;
 }
@@ -125,6 +126,7 @@ $howManySteps: 10; //this needs to be even.
     justify-content: center;
     height: 100%;
     font-weight: 500;
+    color: $color-text-in;
     span {
       display: block;
       font-size: 0.8rem;
