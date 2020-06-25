@@ -426,6 +426,7 @@ label.error{
   margin: auto !important;
   margin-top: 2em;
   max-width: 500px;
+  width: 100%;
 }
 
 
@@ -448,4 +449,20 @@ label.error{
 #help_btn {
   margin-right: 2rem; 
   text-transform: none;
+}
+
+.btn {
+  text-transform: none;
+}
+
+.wallet-btn-logo {
+    max-width: 22px;
+    margin: 3px;
+    margin-bottom: 4px;
+}
+
+.wallet-connect-btns {
+  margin: 1rem;
+  width: 17em;
+  margin-top: 0.5em;
 }

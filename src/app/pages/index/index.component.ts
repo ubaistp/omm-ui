@@ -10,7 +10,6 @@ import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json
 // import * as CErc20 from '../../../assets/contracts/CErc20.json';
 import * as IVTDemoABI from '../../../assets/contracts/IVTDemoABI.json';
 import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
-import { CookieService } from 'ngx-cookie-service';
 import * as EIP20Interface from '../../../assets/contracts/EIP20Interface.json';
 
 declare var $: any;
