@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
+import { BigNumber } from 'bignumber.js';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import { SharedService } from '../../commonData.service';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
@@ -15,6 +16,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 declare var $: any;
 declare var cApp: any;
+BigNumber.config({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
 @Component({
     selector: '',
@@ -536,7 +538,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             return 0;
         }
         val = val.toString();
-        val = parseFloat(val);
+        val = new BigNumber(val);
         return val.toFixed(decimal);
     }
     public trucateAddress(address) {

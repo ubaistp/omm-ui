@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
+import { BigNumber } from 'bignumber.js';
 import { blockchainConstants } from '../../../environments/blockchain-constants';
 import { SharedService } from '../../commonData.service';
 import * as Comptroller from '../../../assets/contracts/Comptroller.json';
@@ -12,6 +13,7 @@ import * as PriceOracleOTL from '../../../assets/contracts/PriceOracleOTL.json';
 
 declare var $: any;
 declare var cApp: any;
+BigNumber.config({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
 @Component({
   selector: '',
@@ -368,7 +370,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
         return 0;
     }
     val = val.toString();
-    val = parseFloat(val);
+    val = new BigNumber(val);
     return val.toFixed(decimal);
   }
 
