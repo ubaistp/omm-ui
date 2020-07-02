@@ -26,6 +26,7 @@
     "bignumber.js": "^9.0.0",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
+    "emailjs-com": "^2.4.1",
     "ethers": "^4.0.45",
     "jquery": "3.4.1",
     "ngx-cookie-service": "^3.0.4",

@@ -1,16 +1,16 @@
-<div class="content" role="main">
+<div class="content" role="main" style="background: linear-gradient(to bottom, black 20%, white 0%);">
     <section class="hero">
         <div class="container">
             <div class="row align-items-center justify-content-center text-center">
                 <div class="col-sm-12 col-md-4 mb30">
                   <div class="row">
                       <div class="col-sm-6 col-md-12">
-                          <label class="mb0" style="color: #1AD9C6;">Total Deployed on Market</label>
-                          <div class="supply-balance color-danger">${{localeString(totalCashDeployed, 0)}}</div>
+                          <label class="mb0" style="color: #FA596B;">Total Deployed on Market</label>
+                          <div class="supply-balance color-text-in">${{localeString(totalCashDeployed, 0)}}</div>
                       </div>
                       <div class="col-sm-6 col-md-12" style="margin-top: 0.7em;">
-                          <label class="mb0" style="color: #1AD9C6;">My Deployed Balance</label>
-                          <div class="supply-balance color-danger">${{toDecimal(totalSupplyBalance, 7)}}</div>
+                          <label class="mb0" style="color: #FF8E9B;">My Deployed Balance</label>
+                          <div class="supply-balance color-text-in">${{toDecimal(totalSupplyBalance, 7)}}</div>
                       </div>
                   </div>
                 </div>
@@ -25,7 +25,7 @@
                             </span>
                             <div class="progress-value">
                                 <div>
-                                    <span>Net APY</span>
+                                    <span style="color: #929292; font-size: 14px; font-weight: 500; line-height: 17px;">Net APY</span>
                                     {{toDecimal(apyData.netApy, 2)}}%
                                 </div>
                             </div>
@@ -35,12 +35,12 @@
                 <div class="col-sm-12 col-md-4 mb30">
                     <div class="row">
                         <div class="col-sm-6 col-md-12">
-                            <label class="mb0" style="color: #1AD9C6;">Total Collateral on Market</label>
-                            <div class="borrow-balance color-danger">${{localeString(totalAssetTokenSupply, 0)}}</div>
+                            <label class="mb0" style="color: #FFD7B5;">Total Collateral on Market</label>
+                            <div class="borrow-balance color-text-in">${{localeString(totalAssetTokenSupply, 0)}}</div>
                         </div>
                         <div class="col-sm-6 col-md-12" style="margin-top: 0.7em;">
-                            <label class="mb0" style="color: #1AD9C6;">Total Loans on Market</label>
-                            <div class="borrow-balance color-danger">${{localeString(totalCashLoans, 0)}}</div>
+                            <label class="mb0" style="color: #FFD7B5;">Total Loans on Market</label>
+                            <div class="borrow-balance color-text-in">${{localeString(totalCashLoans, 0)}}</div>
                         </div>
                     </div>
                 </div>
@@ -50,114 +50,118 @@
     <section>
         <div class="container-lg">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="portlet portlet--height-full">
-                        <div class="portlet__head">
-                            <div class="portlet__head-caption">
-                                <div class="portlet__head-title">
-                                    <h3 class="portlet__head-text">Deploy</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="portlet__body py0 px0">
-                            <div class="asset-list">
-                                <div class="labels row">
-                                    <div class="col-sm-4 col-4">
-                                        <label>Asset</label>
-                                    </div>
-                                    <div class="col-sm-3 col-3 text-left d-none d-sm-block">
-                                        <label>APY</label>
-                                    </div>
-                                    <div class="col-sm-3 col-3 text-left">
-                                        <label>Non Deployed</label>
-                                    </div>
-                                    <div class="col-sm-2 col-3 text-left">
-                                        <label>Deployed</label>
+                <div class="col-md-11 mx-auto">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="portlet portlet--height-full">
+                                <div class="portlet__head">
+                                    <div class="portlet__head-caption">
+                                        <div class="portlet__head-title">
+                                            <h3 class="portlet__head-text">Deploy</h3>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="assets">
-                                    <a class="asset" *ngFor="let token of cashTokenData; let i = index"
-                                        (click)="openSupplyModal(token.id)">
-                                        <div class="col-4 col-sm-4">
-                                            <div class="balance">
-                                                <img src="assets/img/{{ token.symbol }}_logo.png" alt="{{ token.symbol }} logo" class="token-logos" />
-                                                <div style="display: inline-block;">{{token.symbol}}</div>
-                                                <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
+                                <div class="portlet__body py0 px0">
+                                    <div class="asset-list">
+                                        <div class="labels row">
+                                            <div class="col-sm-4 col-4">
+                                                <label>Asset</label>
+                                            </div>
+                                            <div class="col-sm-3 col-3 text-left d-none d-sm-block">
+                                                <label>APY</label>
+                                            </div>
+                                            <div class="col-sm-3 col-3 text-left">
+                                                <label>Non Deployed</label>
+                                            </div>
+                                            <div class="col-sm-2 col-3 text-left">
+                                                <label>Deployed</label>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 col-3 text-left d-none d-sm-block">
-                                            <div class="balance">
-                                                <div>{{token.supplyApy}}%</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-3 text-left">
-                                            <div class="balance">
-                                                <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-3 text-left">
-                                          <div class="balance">
-                                              <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
-                                          </div>
-                                          <div class="balance">
-                                            <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} {{ token.symbol }}</div>
-                                          </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="portlet portlet--height-full">
-                        <div class="portlet__head">
-                            <div class="portlet__head-caption">
-                                <div class="portlet__head-title">
-                                    <h3 class="portlet__head-text">Asset Explorer</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="portlet__body py0 px0">
-                            <div class="asset-list">
-                                <div class="labels row">
-                                    <div class="col-sm-2 col-3">
-                                        <label>Asset</label>
-                                    </div>
-                                    <div class="col-sm-4 col-4 text-left">
-                                        <label>Type</label>
-                                    </div>
-                                    <div class="col-sm-4 col-3 text-left">
-                                        <label>Collateral Value</label>
-                                    </div>
-                                    <div class="col-sm-2 col-2 text-left">
-                                        <label>Tokens</label>
-                                    </div>
-                                </div>
-                                <div class="assets">
-                                    <div class="asset" style="cursor: default;" *ngFor="let token of assetTokenData; let i = index">
-                                        <div class="col-sm-2 col-3">
-                                            <div class="balance">
-                                                <img src="assets/img/ether_logo.png" style="max-height: 30px;" alt="Ether logo" />
-                                                <div style="display: inline-block;">{{token.symbol}}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 col-4 text-left">
-                                            <div class="balance">
-                                                <div>
-                                                  <a href="https://www.konkrete.io/queen-street" target="_blank">Mortgage, Real Estate</a>
+                                        <div class="assets">
+                                            <a class="asset" *ngFor="let token of cashTokenData; let i = index"
+                                                (click)="openSupplyModal(token.id)">
+                                                <div class="col-4 col-sm-4">
+                                                    <div class="balance">
+                                                        <img src="assets/img/{{ token.symbol }}_logo.png" alt="{{ token.symbol }} logo" class="token-logos" />
+                                                        <div style="display: inline-block;">{{token.symbol}}</div>
+                                                        <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
+                                                    </div>
                                                 </div>
+                                                <div class="col-sm-3 col-3 text-left d-none d-sm-block">
+                                                    <div class="balance">
+                                                        <div>{{token.supplyApy}}%</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3 col-3 text-left">
+                                                    <div class="balance">
+                                                        <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3 col-3 text-left">
+                                                  <div class="balance">
+                                                      <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
+                                                  </div>
+                                                  <div class="balance">
+                                                    <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} {{ token.symbol }}</div>
+                                                  </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="portlet portlet--height-full">
+                                <div class="portlet__head">
+                                    <div class="portlet__head-caption">
+                                        <div class="portlet__head-title">
+                                            <h3 class="portlet__head-text">Asset Explorer</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="portlet__body py0 px0">
+                                    <div class="asset-list">
+                                        <div class="labels row">
+                                            <div class="col-sm-2 col-3">
+                                                <label>Asset</label>
+                                            </div>
+                                            <div class="col-sm-4 col-4 text-left">
+                                                <label>Type</label>
+                                            </div>
+                                            <div class="col-sm-4 col-3 text-left">
+                                                <label>Collateral Value</label>
+                                            </div>
+                                            <div class="col-sm-2 col-2 text-left">
+                                                <label>Tokens</label>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4 col-3 text-left">
-                                            <div class="balance">
-                                                <div>{{localeString(token.erc20TotalSupply, 0)}}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2 col-2 text-left">
-                                            <!-- <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div> -->
-                                            <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5#readContract"
-                                              target="_blank">Link</a>
+                                        <div class="assets">
+                                            <div class="asset" style="cursor: default;" *ngFor="let token of assetTokenData; let i = index">
+                                                <div class="col-sm-2 col-3">
+                                                    <div class="balance">
+                                                        <img src="assets/img/ether_logo.png" style="max-height: 30px;" alt="Ether logo" />
+                                                        <div style="display: inline-block;">{{token.symbol}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4 col-4 text-left">
+                                                    <div class="balance">
+                                                        <div>
+                                                          <a href="https://www.konkrete.io/queen-street" target="_blank">Mortgage, Real Estate</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4 col-3 text-left">
+                                                    <div class="balance">
+                                                        <div>{{localeString(token.erc20TotalSupply, 0)}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2 col-2 text-left">
+                                                    <!-- <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div> -->
+                                                    <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5#readContract"
+                                                      target="_blank">Link</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -174,7 +178,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="section-title text-center wow zoomIn">
-                        <h1>Frequently Asked Questions</h1>
+                        <h1 class="faq-heading">Frequently Asked Questions</h1>
                         <br>
                     </div>
                 </div>
@@ -206,7 +210,7 @@
                             </div>
                             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                 <div class="panel-body">
-                                    <p>You can connect via metamask to the OTL and supply DAI, USDC and USDT to the platform and start earning interest immediately. You may withdraw your deployed tokens at any time, including accrued interest (provided there is liquidity, which we are working towards improving). <br><br> In due course we will be adding support for other wallets such as Ledger, Trezor etc as well. </p>
+                                    <p>You can connect via metamask or wallet connect to the OTL and supply DAI, USDC and USDT to the platform and start earning interest immediately. You may withdraw your deployed tokens at any time, including accrued interest (provided there is liquidity, which we are working towards improving).</p>
                                 </div>
                             </div>
                         </div>
@@ -274,13 +278,13 @@
                             <div class="panel-heading" role="tab" id="headingSeven">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                                        What is the road map for allowing other tokens as collateral?
+                                        I just deployed, and the interest rate went down. Why?
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
                                 <div class="panel-body">
-                                    <p>We have created an admin module via which new tokens can be added as collateral. You can check it here at <a href="https://app.konkrete.finance/admin"> https://app.konkrete.finance/admin </a> <br> <br> As soon as initial testing is complete, we will be opening up the new token addition to be done via a community vote. </p>
+                                    <p>The interest rate from the pool is dynamically adjusted. As more lenders deploy, the interest will reduce until the additional amount in the pool is borrowed. This is similar to utilisation rate on other protocols. When more borrowers borrow from the pool interest rates will come back up. </p>
                                 </div>
                             </div>
                         </div>
@@ -288,14 +292,13 @@
                             <div class="panel-heading" role="tab" id="headingEight">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                                        What is the expected process for adding new collateral?
+                                        Clicking Enable, Deploy or Withdraw doesn’t seem to do anything
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
                                 <div class="panel-body">
-                                    <p>We are planning to distribute platform tokens which would entitle its holders to any fees generated from the platform and the right to vote on any decisions about the platform. <br><br> Any token holder will be able to put up executable code as a proposal which would be put up to community vote and if approved will lead to updates to the platform. <br><br> Adding new tokens as collateral would follow the same process. <br><br> Eventually we expect the need for an admin signed off process to be eliminated with an architecture that allows any token to be borrowed against any token. <br><br> <a href="https://medium.com/konkrete/borrowing-any-token-using-any-token-as-collateral-742f6e33495f?source=collection_home---4------8-----------------------" target="_blank"> Read more </a>
-                                    </p>
+                                    <p>Firstly, ensure you’re connected to the OTL with either Metamask or Wallet Connect. Clicking any of the above buttons will require your wallet to confirm the transaction, which is a prompt you’ll have to confirm. Once you have confirmed the transaction the OTL will refresh to reflect your changes.</p>
                                 </div>
                             </div>
                         </div>
@@ -303,39 +306,25 @@
                             <div class="panel-heading" role="tab" id="headingNine">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseEight">
-                                        Where can I find the platform tokens?
+                                        Are there governance tokens?
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
                                 <div class="panel-body">
-                                    <p>Once the alpha is complete, platform tokens will be distributed to investors, advisors, core team and to the community. Stay tuned for updates. </p>
+                                    <p>Once the alpha is complete, platform governance tokens will be distributed to investors, core team and to the community. Stay tuned for updates.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingTen">
                                 <h4 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseNine">
-                                        Is the OTL meant to allow real world tokens as collateral?
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
-                                <div class="panel-body">
-                                    <p>The OTL is agnostic of what kinds of assets are represented via the tokens. It is meant to be a decentralized and censorship resistant lending protocol. What assets are added to it are expected to be determined by the community once the alpha is complete and soon after that even those permissions will not be needed. <br><br> In terms of how real world asset tokenization can be achieved and our thoughts around it <a href="https://medium.com/konkrete/real-world-asset-tokenization-protocol-6778047ca578"> please refer to this article. </a> <br><br> Note that the OTL and the real world asset tokenization efforts are independent of each other. Composability makes it possible for them to talk to each other. </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingEleven">
-                                <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
                                         What are kTokens?
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseEleven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEleven">
+                            <div id="collapseEleven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
                                 <div class="panel-body">
                                     <p>kTokens are similar to cTokens, or aTokens and iTokens etc from other money market platforms out there. They represent your claim to the money you have deployed on the platform and its interest. <br><br> Once you deploy DAI, USDC, USDT to the platform you will receive an ERC20 kDAI, kUSDC, kUSDT respectively. These are interest bearing tokens and steadily rise in value. <br><br> While on the platform interface they are not visible, you may check them in your metamask by adding those custom tokens. </p> <br> The addresses are <br><br>
                                     <table class="table table-bordered col-md-10 offset-md-1 col-sm-12 text-justify">
