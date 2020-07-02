@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { BigNumber } from 'bignumber.js';
@@ -40,7 +41,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   public priceFull: any;
   public updateIr: any = {};
 
-  constructor(private sharedService: SharedService) {
+  constructor(private http: HttpClient, private sharedService: SharedService) {
   }
 
   ngOnInit() {
@@ -96,13 +97,24 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   private async estimateGasPrice() {
-    let gasPrice = await this.web3.getGasPrice();
-    gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
+    let proposedGP: any;
+    const url = 'https://ethgasstation.info/json/ethgasAPI.json';
+    this.http.get(url)
+    .subscribe(
+      data => {
+        proposedGP = (parseFloat(data['fast']) + parseFloat(data['average'])) / (10 * 2);   // convert to gWei then average
+        proposedGP = proposedGP.toFixed();
+        this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+      },
+      async (error) => {
+        let gasPrice = await this.web3.getGasPrice();
+        gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
 
-    let proposedGP: any = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.5;  // 50% extra
-    proposedGP = proposedGP.toFixed();
-
-    this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+        proposedGP = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.15;  // 15% extra
+        proposedGP = proposedGP.toFixed();
+        this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+      }
+    );
   }
 
   private async getContractAddresses() {
@@ -230,6 +242,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     if (typeof this.updatePrice.cTokenAddress === 'undefined') { return; }
     if (typeof this.updatePrice.price === 'undefined') { return; }
     if (parseFloat(this.updatePrice.price) < 0) { return; }
+    this.estimateGasPrice();
 
     try {
       const overrides = {
@@ -251,6 +264,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     if (this.cTokenRatio === undefined || this.cTokenRatio === null) { return; }
     const colFac = parseFloat(this.cTokenRatio);
     if (colFac < 0) { return; }
+    this.estimateGasPrice();
 
     try {
       const colFacStr = (colFac * (10 ** 16)).toString();
@@ -269,6 +283,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       return;
     }
     if (parseFloat(this.collateralFacFull) < 0) { return; }
+    this.estimateGasPrice();
     const irAddrArray = this.contractAddresses.DynamicInterestRateModel;
     const check = irAddrArray.includes(this.irModelAddrFull);
     if (!check) { return; }
@@ -336,6 +351,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     // checks
     if (typeof this.updateIr.tokenAddress === 'undefined') { return; }
     if (!this.contractAddresses.DynamicInterestRateModel.includes(this.updateIr.irAddress)) { return; }
+    this.estimateGasPrice();
 
     try {
       const TokenContract = this.initContract(this.updateIr.tokenAddress, CErc20Delegator.abi);

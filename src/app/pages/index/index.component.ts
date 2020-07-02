@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { BigNumber } from 'bignumber.js';
@@ -58,7 +59,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
 
-    constructor(private sharedService: SharedService, private cookie: CookieService) {
+    constructor(private http: HttpClient, private sharedService: SharedService, private cookie: CookieService) {
         this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
     }
 
@@ -242,13 +243,24 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private async estimateGasPrice() {
-        let gasPrice = await this.web3.getGasPrice();
-        gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
+      let proposedGP: any;
+      const url = 'https://ethgasstation.info/json/ethgasAPI.json';
+      this.http.get(url)
+      .subscribe(
+        data => {
+          proposedGP = (parseFloat(data['fast']) + parseFloat(data['average'])) / (10 * 2);   // convert to gWei then average
+          proposedGP = proposedGP.toFixed();
+          this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+        },
+        async (error) => {
+          let gasPrice = await this.web3.getGasPrice();
+          gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
 
-        let proposedGP: any = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.5;  // 50% extra
-        proposedGP = proposedGP.toFixed();
-
-        this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+          proposedGP = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.15;  // 15% extra
+          proposedGP = proposedGP.toFixed();
+          this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+        }
+      );
     }
 
     private async getContractAddresses() {
@@ -595,6 +607,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async erc20Approve() {
+        this.estimateGasPrice();
         const amountStr = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const tokenContract = this.initContract(tokenAddress, IVTDemoABI.abi);
@@ -607,6 +620,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async enterExitMarket(token) {
+        this.estimateGasPrice();
         const addressArray = [];
         addressArray.push(token.cTokenAddress);
         let tx;
@@ -623,6 +637,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async mint() {
+        this.estimateGasPrice();
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
         const decimals = await TokenContract.decimals();
@@ -642,6 +657,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async withdrawUnderlying() {
+        this.estimateGasPrice();
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
         const decimals = await TokenContract.decimals();
@@ -660,6 +676,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async borrow() {
+        this.estimateGasPrice();
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
         const decimals = await TokenContract.decimals();
@@ -679,6 +696,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async repayBorrow() {
+        this.estimateGasPrice();
         const tokenAddress = this.tokenData[this.selectedTokenIndex].tokenAddress;
         const TokenContract = this.initContract(tokenAddress, ERC20Detailed.abi);
         const decimals = await TokenContract.decimals();
