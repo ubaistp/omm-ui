@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   private networkName: any;
 
 
-  constructor(private sharedService: SharedService, private cookie:CookieService) {
+  constructor(private sharedService: SharedService, private cookie: CookieService) {
     this.initialize();
   }
   ngOnInit() {
@@ -30,13 +30,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     });
   }
   ngAfterViewInit() {
-    $( ".onboarding-next-btn" ).on( "click", function() {
-      let name = $("input[name='user_name']").val();
-      let email = $("input[name='email']").val();
-      let phone = $("input[name='phone']").val();
-      let investorType = $("input[name='wholesale_investing_as']:checked").val();
+    $( '.onboarding-next-btn' ).on( 'click', () => {
+      const name = $('input[name=\'user_name\']').val();
+      const email = $('input[name=\'email\']').val();
+      const phone = $('input[name=\'phone\']').val();
+      const investorType = $('input[name=\'wholesale_investing_as\']:checked').val();
       alert(name + email + phone + investorType);
-      $(".carousel").carousel("next");
+      $('.carousel').carousel('next');
     });
     // $("#onboarding_pd_btn").click(() => $(".carousel").carousel("next"));
   }
@@ -47,8 +47,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         window.location.reload();
     });
     const cookieExists: boolean = this.cookie.check('first_visit');
-    this.cookie.set("first_visit", "true", 730);
-    if(!cookieExists){
+    this.cookie.set('first_visit', 'true', 730);
+    if (!cookieExists) {
       $('#previewModal').modal('show');
     }
   }
@@ -130,33 +130,33 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     $('#previewModal').modal('show');
   }
 
-submitOnboardingForm() {
-    let myform = $("#myform");
-    let investorType = $("input[name='wholesale_investing_as']:checked").val();
+  submitOnboardingForm() {
+    const myform = $('#myform');
+    const investorType = $('input[name=\'wholesale_investing_as\']:checked').val();
 
-      // var params = myform.serializeArray().reduce(function(obj, item) {
-      //    obj[item.name] = item.value;
-      //    return obj;
-      // }, {});
+    // var params = myform.serializeArray().reduce(function(obj, item) {
+    //    obj[item.name] = item.value;
+    //    return obj;
+    // }, {});
 
-      let params = {
-         "investor_type": investorType
-      }
+    const params = {
+        investor_type: investorType
+    };
 
-      let service_id = "sendgrid";
-      let template_id = "template_siNEEQDI";
-      let user_id = "user_CQFZWxNZIFSRRJphtIHwZ";
-      myform.find("button").text("Sending...");
-      emailjs.send(service_id, template_id, params, user_id)
-        .then(function(){ 
-           alert("Sent!");
-           myform.find("button").text("Send");
-         }, function(err) {
-           alert("Oops! Something went wrong. Please try again later.\r\n Response:\n " + JSON.stringify(err));
-           myform.find("button").text("Send");
-        });
-
-      return false;
+    // tslint:disable: variable-name
+    const service_id = 'sendgrid';
+    const template_id = 'template_siNEEQDI';
+    const user_id = 'user_CQFZWxNZIFSRRJphtIHwZ';
+    myform.find('button').text('Sending...');
+    emailjs.send(service_id, template_id, params, user_id)
+      .then(() => {
+          alert('Sent!');
+          myform.find('button').text('Send');
+        }, (err) => {
+          alert('Oops! Something went wrong. Please try again later.\r\n Response:\n ' + JSON.stringify(err));
+          myform.find('button').text('Send');
+    });
+    return false;
   }
 
 }
