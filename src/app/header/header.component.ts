@@ -131,21 +131,21 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
 submitOnboardingForm() {
-    var myform = $("#myform");
-    var investorType = $("input[name='wholesale_investing_as']:checked").val();
+    let myform = $("#myform");
+    let investorType = $("input[name='wholesale_investing_as']:checked").val();
 
       // var params = myform.serializeArray().reduce(function(obj, item) {
       //    obj[item.name] = item.value;
       //    return obj;
       // }, {});
 
-      var params = {
+      let params = {
          "investor_type": investorType
       }
 
-      var service_id = "sendgrid";
-      var template_id = "template_siNEEQDI";
-      var user_id = "user_CQFZWxNZIFSRRJphtIHwZ";
+      let service_id = "sendgrid";
+      let template_id = "template_siNEEQDI";
+      let user_id = "user_CQFZWxNZIFSRRJphtIHwZ";
       myform.find("button").text("Sending...");
       emailjs.send(service_id, template_id, params, user_id)
         .then(function(){ 
