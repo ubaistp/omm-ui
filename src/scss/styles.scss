@@ -6,6 +6,19 @@
 @import "components/select2";
 @import "components/loader";
 
+@font-face{
+    font-family: SF Compact Display;
+    src: url('../assets/fonts/SF-Compact-Display-Regular.ttf');
+}
+@font-face{
+    font-family: SF Compact Display Medium;
+    src: url('../assets/fonts/SFCompactDisplay-Medium.ttf');
+}
+@font-face{
+    font-family: SF Pro Display;
+    src: url('../assets/fonts/SFProDisplay-Bold.ttf');
+}
+
 *,
 :after,
 :before {
@@ -22,13 +35,13 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: SF Compact Display, Roboto, "Helvetica Neue", sans-serif;
   background: $body-color;
 }
 
 .dot {
-  height: 14px;
-  width: 14px;
+  height: 9px;
+  width: 9px;
   margin-right: 9px;
   background-color: #6ecacf;
   border-radius: 50%;
@@ -144,8 +157,8 @@ label {
         .portlet__head-text {
           display: table-cell;
           vertical-align: middle;
-          font-size: 1.3rem;
-          font-weight: 500;
+          font-size: 1.16rem;
+          font-weight: 600;
           color: $color-text;
         }
       }
@@ -220,14 +233,16 @@ table {
     padding: 0;
   }
   .labels {
-    padding: 1rem;
+    padding: 1rem 2rem;
     display: flex;
     border-bottom: 1px solid rgba($color: $color-dark, $alpha: 0.1);
     margin: 0;
     label {
       margin-bottom: 0;
       color: rgba($color: $color-text, $alpha: 0.8);
-      font-size: 0.9rem;
+      font-size: 0.83rem;
+      font-family: SF Pro Display;
+      color: #A4A6AC;
     }
   }
   .assets {
@@ -238,7 +253,7 @@ table {
       border-bottom: 1px solid rgba($color: $color-dark, $alpha: 0.1);
       text-transform: capitalize;
       letter-spacing: 0;
-      padding: 1rem;
+      padding: 1rem 2rem;
       font-weight: 500;
       &:last-child{
         border: none;
@@ -252,7 +267,7 @@ table {
 .modal-content {
   overflow: hidden;
   .form{
-    margin-top: 3rem;
+    margin-top: 1rem;
     @media (max-width: 991px){
       margin-top: 1rem !important;
     }
@@ -264,12 +279,14 @@ table {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba($color: $color-dark, $alpha: 0.1);
+  // border-bottom: 1px solid rgba($color: $color-dark, $alpha: 0.1);
   &:last-child{
     border: none;
   }
   .description {
-    font-weight: 400;
+    font-weight: 500;
+    color: #7C7D80;
+    font-family: SF Compact Display Medium;
   }
   span:last-of-type {
     font-weight: 500;
@@ -286,7 +303,7 @@ table {
 }
 .form-control{
   color: $color-text;
-  border-radius: 25px;
+  border-radius: 6px;
   background-color: $object-color;
   box-shadow: inset 3px 3px 4px 0px rgba($color: #000000, $alpha: 0.2), inset -3px -3px 4px 0px rgba($color: #ffffff, $alpha: 1);
   border: none;
@@ -355,7 +372,7 @@ label.error{
 .panel-group {
     background: #fff none repeat scroll 0 0;
     border-radius: 3px;
-    box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.04);
+    // box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.04);
     margin-bottom: 0;
     padding: 30px;
 }
@@ -372,7 +389,6 @@ label.error{
 #accordion .panel-title a {
     background: $color-danger none repeat scroll 0 0;
     border: 1px solid transparent;
-    border-radius: 30px;
     color: #fff;
     display: block;
     font-size: 18px;
@@ -429,13 +445,13 @@ label.error{
 .intro-slideshow-text {
   text-align: center;
   margin: auto;
-  font-size: 1.4em;
+  font-size: 1.2em;
   margin-top: 1em;
 }
 .intro-slideshow-img {
   margin: auto !important;
   margin-top: 2em;
-  max-width: 500px;
+  max-width: 400px;
   width: 100%;
 }
 
@@ -453,7 +469,10 @@ label.error{
 
 #onboardingCarousel {
   position: relative;
-  padding: 3em;
+  padding: 3.8em;
+  padding-top: 1.5em;
+  background: #F4F5F8;
+  border-radius: 16px;
 }
 
 #help_btn {
@@ -472,10 +491,6 @@ label.error{
   margin-right: 2em;
 }
 
-.btn {
-  text-transform: none;
-}
-
 .wallet-btn-logo {
     max-width: 22px;
     margin: 3px;
@@ -486,4 +501,6 @@ label.error{
   margin: 1rem;
   width: 17em;
   margin-top: 0.5em;
+  background-color: #fff;
 }
+

@@ -10,7 +10,7 @@
     <div class="toolbar" role="banner">
         <img height="70" src="assets/img/otl-logo-black.PNG" />
         <div class="spacer"></div>
-        <a class="asset btn btn-grey-box" (click)="viewOnboardingModal()"><i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>How does it work?</a>
+        <a class="asset btn btn-grey-box" (click)="viewOnboardingModal()">How does it work?</a>
         <div class="asset btn btn-grey-box">
           <span class="dot"></span>
           <span *ngIf="networkString">{{ networkString.name }}</span>
@@ -27,17 +27,21 @@
 <div class="modal fade" id="walletConnectionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
     aria-labelledby="walletConnectionModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color: #F4F5F8;">
             <div class="modal-body text-center">
                 <div class="py30">
-                    <h2>Connect Wallet</h2>
+                    <h2>Connect with:</h2>
                     <br>
-                    <a class="asset btn btn-secondary wallet-connect-btns" (click)="connect('metamask')">
+                    <a class="asset btn wallet-connect-btns" (click)="connect('metamask')">
                       <img src="/assets/img/metamask-logo.png" class="wallet-btn-logo" alt="Metamask logo">
                       Metamask</a>
-                    <a class="asset btn btn-secondary wallet-connect-btns" (click)="connect('wallet-connect')">
+                    <a class="asset btn wallet-connect-btns" (click)="connect('wallet-connect')">
                       <img src="/assets/img/wallet-connect-logo.png" class="wallet-btn-logo" alt="Metamask logo">
                       Wallet Connect</a>
+                      <a class="asset btn wallet-connect-btns" (click)="viewOnboardingModal()">
+                        <i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>
+                      <!-- <img src="/assets/img/wallet-connect-logo.png" class="wallet-btn-logo" alt="Metamask logo"> -->
+                      How does it work?</a>
                 </div>
             </div>
         </div>
@@ -90,11 +94,11 @@
 <div  class="modal fade" id="previewModal" tabindex="-1" role="dialog"
     aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content" style="background-color: #E6EDF6;">
+        <div class="modal-content" style="background-color: #F4F5F8;">
             <div class="modal-body py0 px0">
                 <div class="row my0 mx0">
-                    <div class="col-lg-12 py0 px0" style="background-color: #fff; height: 550px;    ">
-                        <div class="py15 px15 d-block">
+                    <div class="col-lg-12 py0 px0" style="background-color: #F4F5F8; height: 460px;    ">
+                        <div class="py20 px20 d-block">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -102,10 +106,10 @@
                         <div id="onboardingCarousel" class="carousel slide" data-interval="false">
                           <div class="carousel-inner">
                             <div class="carousel-item active onboarding" style="padding: 2.5em;">
-                              <br><br><br><br>
+                              <br><br><br>
                               <h3 class="intro-slideshow-text">This platform is open only to investors who qualify as wholesale, sophisticated, professional, accredited etc as defined in the country of your jurisdiction. Retail investors may not use the platform.</h3>
                             </div>
-                            <div class="carousel-item onboarding" style="padding: 4em; padding-top: 2em;">
+                            <div class="carousel-item onboarding" style="padding: 3.5em; padding-top: 1.2em;">
                                 <h4 class="text-center">Please enter your details</h4>
                                 <div class="col-md-10 offset-md-1">
                                     <form class="form-horizontal" action="/action_page.php">
@@ -161,13 +165,14 @@
                                   </form>
                                 </div>
                             </div>                              
-                            <div class="carousel-item">
-                              <img class="d-block intro-slideshow-img" src="assets/img/slide-show/1.png" alt="First slide">
+                            <div class="carousel-item" style="padding: 2rem; padding-top: 5rem;">
+                              <img class="d-block intro-slideshow-img" src="assets/img/OTL-logo.png" alt="First slide" style="max-width: 550px;">
+                              <br>
                               <h3 class="intro-slideshow-text">Welcome to the OTL, a decentralized lending protocol that allows lending of any ERC20 token against any other ERC20 token as collateral.<br><br>You can start lending with USDC, DAI, USDT, and ADR, and earn interest on it right away.
                               </h3>
                             </div>
                             <div class="carousel-item">
-                              <img class="d-block intro-slideshow-img" src="assets/img/slide-show/2.png" alt="Second slide" style="max-width: 320px;">
+                              <img class="d-block intro-slideshow-img" src="assets/img/slide-show/2.png" alt="Second slide" style="max-width: 300px;">
                               <h3 class="intro-slideshow-text">To get started simply connect with MetaMask. If you don’t have MetaMask, you can download it from <a href="https://metamask.io" target="_blank">https://metamask.io/</a>
                               </h3>
                             </div>

@@ -1,14 +1,22 @@
 .btn{
   font-weight: 500;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 1px;
   font-size: 1rem;
-  box-shadow: 4px 4px 8px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 8px 0px rgba($color: #ffffff, $alpha: 1);
+  // box-shadow: 4px 4px 8px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 8px 0px rgba($color: #ffffff, $alpha: 1);
   &:hover{
     box-shadow: $outer-shadow;
   }
   &.btn-full{
     width: 100%;
+  }
+  &.btn-pink {
+    background: #FA596B !important;
+    border-radius: 6px;
+  }
+  &.btn-light-pink {
+    background: #FF8686 !important;
+    border-radius: 6px;
   }
   &.btn-success{
     background-color: $color-success;
@@ -23,19 +31,24 @@
   }
   &.btn-secondary{
     background-color: $object-color !important;
-    color: $color-success;
+    // color: $color-success;
+    color: #A4A6AC !important;
     border: none;
-    box-shadow: 4px 4px 10px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 10px 0px rgba($color: #ffffff, $alpha: 1);
+    // box-shadow: 4px 4px 10px 0px rgba($color: #000000, $alpha: 0.2), -4px -4px 10px 0px rgba($color: #ffffff, $alpha: 1);
     transition: all 0.2s ease-in-out;
-    border-radius: 25px;
+    border-radius: 6px;
     &:hover {
       box-shadow: $outer-shadow;
       border: none;
     }
 
     &:active,&:focus,&:active &:focus,&.active{
-      color: $color-success !important;
-      box-shadow: $inner-shadow !important;
+      // color: $color-success !important;
+      color: #fff !important;
+      background: #FF8686 !important;
+      border-radius: 6px;
+      box-shadow: none !important;
+      // box-shadow: $inner-shadow !important;
       border: none !important;
     }
   }
@@ -67,3 +80,4 @@
     color: $color-success;
   }
 }
+

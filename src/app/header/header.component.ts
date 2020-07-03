@@ -31,10 +31,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
     $( ".onboarding-next-btn" ).on( "click", function() {
-      var name = $("input[name='user_name']").val();
-      var email = $("input[name='email']").val();
-      var phone = $("input[name='phone']").val();
-      var investorType = $("input[name='wholesale_investing_as']:checked").val();
+      let name = $("input[name='user_name']").val();
+      let email = $("input[name='email']").val();
+      let phone = $("input[name='phone']").val();
+      let investorType = $("input[name='wholesale_investing_as']:checked").val();
       alert(name + email + phone + investorType);
       $(".carousel").carousel("next");
     });

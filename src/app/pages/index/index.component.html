@@ -64,40 +64,40 @@
                                 <div class="portlet__body py0 px0">
                                     <div class="asset-list">
                                         <div class="labels row">
-                                            <div class="col-sm-4 col-4">
+                                            <div class="col-3 col-sm-3">
                                                 <label>Asset</label>
                                             </div>
-                                            <div class="col-sm-3 col-3 text-left d-none d-sm-block">
+                                            <div class="col-sm-3 col-3 text-right d-none d-sm-block">
                                                 <label>APY</label>
                                             </div>
-                                            <div class="col-sm-3 col-3 text-left">
+                                            <div class="col-sm-3 col-3 text-right">
                                                 <label>Non Deployed</label>
                                             </div>
-                                            <div class="col-sm-2 col-3 text-left">
+                                            <div class="col-sm-3 col-3 text-right">
                                                 <label>Deployed</label>
                                             </div>
                                         </div>
                                         <div class="assets">
                                             <a class="asset" *ngFor="let token of cashTokenData; let i = index"
                                                 (click)="openSupplyModal(token.id)">
-                                                <div class="col-4 col-sm-4">
+                                                <div class="col-3 col-sm-3">
                                                     <div class="balance">
                                                         <img src="assets/img/{{ token.symbol }}_logo.png" alt="{{ token.symbol }} logo" class="token-logos" />
                                                         <div style="display: inline-block;">{{token.symbol}}</div>
                                                         <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-3 text-left d-none d-sm-block">
+                                                <div class="col-sm-3 col-3 text-right d-none d-sm-block">
                                                     <div class="balance">
                                                         <div>{{token.supplyApy}}%</div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-3 text-left">
+                                                <div class="col-sm-3 col-3 text-right">
                                                     <div class="balance">
                                                         <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-3 text-left">
+                                                <div class="col-sm-3 col-3 text-right">
                                                   <div class="balance">
                                                       <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
                                                   </div>
@@ -126,13 +126,13 @@
                                             <div class="col-sm-2 col-3">
                                                 <label>Asset</label>
                                             </div>
-                                            <div class="col-sm-4 col-4 text-left">
+                                            <div class="col-sm-4 col-4 text-right">
                                                 <label>Type</label>
                                             </div>
-                                            <div class="col-sm-4 col-3 text-left">
+                                            <div class="col-sm-4 col-3 text-right">
                                                 <label>Collateral Value</label>
                                             </div>
-                                            <div class="col-sm-2 col-2 text-left">
+                                            <div class="col-sm-2 col-2 text-right">
                                                 <label>Tokens</label>
                                             </div>
                                         </div>
@@ -140,23 +140,23 @@
                                             <div class="asset" style="cursor: default;" *ngFor="let token of assetTokenData; let i = index">
                                                 <div class="col-sm-2 col-3">
                                                     <div class="balance">
-                                                        <img src="assets/img/ether_logo.png" style="max-height: 30px;" alt="Ether logo" />
+                                                        <img src="assets/img/ether_logo.png" style="max-height: 30px;" alt="Ether logo" class="token-logos" />
                                                         <div style="display: inline-block;">{{token.symbol}}</div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4 col-4 text-left">
+                                                <div class="col-sm-4 col-4 text-right">
                                                     <div class="balance">
                                                         <div>
                                                           <a href="https://www.konkrete.io/queen-street" target="_blank">Mortgage, Real Estate</a>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4 col-3 text-left">
+                                                <div class="col-sm-4 col-3 text-right">
                                                     <div class="balance">
                                                         <div>{{localeString(token.erc20TotalSupply, 0)}}</div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-2 col-2 text-left">
+                                                <div class="col-sm-2 col-2 text-right">
                                                     <!-- <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div> -->
                                                     <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5#readContract"
                                                       target="_blank">Link</a>
@@ -360,15 +360,17 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content" style="background-color: #E6EDF6;">
             <div class="modal-body py0 px0">
-                <div class="row my0 mx0">
-                    <div class="col-lg-6 py0 px0" style="background-color: #fff;">
+                <div class="row my0 mx0" style="background-color: #F4F5F8;">
+                    <div class="col-lg-6 py0 px0" style="padding: 1.5em !important;">
                         <div class="py15 px15 d-block d-lg-none">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="my20 mx15" id="supplyGroup" style="position: relative;">
-                            <select id="supply" name="supply" class="select2-main" style="width: 100%;"></select>
+                            <select id="supply" name="supply" class="select2-main" style="width: 100%;">
+                                <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.png" style="max-height: 130px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
+                            </select>
                         </div>
                         <div class="d-none d-lg-block">
                         </div>
@@ -403,16 +405,16 @@
                                 aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <div class="form" *ngIf="tokenData[selectedTokenIndex].approved">
+                            <div class="form" *ngIf="tokenData[selectedTokenIndex].approved" style="padding: 1.5em; background-color: white; border-radius: 12px;">
                                 <div class="row">
                                     <div class="col-6">
                                         <button [ngClass]="{'active': typeViewSupply == 'withdraw'}"
-                                            class="btn btn-lg btn-full btn-secondary"
+                                            class="btn btn-lg btn-full btn-secondary btn-light-pink"
                                             (click)="viewWithdrawForm()">Withdraw</button>
                                     </div>
                                     <div class="col-6">
                                         <button [ngClass]="{'active': typeViewSupply == 'supply'}"
-                                            class="btn btn-lg btn-full btn-secondary"
+                                            class="btn btn-lg btn-full btn-secondary btn-light-pink"
                                             (click)="viewSupplyForm()">Deploy</button>
                                     </div>
                                 </div>
@@ -421,7 +423,7 @@
                                         <div class="row align-items-center">
                                             <div class="col-12">
                                                 <input type="text" class="form-control form-control-lg text-center"
-                                                    placeholder="0" [(ngModel)]="amountInput" name="amountInput">
+                                                    placeholder="0" [(ngModel)]="amountInput" name="amountInput" style="background: #F4F5F8; border-radius: 6px; box-shadow: none;">
                                             </div>
                                         </div>
                                     </form>
@@ -435,9 +437,9 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <button class="btn btn-lg btn-full btn-secondary" (click)="withdrawUnderlying()"
+                                    <button class="btn btn-lg btn-full btn-secondary btn-pink" style="background: #FA596B !important; color: #fff !important;" (click)="withdrawUnderlying()"
                                         *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
-                                    <button class="btn btn-lg btn-full btn-secondary" (click)="mint()"
+                                    <button class="btn btn-lg btn-full btn-secondary btn-pink" style="background: #FA596B !important; color: #fff !important;" (click)="mint()"
                                         *ngIf="typeViewSupply == 'supply'">Deploy</button>
                                 </div>
                             </div>
