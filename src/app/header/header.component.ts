@@ -30,15 +30,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     });
   }
   ngAfterViewInit() {
-    $( '.onboarding-next-btn' ).on( 'click', () => {
-      const name = $('input[name=\'user_name\']').val();
-      const email = $('input[name=\'email\']').val();
-      const phone = $('input[name=\'phone\']').val();
-      const investorType = $('input[name=\'wholesale_investing_as\']:checked').val();
-      alert(name + email + phone + investorType);
-      $('.carousel').carousel('next');
-    });
-    // $("#onboarding_pd_btn").click(() => $(".carousel").carousel("next"));
+    $("#onboarding_pd_btn").click(() => $(".carousel").carousel("next"));
   }
 
   public async connect(walletName) {

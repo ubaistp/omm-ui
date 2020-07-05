@@ -126,8 +126,9 @@ label {
 
 .borrow-balance,
 .supply-balance {
-  font-weight: 400;
-  font-size: 1.8rem;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
 }
 
 .portlet {
@@ -157,7 +158,7 @@ label {
         .portlet__head-text {
           display: table-cell;
           vertical-align: middle;
-          font-size: 1.16rem;
+          font-size: 1rem;
           font-weight: 600;
           color: $color-text;
         }
@@ -241,12 +242,13 @@ table {
       margin-bottom: 0;
       color: rgba($color: $color-text, $alpha: 0.8);
       font-size: 0.83rem;
-      font-family: SF Pro Display;
+      font-family: SF Pro Display, Roboto, "Helvetica Neue", sans-serif;
       color: #A4A6AC;
     }
   }
   .assets {
     .asset {
+      font-size: 0.8em;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -254,7 +256,7 @@ table {
       text-transform: capitalize;
       letter-spacing: 0;
       padding: 1rem 2rem;
-      font-weight: 500;
+      font-weight: 700;
       &:last-child{
         border: none;
       }
@@ -286,7 +288,7 @@ table {
   .description {
     font-weight: 500;
     color: #7C7D80;
-    font-family: SF Compact Display Medium;
+    font-family: SF Compact Display Medium, Roboto, "Helvetica Neue", sans-serif;
   }
   span:last-of-type {
     font-weight: 500;
@@ -381,38 +383,40 @@ label.error{
     border-radius: 0;
     box-shadow: none;
     margin: 0 0 15px 10px;
+    /*background: #F4F5F8;*/
 }
 #accordion .panel-heading {
     border-radius: 30px;
     padding: 0;
 }
 #accordion .panel-title a {
-    background: $color-danger none repeat scroll 0 0;
+    background: #F4F5F8 none repeat scroll 0 0;
     border: 1px solid transparent;
-    color: #fff;
+    color: #333;
     display: block;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 500;
     padding: 12px 20px 12px 50px;
     position: relative;
+    font-family: SF Compact Display Medium;
     transition: all 0.3s ease 0s;
 }
 #accordion .panel-title a.collapsed {
-    background: #fff none repeat scroll 0 0;
-    border: 1px solid #ddd;
-    color: #333;
+    background: #F4F5F8 none repeat scroll 0 0;
+    /*border: 1px solid #ddd;*/
+    color: #828282;
 }
 #accordion .panel-title a::after, #accordion .panel-title a.collapsed::after {
-    background: $color-danger none repeat scroll 0 0;
-    border: 1px solid transparent;
-    border-radius: 50%;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.58);
-    color: #fff;
-    content: "";
+    /*background: $color-danger none repeat scroll 0 0;*/
+    /*border: 1px solid transparent;*/
+    /*border-radius: 50%;*/
+    /*box-shadow: 0 3px 10px rgba(0, 0, 0, 0.58);*/
+    color: #FF8686;
+    content: "-";
     font-family: fontawesome;
     font-size: 25px;
     height: 55px;
-    left: -20px;
+    right: 20px;
     line-height: 55px;
     position: absolute;
     text-align: center;
@@ -421,11 +425,11 @@ label.error{
     width: 55px;
 }
 #accordion .panel-title a.collapsed::after {
-    background: #fff none repeat scroll 0 0;
-    border: 1px solid #ddd;
+    /*background: #FF8686 none repeat scroll 0 0;*/
+    /*border: 1px solid #ddd;*/
     box-shadow: none;
-    color: #333;
-    content: "";
+    color: #FF8686;
+    content: "+";
 }
 #accordion .panel-body {
     background: transparent none repeat scroll 0 0;
@@ -434,14 +438,16 @@ label.error{
     position: relative;
 }
 #accordion .panel-body p {
-    border-left: 1px dashed #8c8c8c;
+    /*border-left: 1px dashed #8c8c8c;*/
+    font-size: 15px;
     padding-left: 25px;
 }
 .faq-heading {
-  font-size: 25px;
+  font-size: 24px;
+  font-weight: 700;
 }
 
-// ONBOARDING SECTION
+/*ONBOARDING SECTION*/
 .intro-slideshow-text {
   text-align: center;
   margin: auto;
@@ -488,6 +494,7 @@ label.error{
   box-shadow: none;
   font-weight: 500;
   font-size: 12px;
+  letter-spacing: 0px;
   margin-right: 2em;
 }
 
@@ -504,3 +511,18 @@ label.error{
   background-color: #fff;
 }
 
+a {
+  color: #FF8686;
+}
+a:hover {
+  text-decoration: underline;
+  color: #e67979;
+}
+
+/*MEDIA QUERIES*/
+/*@media (min-width: 1200px) {
+  html, body {
+    font-size: 15px;
+  }
+}
+*/

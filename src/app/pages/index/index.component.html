@@ -8,7 +8,7 @@
                           <label class="mb0" style="color: #FA596B;">Total Deployed on Market</label>
                           <div class="supply-balance color-text-in">${{localeString(totalCashDeployed, 0)}}</div>
                       </div>
-                      <div class="col-sm-6 col-md-12" style="margin-top: 0.7em;">
+                      <div class="col-sm-6 col-md-12" style="margin-top: 2em;">
                           <label class="mb0" style="color: #FF8E9B;">My Deployed Balance</label>
                           <div class="supply-balance color-text-in">${{toDecimal(totalSupplyBalance, 7)}}</div>
                       </div>
@@ -38,7 +38,7 @@
                             <label class="mb0" style="color: #FFD7B5;">Total Collateral on Market</label>
                             <div class="borrow-balance color-text-in">${{localeString(totalAssetTokenSupply, 0)}}</div>
                         </div>
-                        <div class="col-sm-6 col-md-12" style="margin-top: 0.7em;">
+                        <div class="col-sm-6 col-md-12" style="margin-top: 2em;">
                             <label class="mb0" style="color: #FFD7B5;">Total Loans on Market</label>
                             <div class="borrow-balance color-text-in">${{localeString(totalCashLoans, 0)}}</div>
                         </div>
@@ -101,7 +101,7 @@
                                                   <div class="balance">
                                                       <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
                                                   </div>
-                                                  <div class="balance">
+                                                  <div class="balance" style="color: #828282; font-size: 0.8em;">
                                                     <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} {{ token.symbol }}</div>
                                                   </div>
                                                 </div>
@@ -147,7 +147,7 @@
                                                 <div class="col-sm-4 col-4 text-right">
                                                     <div class="balance">
                                                         <div>
-                                                          <a href="https://www.konkrete.io/queen-street" target="_blank">Mortgage, Real Estate</a>
+                                                          <a href="https://www.konkrete.io/queen-street" target="_blank" style="color: #202020;">Mortgage, Real Estate</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -159,7 +159,7 @@
                                                 <div class="col-sm-2 col-2 text-right">
                                                     <!-- <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div> -->
                                                     <div><a href="https://etherscan.io/address/0xcd90e3093be92ebdb48510349a1cf5f63c3977d5#readContract"
-                                                      target="_blank">Link</a>
+                                                      target="_blank">Link ></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -189,7 +189,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                                         What is the OTL?
                                     </a>
                                 </h4>
@@ -444,13 +444,13 @@
                                 </div>
                             </div>
                             <div class="form" *ngIf="!tokenData[selectedTokenIndex].approved">
-                                <div class="text-center">
+                                <div class="text-center py30">
                                   <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.png" style="max-height: 130px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                                 </div>
                                 <div class="mt20 mb30" style="font-weight: 500;">
                                     To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
                                 </div>
-                                <button class="btn btn-lg btn-full btn-secondary"
+                                <button class="btn btn-lg btn-full btn-light-pink"
                                     (click)="enableSupplyCollateral()">Enable</button>
                             </div>
                         </div>
@@ -458,5 +458,17 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="footer">
+    <div class="container-fluid" style="background-color: #000000;/* padding-top: 100px;*/ padding-bottom: 0px;">
+        <footer style="padding-top: 16px; padding-bottom: 16px;">
+          <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center" style="color: #929292">This platform is open to wholesale/accredited/experienced/non retail investors only.</div>
+            </div>              
+          </div>
+        </footer>
     </div>
 </div>

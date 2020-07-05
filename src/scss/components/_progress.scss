@@ -34,14 +34,14 @@
 
 .progress-circle--container {
   // background-color: $object-color;
-  padding: 0.45rem 0.45rem;
+  padding: 0.3rem 0.3rem;
   // box-shadow: $outer-shadow;
-  border: 0.5px solid $color-brand;
+  border: 0.3px solid $color-brand;
   display: inline-block;
   border-radius: 50%;
 }
 
-$size: 150px;
+$size: 130px;
 
 //Create how many steps
 $howManySteps: 10; //this needs to be even.
