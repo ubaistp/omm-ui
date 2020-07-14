@@ -519,6 +519,16 @@ a:hover {
   color: #e67979;
 }
 
+
+input.ng-invalid.ng-touched  
+{  
+   border-color: red;  
+}
+
+.validation-warning {
+  color: red;
+}
+
 /*MEDIA QUERIES*/
 /*@media (min-width: 1200px) {
   html, body {

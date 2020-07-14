@@ -107,7 +107,7 @@
                                       <div class="mt30 form-group row">
                                           <div class="col-md-4"></div>
                                           <div class="col-md-8">
-                                              <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
+                                              <button class="btn btn-lg btn-full btn-light-pink" [disabled]="!isUserAdmin"
                                                 (click)="addCompleteMarket()">Submit</button>
                                           </div>
                                       </div>
@@ -138,7 +138,7 @@
                                     <input type="text" class="form-control" [(ngModel)]="updateIr.irAddress" name="updateIr.irAddress">
                                 </div>
                                 <div class="mt30">
-                                    <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
+                                    <button class="btn btn-lg btn-full btn-light-pink" [disabled]="!isUserAdmin"
                                       (click)="updateIrModel()">Submit</button>
                                 </div>
                             </form>
@@ -166,7 +166,7 @@
                                   <input type="text" class="form-control" [(ngModel)]="cTokenRatio" name="cTokenRatio">
                               </div>
                               <div class="mt30">
-                                  <button class="btn btn-lg btn-full btn-secondary" [disabled]="!isUserAdmin"
+                                  <button class="btn btn-lg btn-full btn-light-pink" [disabled]="!isUserAdmin"
                                     (click)="updateCR()">Submit</button>
                               </div>
                           </form>
@@ -193,7 +193,7 @@
                                 <input type="text" class="form-control" [(ngModel)]="updatePrice.price" name="updatePrice.price">
                               </div>
                               <div class="mt30">
-                                  <button [disabled]="!isUserAdmin" class="btn btn-lg btn-full btn-secondary" [ngClass]="{'loader': updatePrice.loader}"
+                                  <button [disabled]="!isUserAdmin" class="btn btn-lg btn-full btn-light-pink" [ngClass]="{'loader': updatePrice.loader}"
                                     (click)="updateCtokenPrice()">Submit</button>
                               </div>
                           </form>

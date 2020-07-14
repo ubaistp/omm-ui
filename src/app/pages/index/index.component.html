@@ -254,7 +254,7 @@
                                 <div class="panel-body">
                                     <p>The asset explorer is where you can view the tokenized assets being used as collateral on the system. It includes the token name, the type of asset, it’s collateral value on the system, and the link to the token contract itself. By clicking the link under asset Type, you will be directed to an information page with more details on the asset including any relevant loan agreements. </p>
                                     <br>
-                                    <img src="assets/img/faqs/asset_explorer.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto" />
+                                    <img src="assets/img/faqs/asset_explorer.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto; width: 100%;" />
                                 </div>
                             </div>
                         </div>
@@ -270,7 +270,7 @@
                                 <div class="panel-body">
                                     <p>Interest is calculated per each ethererum block which is roughly every 15 seconds. You can take out your funds, including interest, anytime - provided there is enough liquidity in the pool. Liquidity of a particular asset is shown when you click the asset. In the example below, it shows that 10 USDT can be withdrawn from the pool. </p>
                                     <br>
-                                    <img src="assets/img/faqs/sample_modal.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto;" />
+                                    <img src="assets/img/faqs/sample_modal.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto; width: 100%;" />
                                 </div>
                             </div>
                         </div>
@@ -402,7 +402,7 @@
                     <div class="col-lg-6 py0 px0">
                         <div class="py15 px15">
                             <button type="button" class="close d-none d-lg-block" data-dismiss="modal"
-                                aria-label="Close">
+                                aria-label="Close" style="margin-top: -0.7rem; margin-right: -0.3rem;">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             <div class="form" *ngIf="tokenData[selectedTokenIndex].approved" style="padding: 1.5em; background-color: white; border-radius: 12px;">
@@ -418,15 +418,39 @@
                                             (click)="viewSupplyForm()">Deploy</button>
                                     </div>
                                 </div>
+                                <form #form="ngForm">
                                 <div class="my30">
-                                    <form>
+                                    <!-- <form> -->
                                         <div class="row align-items-center">
                                             <div class="col-12">
                                                 <input type="text" class="form-control form-control-lg text-center"
-                                                    placeholder="0" [(ngModel)]="amountInput" name="amountInput" style="background: #F4F5F8; border-radius: 6px; box-shadow: none;">
+                                                    placeholder="0" [(ngModel)]="amountInput" name="amountInput" style="background: #F4F5F8; border-radius: 6px; box-shadow: none;" required>
+                                                    <!-- <input type="text" class="form-control form-control-lg text-center" -->
+                                                    <!-- placeholder="0" name="amountInput" style="background: #F4F5F8; border-radius: 6px; box-shadow: none;" min="10" required ngModel #amountInput="ngModel"> -->
                                             </div>
+                                            
                                         </div>
-                                    </form>
+                                        <!-- <form #form="ngForm">  
+                                            <h2 class="text-center">Registration page</h2>  
+                                           <br/>  
+                                           <div class="form-group">  
+                                               <input type="text" class="form-control" placeholder="First Name" name="firstname" required ngModel>   
+                                           </div>  
+                                           <div class="form-group">  
+                                               <input type="text" class="form-control"  placeholder="Last Name" name="lastname" required ngModel>  
+                                           </div>  
+                                           <div class="form-group">  
+                                               <input type="email" class="form-control" id="email" placeholder="Email" name="email" email required ngModel #email="ngModel">  
+                                               <span class="help-bpx" *ngIf="email.touched && !email.valid ">Please enter the Email Value {{tokenData[selectedTokenIndex].cTokenSupplyBalance}}</span>  
+                                           </div>  
+                                            <div class="form-group">  
+                                           </div>  
+                                           <br/>  
+                                           <div class="align-center">  
+                                               <button class="btn btn-default" id="register" [disabled]="!form.valid" >Register</button>  
+                                           </div>  
+                                       </form>   -->
+                                    <!-- </form> -->
                                     <div class="mt30">
                                         <div class="calculation">
                                             <span class="description">Deployed Balance</span>
@@ -437,11 +461,16 @@
                                     </div>
                                 </div>
                                 <div>
+                                    <div class="form-group">  
+                                        <!-- <input type="email" class="form-control" id="email" placeholder="Email" name="email" email required ngModel #email="ngModel">   -->
+                                        <!-- <span class="validation-warning" *ngIf="amountInput.touched && !amountInput.valid ">Please enter the amount. {{tokenData[selectedTokenIndex].cTokenSupplyBalance}}</span>   -->
+                                    </div>  
                                     <button class="btn btn-lg btn-full btn-secondary btn-pink" style="background: #FA596B !important; color: #fff !important;" (click)="withdrawUnderlying()"
-                                        *ngIf="typeViewSupply == 'withdraw'">Withdraw</button>
+                                        *ngIf="typeViewSupply == 'withdraw'"[disabled]="!form.valid" >Withdraw</button>
                                     <button class="btn btn-lg btn-full btn-secondary btn-pink" style="background: #FA596B !important; color: #fff !important;" (click)="mint()"
-                                        *ngIf="typeViewSupply == 'supply'">Deploy</button>
+                                        *ngIf="typeViewSupply == 'supply'"[disabled]="!form.valid" >Deploy</button>
                                 </div>
+                            </form>
                             </div>
                             <div class="form" *ngIf="!tokenData[selectedTokenIndex].approved">
                                 <div class="text-center py30">
