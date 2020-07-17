@@ -137,14 +137,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public filterCashTokenArray() {
         if (this.tokenData.length === 0) { return; }
 
-        const result = this.tokenData.filter(token => this.cashTokenSymbols.includes(token.symbol) && (token.collateralFactor != 0 || token.priceUsd != 0));
+        const result = this.tokenData.filter(token => this.cashTokenSymbols.includes(token.symbol) && (token.collateralFactor == 0 && token.priceUsd != 0));
         return result;
     }
 
     public filterAssetTokenArray() {
       if (this.tokenData.length === 0) { return; }
 
-      const result = this.tokenData.filter(token => !this.cashTokenSymbols.includes(token.symbol) && (token.collateralFactor != 0 || token.priceUsd != 0));
+      const result = this.tokenData.filter(token => !this.cashTokenSymbols.includes(token.symbol) && (token.collateralFactor != 0 || token.priceUsd != 0) && (token.collateralFactor != 0));
       return result;
     }
 
