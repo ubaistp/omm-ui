@@ -330,7 +330,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       const oracleAddress = await this.Contracts.Comptroller.oracle();
       const PriceOracle = this.initContract(oracleAddress, PriceOracleOTL.abi);
       const priceTx = await PriceOracle.setUnderlyingPrice(cTokenContract.address, priceMantissa, overrides);
-      await this.web3.waitForTransaction(priceTx.hash);
+      await this.web3.waitForTransaction(priceTx.hash, 5);
 
       // update collateral factor in comptroller
       const colFac = parseFloat(this.collateralFacFull);
