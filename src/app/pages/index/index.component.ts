@@ -46,7 +46,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public callCount = 0;
     public numListedMarkets = 0;
     public networkData = {name: null, isMainnet: false};
-    public cashTokenSymbols = [];
     public cashTokenData = [];
     public assetTokenData = [];
     public totalAssetTokenSupply = 0;
@@ -58,9 +57,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
 
-    constructor(private http: HttpClient, private sharedService: SharedService) {
-        this.cashTokenSymbols = ['DAI', 'USDC', 'USDT', 'ADR'];
-    }
+    constructor(private http: HttpClient, private sharedService: SharedService) {}
 
     ngOnInit() {
       this.sharedService.proceedApp$.subscribe(
@@ -123,28 +120,17 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    public isCashToken(token) {
-        if (token === undefined) { return false; }
-
-        this.cashTokenSymbols.forEach(cashSymbol => {
-          if (cashSymbol.toUpperCase() === token.symbol.toUpperCase()) {
-            return true;
-          }
-        });
-        return false;
-    }
-
     public filterCashTokenArray() {
         if (this.tokenData.length === 0) { return; }
 
-        const result = this.tokenData.filter(token => this.cashTokenSymbols.includes(token.symbol) && (token.collateralFactor == 0 && token.priceUsd != 0));
+        const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) === 0 && parseFloat(token.priceUsd) !== 0);
         return result;
     }
 
     public filterAssetTokenArray() {
       if (this.tokenData.length === 0) { return; }
 
-      const result = this.tokenData.filter(token => !this.cashTokenSymbols.includes(token.symbol) && (token.collateralFactor != 0 || token.priceUsd != 0) && (token.collateralFactor != 0));
+      const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) !== 0);
       return result;
     }
 

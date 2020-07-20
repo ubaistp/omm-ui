@@ -127,7 +127,7 @@
                                                 <label>Asset</label>
                                             </div>
                                             <div class="col-sm-4 col-4 text-right">
-                                                <label>Type</label>
+                                                <label>Lunk</label>
                                             </div>
                                             <div class="col-sm-4 col-3 text-right">
                                                 <label>Collateral Value</label>
@@ -140,14 +140,14 @@
                                             <div class="asset" style="cursor: default;" *ngFor="let token of assetTokenData; let i = index">
                                                 <div class="col-sm-2 col-3">
                                                     <div class="balance">
-                                                        <img src="assets/img/ether_logo.png" style="max-height: 30px;" alt="Ether logo" class="token-logos" />
+                                                        <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.png" style="max-height: 28px;" alt="Ether logo" class="token-logos" />
                                                         <div style="display: inline-block;">{{token.symbol}}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4 col-4 text-right">
                                                     <div class="balance">
                                                         <div>
-                                                          <a href="https://www.konkrete.io/queen-street" target="_blank" style="color: #202020;">Mortgage, Real Estate</a>
+                                                          <a href="https://www.etoro.com/people/konkrete/portfolio" target="_blank" style="color: #202020;">Portfolio</a>
                                                         </div>
                                                     </div>
                                                 </div>
