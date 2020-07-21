@@ -30,14 +30,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     });
   }
   ngAfterViewInit() {
-    $("#onboarding_pd_btn").click(() => $(".carousel").carousel("next"));
+    $('#onboarding_pd_btn').click(() => $('.carousel').carousel('next'));
   }
 
   public async connect(walletName) {
     await this.sharedService.connect(walletName);
-    window['ethereum'].on('networkChanged', () => {
-        window.location.reload();
-    });
     const cookieExists: boolean = this.cookie.check('first_visit');
     this.cookie.set('first_visit', 'true', 730);
     if (!cookieExists) {
