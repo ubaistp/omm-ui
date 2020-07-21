@@ -78,7 +78,7 @@
                                                 (click)="openSupplyModal(token.id)">
                                                 <div class="col-4 col-sm-4">
                                                     <div class="balance">
-                                                        <img class="token-logos" style="max-height: 28px;" src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.png" alt="Ether logo" />
+                                                        <img class="token-logos" style="max-height: 28px;" src="assets/img/{{token.symbol}}_logo.png" alt="{{token.symbol}} logo" />
                                                         <div style="display: inline-block;">{{token.symbol}}</div>
                                                         <span class="subtitle d-block d-sm-none">{{token.supplyApy}}%</span>
                                                     </div>
@@ -126,7 +126,7 @@
                                                 (click)="openBorrowModal(token.id)">
                                                 <div class="col-4 col-sm-4">
                                                     <div class="balance">
-                                                        <img src="assets/img/{{ token.symbol }}_logo.png" alt="{{ token.symbol }} logo" class="token-logos" />
+                                                        <img src="assets/img/{{token.symbol}}_logo.png" alt="{{ token.symbol }} logo" class="token-logos" />
                                                         <div style="display: inline-block;">{{token.symbol}}</div>
                                                         <span class="subtitle d-block d-sm-none">{{token.borrowApy}}%</span>
                                                     </div>
@@ -233,7 +233,7 @@
                             </div>
                             <div class="form" *ngIf="!tokenData[selectedTokenIndex].approved">
                               <div class="text-center">
-                                <img src="assets/img/ether_logo.png" style="max-height: 130px;" alt="Ether logo" />
+                                <img src="assets/img/{{tokenData[selectedTokenIndex].symbol}}_logo.png" style="max-height: 130px;" alt="{{tokenData[selectedTokenIndex].symbol}} logo" />
                               </div>
                               <div class="mt20 mb30" style="font-weight: 500;">
                                   To interact with the OTL protocol using {{tokenData[selectedTokenIndex].symbol}}, you need to enable it first.
