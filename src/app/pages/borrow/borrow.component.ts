@@ -175,9 +175,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async afterInitToken() {
-        const ignoredMarkets = 1;
         this.callCount++;
-        if (this.callCount < this.numListedMarkets - ignoredMarkets) {
+        if (this.callCount < this.numListedMarkets) {
           return;
         }
         // timeout for all async calls to resolve
@@ -257,26 +256,20 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
           necessaryMarkets.push(cTokenAddress);
         }
       }
+      this.numListedMarkets = necessaryMarkets.length;
       return necessaryMarkets;
     }
 
     public fetchTokens(allListedTokens) {
-      // Mainnet default Dai fix
-      let removeAddr = '0x235d02C9E7909B7Cc42ffA10Ef591Ea670346F42';
-      removeAddr = removeAddr.toLowerCase();
-
       this.tokenData = [];
       for (const cTokenAddress of allListedTokens) {
-        // Mainnet default Dai fix
-        if (cTokenAddress.toLowerCase() !== removeAddr) {
-          const token = {} as any;
-          token.id = this.tokenData.length;
-          token.enabled = false;
-          token.approved = false;
-          token.cTokenAddress = cTokenAddress;
-          this.initToken(token);
-          this.tokenData.push(token);
-        }
+        const token = {} as any;
+        token.id = this.tokenData.length;
+        token.enabled = false;
+        token.approved = false;
+        token.cTokenAddress = cTokenAddress;
+        this.initToken(token);
+        this.tokenData.push(token);
       }
     }
 
