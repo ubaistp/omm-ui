@@ -197,6 +197,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const allListedTokens = await this.fetchAllMarkets();
         await this.initAllContracts(contractAddresses);
+        const necessaryMarkets = await this.removeUnnecessaryMarkets(allListedTokens);
         this.estimateGasPrice();
 
         // In case there are no markets
@@ -204,7 +205,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           cApp.unblockPage();
           return;
         }
-        this.fetchTokens(allListedTokens);
+        this.fetchTokens(necessaryMarkets);
         // console.log(this.tokenData);
     }
 
@@ -285,6 +286,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       this.numListedMarkets = allListedTokens.length;
       return allListedTokens;
+    }
+
+    private async removeUnnecessaryMarkets(allListedTokens) {
+      const necessaryMarkets = [];
+      for (const cTokenAddress of allListedTokens) {
+        const price = await this.getPrice(cTokenAddress);
+        const colFac = await this.getCollateralFactor(cTokenAddress);
+        if (parseFloat(price) !== 0 || parseFloat(colFac) !== 0) {
+          necessaryMarkets.push(cTokenAddress);
+        }
+      }
+      return necessaryMarkets;
     }
 
     public fetchTokens(allListedTokens) {
