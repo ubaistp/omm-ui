@@ -183,7 +183,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       token.collateralFactor = collateralFactor;
     });
     this.getPrice(token.cTokenAddress).then(priceUsd => {
-      token.priceUsd = priceUsd;
+      token.priceUsd = parseFloat(priceUsd).toFixed(2);
     });
   }
 
@@ -224,8 +224,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     let tokenPrice = await this.Contracts.PriceOracleProxy.getUnderlyingPrice(cTokenAddress);
     tokenPrice = this.getNumber(tokenPrice);
     const price = parseFloat(tokenPrice) / this.DECIMAL_18;
-    const priceStr = price.toFixed(3);
-    return priceStr;
+    return price.toString();
   }
 
   public getNumber(hexNum) {

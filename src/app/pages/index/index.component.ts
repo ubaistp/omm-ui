@@ -123,15 +123,15 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public filterCashTokenArray() {
         if (this.tokenData.length === 0) { return; }
 
-        const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) === 0 && parseFloat(token.priceUsd) !== 0);
+        const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) === 0);
         return result;
     }
 
     public filterAssetTokenArray() {
-      if (this.tokenData.length === 0) { return; }
+        if (this.tokenData.length === 0) { return; }
 
-      const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) !== 0);
-      return result;
+        const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) !== 0);
+        return result;
     }
 
     public setSelect2() {
@@ -287,11 +287,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private async removeUnnecessaryMarkets(allListedTokens) {
+      const minNecessaryPrice = 0.001;
       const necessaryMarkets = [];
       for (const cTokenAddress of allListedTokens) {
         const price = await this.getPrice(cTokenAddress);
         const colFac = await this.getCollateralFactor(cTokenAddress);
-        if (parseFloat(price) !== 0 || parseFloat(colFac) !== 0) {
+        if (parseFloat(price) >= minNecessaryPrice || parseFloat(colFac) !== 0) {
           necessaryMarkets.push(cTokenAddress);
         }
       }
@@ -316,7 +317,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         token.isListed = true;
         const cTokenContract = this.initContract(token.cTokenAddress, CErc20Delegator.abi);
         this.getPrice(token.cTokenAddress).then(priceUsd => {
-          token.priceUsd = priceUsd;
+          token.priceUsd = parseFloat(priceUsd).toFixed(2);
           this.getUserSupplyBalance(cTokenContract, token).then(cTokenSupplyBalance => {
             token.cTokenSupplyBalance = parseFloat(cTokenSupplyBalance);
             token.cTokenSupplyBalanceUSD = this.getUserSupplyBalanceUSD(token);
@@ -401,8 +402,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // when default deployed Dai was removed
         const price = parseFloat(tokenPrice) / this.DECIMAL_18;
-        const priceStr = price.toFixed(3);
-        return priceStr;
+        return price.toString();
     }
 
     public async getCollateralFactor(cTokenAddress) {
