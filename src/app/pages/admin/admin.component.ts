@@ -307,10 +307,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
       /* For 1:1 ratio
       * initialExcRateMantissa = 10 ** (erc20Decimals + cTokenDecimals + 2)
       */
+      // let initialExcRateMantissaStr = '1';
+      // initialExcRateMantissaStr = initialExcRateMantissaStr.padEnd(totalDecimals + 3, '0');
 
-      // let initialExcRateMantissaStr = '2';   // taken from compound
-      let initialExcRateMantissaStr = '1';
-      initialExcRateMantissaStr = initialExcRateMantissaStr.padEnd(totalDecimals + 3, '0');
+      let initialExcRateMantissaStr = '2';   // taken from compound
+      initialExcRateMantissaStr = initialExcRateMantissaStr.padEnd(totalDecimals + 1, '0');
 
       // deploy cToken
       const abi = CErc20Immutable.abi;
