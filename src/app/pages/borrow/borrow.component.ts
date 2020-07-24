@@ -251,10 +251,12 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
       const minNecessaryPrice = 0.001;
       const necessaryMarkets = [];
       for (const cTokenAddress of allListedTokens) {
-        const price = await this.getPrice(cTokenAddress);
-        const colFac = await this.getCollateralFactor(cTokenAddress);
-        if (parseFloat(price) >= minNecessaryPrice || parseFloat(colFac) !== 0) {
-          necessaryMarkets.push(cTokenAddress);
+        if(!this.contractAddresses.TokensToBeRemoved.includes(cTokenAddress)) {
+          const price = await this.getPrice(cTokenAddress);
+          const colFac = await this.getCollateralFactor(cTokenAddress);
+          if (parseFloat(price) >= minNecessaryPrice || parseFloat(colFac) !== 0) {
+            necessaryMarkets.push(cTokenAddress);
+          } 
         }
       }
       this.numListedMarkets = necessaryMarkets.length;
