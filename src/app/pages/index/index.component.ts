@@ -295,8 +295,19 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     private async removeUnnecessaryMarkets(allListedTokens) {
       const minNecessaryPrice = 0.001;
       const necessaryMarkets = [];
-      for (const cTokenAddress of allListedTokens) {
-        if(!this.contractAddresses.TokensToBeRemoved.includes(cTokenAddress)) {
+      if(this.contractAddresses.TokensToBeRemoved) {
+        for (const cTokenAddress of allListedTokens) {
+          if(!this.contractAddresses.TokensToBeRemoved.includes(cTokenAddress)) {
+            const price = await this.getPrice(cTokenAddress);
+            const colFac = await this.getCollateralFactor(cTokenAddress);
+            if (parseFloat(price) >= minNecessaryPrice || parseFloat(colFac) !== 0) {
+              necessaryMarkets.push(cTokenAddress);
+            } 
+          }
+        }
+      }
+      else {
+        for (const cTokenAddress of allListedTokens) {
           const price = await this.getPrice(cTokenAddress);
           const colFac = await this.getCollateralFactor(cTokenAddress);
           if (parseFloat(price) >= minNecessaryPrice || parseFloat(colFac) !== 0) {
