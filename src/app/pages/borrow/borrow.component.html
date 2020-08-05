@@ -41,7 +41,7 @@
                         <div class="progress-bar progress-success" role="progressbar"
                             style="width: {{ sliderPercentage }}%" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <label class="ml10">${{ toDecimal(accountLiquidity, 2) }}</label>
+                    <label class="ml10">${{ toDecimal(accountLiquidity, 7) }}</label>
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
                                                 </div>
                                                 <div class="col-4 col-sm-4 text-right">
                                                     <div class="balance">
-                                                        <div>{{ toDecimal(token.tokenBalance, 2) }}</div>
+                                                        <div>{{ toDecimal(token.tokenBalance, 7) }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-4 col-sm-4 text-right">
@@ -138,7 +138,7 @@
                                                 </div>
                                                 <div class="col-4 col-sm-4 text-right">
                                                   <div class="balance">
-                                                      <div>{{ toDecimal(token.availableBorrow, 3) }}</div>
+                                                      <div>{{ toDecimal(token.availableBorrow, 7) }}</div>
                                                   </div>
                                                 </div>
                                             </a>
@@ -182,7 +182,7 @@
                             </div>
                             <div class="calculation">
                                 <span class="description">Non Deployed</span>
-                                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
+                                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 7)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                         </div>
@@ -219,7 +219,7 @@
                                         <div class="calculation">
                                             <span class="description">Supply Balance</span>
                                             <span>
-                                                ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalanceUSD, 3)}}
+                                                ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalanceUSD, 7)}}
                                             </span>
                                         </div>
                                     </div>
@@ -277,12 +277,12 @@
                             </div>
                             <div class="calculation">
                                 <span class="description">Borrow Balance</span>
-                                <span>{{toDecimal((tokenData[selectedTokenIndex].tokenBorrowBalance), 2)}}
+                                <span>{{toDecimal((tokenData[selectedTokenIndex].tokenBorrowBalance), 7)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                             <div class="calculation">
                                 <span class="description">Liquidity</span>
-                                <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
+                                <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 7)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                         </div>

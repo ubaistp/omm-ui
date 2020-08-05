@@ -94,15 +94,15 @@
                                                 </div>
                                                 <div class="col-sm-3 col-3 text-right">
                                                     <div class="balance">
-                                                        <div>{{ toDecimal(token.tokenBalance, 2) }} <!-- {{ token.symbol }} --></div>
+                                                        <div>{{ toDecimal(token.tokenBalance, 7) }} <!-- {{ token.symbol }} --></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3 col-3 text-right">
                                                   <div class="balance">
-                                                      <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 2) }} <!-- {{ token.symbol }} --></div>
+                                                      <div>${{ toDecimal(token.cTokenSupplyBalanceUSD, 7) }} <!-- {{ token.symbol }} --></div>
                                                   </div>
                                                   <div class="balance" style="color: #828282; font-size: 0.8em;">
-                                                    <div>{{ toDecimal(token.cTokenSupplyBalance, 2) }} {{ token.symbol }}</div>
+                                                    <div>{{ toDecimal(token.cTokenSupplyBalance, 7) }} {{ token.symbol }}</div>
                                                   </div>
                                                 </div>
                                             </a>
@@ -147,7 +147,7 @@
                                                 <div class="col-sm-4 col-4 text-right">
                                                     <div class="balance">
                                                         <div>
-                                                          <a href="https://www.etoro.com/people/konkrete/portfolio" target="_blank" style="color: #202020;">Portfolio</a>
+                                                          <a href="{{portfolioLinks[i]}}" target="_blank" style="color: #202020;">Portfolio</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -158,7 +158,7 @@
                                                 </div>
                                                 <div class="col-sm-2 col-2 text-right">
                                                     <!-- <div><a href="{{ token.erc20Link }}" target="_blank">Link</a></div> -->
-                                                    <div><a href="https://etherscan.io/token/0xf573e6740045b5387f6d36a26b102c2adf639af5"
+                                                    <div><a href="{{etherScanLinks[i]}}"
                                                       target="_blank">Link ></a>
                                                     </div>
                                                 </div>
@@ -389,12 +389,12 @@
                             </div> -->
                             <div class="calculation">
                                 <span class="description">Non Deployed</span>
-                                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 2)}}
+                                <span>{{toDecimal(tokenData[selectedTokenIndex].tokenBalance, 7)}}
                                     {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                             <div class="calculation">
                               <span class="description">Liquidity</span>
-                              <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 2)}}
+                              <span>{{toDecimal(tokenData[selectedTokenIndex].availableBorrow, 7)}}
                                   {{ tokenData[selectedTokenIndex].symbol }}</span>
                             </div>
                         </div>
@@ -455,7 +455,7 @@
                                         <div class="calculation">
                                             <span class="description">Deployed Balance</span>
                                             <span>
-                                                ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalanceUSD, 3)}}
+                                                ${{toDecimal(tokenData[selectedTokenIndex].cTokenSupplyBalanceUSD, 7)}}
                                             </span>
                                         </div>
                                     </div>
