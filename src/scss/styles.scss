@@ -529,6 +529,25 @@ input.ng-invalid.ng-touched
   color: red;
 }
 
+.governance-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.4rem;
+}
+
+.governance-amount-heading {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #AAB8C1;
+  letter-spacing: 1px;
+}
+
+.governance-top-heading {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+}
+
 /*MEDIA QUERIES*/
 /*@media (min-width: 1200px) {
   html, body {

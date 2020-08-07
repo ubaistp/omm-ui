@@ -57,15 +57,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public typeViewSupply = 'supply';
     public typeViewBorrow = 'borrow';
 
-    public cashTokenSymbols = [];
-    public assetTokenSymbols = [];
-
     public portfolioLinks = [];
     public etherScanLinks = [];
 
     constructor(private http: HttpClient, private sharedService: SharedService) {
-      this.cashTokenSymbols = ['DAI'];
-      this.assetTokenSymbols = ['TAF'];
       this.portfolioLinks = ['https://www.etoro.com/people/konkrete/portfolio', 'https://uniswap.info/pair/0x3041cbd36888becc7bbcbc0045e3b1f144466f5f'];
       this.etherScanLinks = ['https://etherscan.io/token/0xf573e6740045b5387f6d36a26b102c2adf639af5', 'https://etherscan.io/address/0x3041cbd36888becc7bbcbc0045e3b1f144466f5f'];
     }
@@ -107,8 +102,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     private calcTotalAssetTokenSupply() {
         this.totalAssetTokenSupply = 0;
         this.assetTokenData.forEach(token => {
-          if (parseFloat(token.erc20TotalSupply) >= 0) {
-            this.totalAssetTokenSupply += (parseFloat(token.erc20TotalSupply) * parseFloat(token.priceUsd));
+          // if (parseFloat(token.erc20TotalSupply) >= 0) {
+          //   this.totalAssetTokenSupply += (parseFloat(token.erc20TotalSupply) * parseFloat(token.priceUsd));
+          // }
+          if (parseFloat(token.totalErc20Supply) >= 0) {
+            this.totalAssetTokenSupply += (parseFloat(token.totalErc20Supply) * parseFloat(token.priceUsd));
           }
         });
     }
