@@ -5,7 +5,7 @@ import { blockchainConstants } from '../../../environments/blockchain-constants'
 import { SharedService } from '../../commonData.service';
 import { BigNumber } from 'bignumber.js';
 import * as Comp from '../../../assets/contracts/Comp.json';
-import * as Comptroller from '../../../assets/contracts/Comptroller.json';
+import * as ComptrollerV3 from '../../../assets/contracts/ComptrollerV3.json';
 
 declare var $: any;
 declare var cApp: any;
@@ -117,7 +117,7 @@ export class GovernanceComponent implements OnInit {
 
     private async initAllContracts(contractAddresses) {
         this.Contracts = {};
-        this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, Comptroller.abi);
+        this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, ComptrollerV3.abi);
 
         const compAddress = await this.Contracts.Comptroller.getCompAddress();
         this.Contracts.Comp = this.initContract(compAddress, Comp.abi);
