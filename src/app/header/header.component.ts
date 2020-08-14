@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { SharedService } from '../commonData.service';
 import { CookieService } from 'ngx-cookie-service';
-import emailjs from 'emailjs-com';
 
 declare var $: any;
 
@@ -117,35 +116,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   viewOnboardingModal() {
     $('#previewModal').modal('show');
-  }
-
-  submitOnboardingForm() {
-    const myform = $('#myform');
-    const investorType = $('input[name=\'wholesale_investing_as\']:checked').val();
-
-    // var params = myform.serializeArray().reduce(function(obj, item) {
-    //    obj[item.name] = item.value;
-    //    return obj;
-    // }, {});
-
-    const params = {
-        investor_type: investorType
-    };
-
-    // tslint:disable: variable-name
-    const service_id = 'sendgrid';
-    const template_id = 'template_siNEEQDI';
-    const user_id = 'user_CQFZWxNZIFSRRJphtIHwZ';
-    myform.find('button').text('Sending...');
-    emailjs.send(service_id, template_id, params, user_id)
-      .then(() => {
-          alert('Sent!');
-          myform.find('button').text('Send');
-        }, (err) => {
-          alert('Oops! Something went wrong. Please try again later.\r\n Response:\n ' + JSON.stringify(err));
-          myform.find('button').text('Send');
-    });
-    return false;
   }
 
 }
