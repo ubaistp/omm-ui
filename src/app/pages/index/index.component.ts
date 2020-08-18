@@ -61,8 +61,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     public etherScanLinks = [];
 
     constructor(private http: HttpClient, private sharedService: SharedService) {
-      this.portfolioLinks = ['https://www.etoro.com/people/konkrete/portfolio', 'https://uniswap.info/pair/0x3041cbd36888becc7bbcbc0045e3b1f144466f5f'];
-      this.etherScanLinks = ['https://etherscan.io/token/0xf573e6740045b5387f6d36a26b102c2adf639af5', 'https://etherscan.io/address/0x3041cbd36888becc7bbcbc0045e3b1f144466f5f'];
+      this.portfolioLinks = ['https://www.etoro.com/people/konkrete/portfolio', 'https://etherscan.io/token/0xAF46644613796f6c1eAda470E1A6c4B99694cb14'];
+      this.etherScanLinks = ['https://etherscan.io/token/0xf573e6740045b5387f6d36a26b102c2adf639af5', 'https://etherscan.io/token/0x3041cbd36888becc7bbcbc0045e3b1f144466f5f?a=0x726efd49a6ee081781e1e5857dd1f75ede356618'];
     }
 
     ngOnInit() {

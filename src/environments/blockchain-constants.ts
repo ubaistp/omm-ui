@@ -11,6 +11,7 @@ export const blockchainConstants = {
       '0xDeD5021Fc9d0A0B191F32669C114B6e31Ef61883',
       '0x8ff2eC4D76397cCF44b48A3dc4C81Ac2Cba241C8',
       '0xfd6921fE025F612ee0237849671bf8F60FA62F2b',
+      '0x0Fc825B3c2333eAAf277cED5CA239EDa82913be5',
     ],
   },
   ropsten: {

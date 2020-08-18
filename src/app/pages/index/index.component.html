@@ -153,7 +153,7 @@
                                                 </div>
                                                 <div class="col-sm-4 col-3 text-right">
                                                     <div class="balance">
-                                                        <div>{{localeString((toDecimal(token.totalErc20Supply, 18)*token.priceUsd), 18)}}</div>
+                                                        <div>{{localeString((toDecimal(token.totalErc20Supply, 18)*token.priceUsd), 0)}}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2 col-2 text-right">
@@ -196,7 +196,7 @@
                             </div>
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
-                                    <p>Open Token Lending (OTL) is a censorship resistant money market protocol where lenders can get a consistent rate of return with real world collateral in a permissionless, trust minimized manner</p>
+                                    <p>Open Token Lending (OTL) is a censorship resistant money market protocol where lenders can get a consistent rate of return in a permissionless, trust minimized manner.</p>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                             </div>
                             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                 <div class="panel-body">
-                                    <p>You can connect via metamask or wallet connect to the OTL and supply DAI, USDC and USDT to the platform and start earning interest immediately. You may withdraw your deployed tokens at any time, including accrued interest (provided there is liquidity, which we are working towards improving).</p>
+                                    <p>You can connect via metamask or wallet connect to the OTL and supply DAI to the platform to start earning interest immediately. You may withdraw your deployed tokens at any time, including accrued interest (provided there is liquidity, which we are working towards improving).</p>
                                 </div>
                             </div>
                         </div>
@@ -224,7 +224,7 @@
                             </div>
                             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                                 <div class="panel-body">
-                                    <p>Our goal is to make it possible to lend any token against any token, however right now we allow DAI, USDC and USDT. More currency pegged tokens will be added in the coming days on the lending side.</p>
+                                    <p>Currently you can lend with DAI. Support for other currencies such as USDT/USDC/USK will be added soon.</p>
                                 </div>
                             </div>
                         </div>
@@ -238,7 +238,7 @@
                             </div>
                             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                                 <div class="panel-body">
-                                    <p>Eventually anyone with tokenised assets can borrow from the platform by using the asset as collateral. Right now we have tokenized shares in Apple (AAPL), Tesla (TSLA) and Facebook (FB) and are using these stocks as collateral. You can check details of the collateral from the Asset Explorer and read <a href="https://medium.com/open-token-lending/why-we-chose-listed-shares-as-the-first-real-world-asset-collateral-on-the-otl-f0f5d4c2c9d2" target="_blank">why we chose listed shares as our first collateral here</a>. These shares have a collateral factor of 80% of their value on the OTL.</p>
+                                    <p>Eventually anyone with tokenised assets (including tokenised real world assets) can borrow from the platform by using the asset as collateral. For now, during the alpha, we (the OpenDAO) are the only borrowers on the system.</p>
                                 </div>
                             </div>
                         </div>
@@ -246,15 +246,16 @@
                             <div class="panel-heading" role="tab" id="headingFive">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                        What is the Asset Explorer?
+                                        What is being used as collateral?
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
                                 <div class="panel-body">
-                                    <p>The asset explorer is where you can view the tokenized assets being used as collateral on the system. It includes the token name, the type of asset, it’s collateral value on the system, and the link to the token contract itself. By clicking the link under asset Link, you will be directed to an information page with more details on the asset including any relevant loan agreements. In the case of the tokenised shares, it will show the publicly viewable portfolio of the shares on Etoro.</p>
-                                    <br>
-                                    <img src="assets/img/faqs/asset_explorer.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto; width: 100%;" />
+                                    <p>We currently have two types of collateral on the OTL during the alpha:</p>
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Custodial Liquidity Pool Tokens (representing our share of the Uniswap V2 USDT/USDC liquidity pool)</p>
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Tokenized shares in Apple (AAPL), Tesla (TSLA) and Facebook (FB)</p>
+                                    <p>Following the alpha, we will allow other individuals to borrow against their positions in any USK to USDT/USDC liquidity pool. You can read more about USK and its role in bringing real world assets on-chain <a href="https://www.opendao.com/usk" target="_blank">here</a>.</p>
                                 </div>
                             </div>
                         </div>
@@ -262,71 +263,87 @@
                             <div class="panel-heading" role="tab" id="headingSix">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                                        How often is interest calculated? Can I take my deployed funds out any time?
+                                        What is the Asset Explorer?
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
                                 <div class="panel-body">
-                                    <p>Interest is calculated per each ethererum block which is roughly every 15 seconds. You can take out your funds, including interest, anytime - provided there is enough liquidity in the pool. Liquidity of a particular asset is shown when you click the asset. In the example below there is currently 115.03 USDT which can be withdrawn from the pool.</p>
-                                    <br>
-                                    <img src="assets/img/faqs/sample_modal.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto; width: 100%;" />
+                                    <p>The asset explorer is where you can view the tokenized assets being used as collateral on the system. It includes the token name, the type of asset, it’s collateral value on the system, and the link to the token contract itself. By clicking the link under asset Type, you will be directed to an information page with more details on the asset.</p>
+                                    <!-- <br> -->
+                                    <!-- <img src="assets/img/faqs/asset_explorer.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto; width: 100%;" /> -->
                                 </div>
                             </div>
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingSeven">
                                 <h4 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                                        I just deployed, and the interest rate went down. Why?
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                        How often is interest calculated? Can I take my deployed funds out any time?
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                            <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
                                 <div class="panel-body">
-                                    <p>The interest rate from the pool is dynamically adjusted. As more lenders deploy, the interest will reduce until the additional amount in the pool is borrowed. This is similar to utilisation rate on other protocols. When more borrowers borrow from the pool interest rates will come back up. </p>
+                                    <p>Interest is calculated per each ethereum block which is roughly every 15 seconds. You can take out your funds, including interest, anytime - provided there is enough liquidity in the pool. Liquidity of a particular asset is shown when you click the asset. In the example below there is currently 194.06 DAI which can be withdrawn from the pool.</p>
+                                    <br>
+                                    <img src="assets/img/faqs/liquidity_modal.png" class="mx-auto d-block img-fluid" style="max-width: 600px; margin: auto; width: 100%;" />
                                 </div>
                             </div>
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingEight">
                                 <h4 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                                        Clicking Enable, Deploy or Withdraw doesn’t seem to do anything
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                        I just deployed, and the interest rate went down. Why?
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                            <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
                                 <div class="panel-body">
-                                    <p>Firstly, ensure you’re connected to the OTL with either Metamask or Wallet Connect. Clicking any of the above buttons will require your wallet to confirm the transaction, which is a prompt you’ll have to confirm. Once you have confirmed the transaction, the OTL will refresh to reflect your changes.</p>
+                                    <p>The interest rate from the pool is dynamically adjusted. As more lenders deploy, the interest will reduce until the additional amount in the pool is borrowed. This is similar to utilisation rate on other protocols. When more borrowers borrow from the pool interest rates will come back up.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingNine">
                                 <h4 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseEight">
-                                        Are there governance tokens?
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                                        Clicking Enable, Deploy or Withdraw doesn’t seem to do anything
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
                                 <div class="panel-body">
-                                    <p>Once the alpha is complete, OTL platform governance tokens will be distributed to investors, core team and to the community. <a href="https://medium.com/open-token-lending/otl-transition-to-community-governance-56c12515e34e" target="_blank">You can read more about our governance token plans here.</a></p>
+                                    <p>Firstly, ensure you’re connected to the OTL with Metamask. Clicking any of the above buttons will require your wallet to confirm the transaction, which is a prompt you’ll have to confirm. Once you have confirmed the transaction the OTL will refresh to reflect your changes.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingTen">
                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                        What are Open Governance Tokens?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                                <div class="panel-body">
+                                    <p>The OTL is part of the OpenDAO ecosystem. Lenders, and eventually borrowers, will be rewarded with Open Governance Tokens for performing these actions. Token holders have a vote and say on which assets can be used and borrowed against on the OTL as well as other governance initiatives. You can learn more about OpenDAO and Open tokens <a href="https://www.opendao.io" target="_blank">here</a>.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingEleven">
+                                <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
                                         What are kTokens?
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseEleven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                            <div id="collapseEleven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEleven">
                                 <div class="panel-body">
-                                    <p>kTokens are similar to cTokens, or aTokens and iTokens etc from other money market platforms out there. They represent your claim to the money you have deployed on the platform and its interest. <br><br> Once you deploy DAI to the platform you will receive an ERC20 kDAI. This is interest bearing token and steadily rise in value. <br><br> While on the platform interface they are not visible, you may check them in your metamask by adding this custom token. </p> <br> The addresses are <br><br>
+                                    <p>kTokens are similar to cTokens, or aTokens and iTokens etc from other money market platforms out there. They represent your claim to the money you have deployed on the OTL and the interest generated. <br><br> Once you deploy DAI to the platform you will receive kDAI in return. These are interest bearing tokens and steadily rise in value. <br><br> While on the platform interface they are not visible, you may check them in your metamask by adding those custom tokens. </p> <br> The addresses are <br><br>
                                     <table class="table table-bordered col-md-10 offset-md-1 col-sm-12 text-justify">
                                         <tbody>
                                           <tr>
@@ -344,7 +361,7 @@
                                         </tbody>
                                     </table>
                                     <br>
-                                    Eventually this kToken should be freely tradeable themselves and can serve as a medium of exchange.
+                                    Eventually these kTokens should be freely tradeable themselves and can serve as a medium of exchange.
                                 </div>
                             </div>
                         </div>
