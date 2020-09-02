@@ -12,6 +12,9 @@
         <div class="spacer"></div>
         <!-- <a class="asset btn btn-grey-box" (click)="viewOnboardingModal()">How does it work?</a> -->
         <div class="asset btn btn-grey-box">
+          <span><a href="https://medium.com/opendao" target="_blank">BETA</a></span>
+        </div>
+        <div class="asset btn btn-grey-box">
           <span class="dot"></span>
           <span *ngIf="networkString">{{ networkString.name }}</span>
         </div>
@@ -38,10 +41,9 @@
                     <a class="asset btn wallet-connect-btns" (click)="connect('wallet-connect')">
                       <img src="/assets/img/wallet-connect-logo.png" class="wallet-btn-logo" alt="Metamask logo">
                       Wallet Connect</a>
-                      <a class="asset btn wallet-connect-btns" (click)="viewOnboardingModal()">
+                      <!-- <a class="asset btn wallet-connect-btns" (click)="viewOnboardingModal()">
                         <i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>
-                      <!-- <img src="/assets/img/wallet-connect-logo.png" class="wallet-btn-logo" alt="Metamask logo"> -->
-                      How does it work?</a>
+                      How does it work?</a> -->
                 </div>
             </div>
         </div>
