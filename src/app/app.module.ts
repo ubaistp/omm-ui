@@ -20,7 +20,7 @@ const appRoutes: Routes = [
   { path: '', component: IndexComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'borrow', component: BorrowComponent },
-  // { path: 'governance', component: GovernanceComponent },
+  { path: 'governance', component: GovernanceComponent },
   { path: '**', redirectTo: '' },
 ];
 
