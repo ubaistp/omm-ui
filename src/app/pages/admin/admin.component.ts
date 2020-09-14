@@ -48,7 +48,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.sharedService.proceedApp$.subscribe(
       value => {
         if (value === true) {
-            this.initializeProvider();
+          this.initializeProvider();
         }
       },
       error => console.error(error)
@@ -81,7 +81,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.estimateGasPrice();
 
     // In case there are no markets
-    if (allListedTokens.length === 0 ) {
+    if (allListedTokens.length === 0) {
       this.afterInitToken();
       return;
     }
@@ -100,34 +100,34 @@ export class AdminComponent implements OnInit, AfterViewInit {
     let proposedGP: any;
     const url = 'https://ethgasstation.info/json/ethgasAPI.json';
     this.http.get(url)
-    .subscribe(
-      data => {
-        proposedGP = (parseFloat(data['fast']) + parseFloat(data['average'])) / (10 * 2);   // convert to gWei then average
-        proposedGP = proposedGP.toFixed();
-        this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
-      },
-      async (error) => {
-        let gasPrice = await this.web3.getGasPrice();
-        gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
+      .subscribe(
+        data => {
+          proposedGP = (parseFloat(data['fast']) + parseFloat(data['average'])) / (10 * 2);   // convert to gWei then average
+          proposedGP = proposedGP.toFixed();
+          this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+        },
+        async (error) => {
+          let gasPrice = await this.web3.getGasPrice();
+          gasPrice = ethers.utils.formatUnits(gasPrice, 'gwei');
 
-        proposedGP = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.15;  // 15% extra
-        proposedGP = proposedGP.toFixed();
-        this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
-      }
-    );
+          proposedGP = parseFloat(gasPrice) + parseFloat(gasPrice) * 0.15;  // 15% extra
+          proposedGP = proposedGP.toFixed();
+          this.GAS_PRICE = ethers.utils.parseUnits(proposedGP, 'gwei');
+        }
+      );
   }
 
   private async getContractAddresses() {
-      let contractAddresses = {};
-      this.contractAddresses = {};
-      const network = await this.web3.getNetwork();
-      if (network.name === 'homestead') {
-          contractAddresses = blockchainConstants.mainnet;
-      } else {
-          contractAddresses = blockchainConstants[network.name];
-      }
-      this.contractAddresses = contractAddresses;
-      return contractAddresses;
+    let contractAddresses = {};
+    this.contractAddresses = {};
+    const network = await this.web3.getNetwork();
+    if (network.name === 'homestead') {
+      contractAddresses = blockchainConstants.mainnet;
+    } else {
+      contractAddresses = blockchainConstants[network.name];
+    }
+    this.contractAddresses = contractAddresses;
+    return contractAddresses;
   }
 
   private async initAllContracts(contractAddresses) {
@@ -191,7 +191,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.irData = [];
     const irAddrArray = this.contractAddresses.DynamicInterestRateModel;
     irAddrArray.forEach(addr => {
-      this.irData.push({address: addr});
+      this.irData.push({ address: addr });
     });
     this.irData.forEach(irObj => {
       const White = this.initContract(irObj.address, WhitePaperInterestRateModel.abi);
@@ -383,7 +383,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   public toDecimal(val, decimal) {
     if (val === undefined || val === null) {
-        return 0;
+      return 0;
     }
     val = val.toString();
     val = new BigNumber(val);

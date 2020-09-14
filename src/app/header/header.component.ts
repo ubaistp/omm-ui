@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.networkString = {};
     this.web3 = await this.sharedService.web3;
 
-    if (typeof(this.web3) === 'undefined') { return; }
+    if (typeof (this.web3) === 'undefined') { return; }
 
     const network = await this.web3.getNetwork();
     const networkName = network.name;
