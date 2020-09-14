@@ -11,9 +11,16 @@
         <img height="70" src="assets/img/otl-logo-black.PNG" />
         <div class="spacer"></div>
         <!-- <a class="asset btn btn-grey-box" (click)="viewOnboardingModal()">How does it work?</a> -->
-        <div class="asset btn btn-grey-box">
-          <span><a href="https://medium.com/opendao" target="_blank">BETA</a></span>
-        </div>
+        <a href="https://medium.com/opendao" target="_blank">
+          <div class="asset btn btn-grey-box">
+            <span style="color: #ff8686;">BETA</span>
+          </div>
+        </a>
+        <a routerLink="/governance" routerLinkActive="active" style="color: white;">
+          <div class="asset btn btn-grey-box">
+            <span>Rewards</span>
+          </div>
+        </a>
         <div class="asset btn btn-grey-box">
           <span class="dot"></span>
           <span *ngIf="networkString">{{ networkString.name }}</span>
