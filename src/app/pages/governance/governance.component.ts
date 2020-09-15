@@ -28,7 +28,7 @@ export class GovernanceComponent implements OnInit {
   public GAS_PRICE = ethers.utils.parseUnits('20', 'gwei');
   public compBalance: any;
   public compEarned = new BigNumber(0);
-  public compEarnedDisplayed: any = '-';
+  public loadComplete = false;
 
   constructor(private http: HttpClient, private sharedService: SharedService) {
   }
@@ -61,7 +61,7 @@ export class GovernanceComponent implements OnInit {
 
   public async setup() {
     this.userAddress = await this.web3.getSigner().getAddress();
-    // this.userAddress = '0x726eFD49A6EE081781e1E5857DD1f75eDe356618';
+    // this.userAddress = '0x0d4B0b4DfD847b4C0A1F927FE7D3eaa5C8fA4Abf';
     cApp.blockPage({
       overlayColor: '#000000',
       state: 'secondary',
@@ -77,14 +77,6 @@ export class GovernanceComponent implements OnInit {
     await this.getCompEarned();
     cApp.unblockPage();
     this.estimateGasPrice();
-
-    setTimeout(() => {
-      this.getCompEarned();
-    }, 5000);
-
-    setTimeout(() => {
-      this.setCompEarnedDisplay();
-    }, 6000);
   }
 
 
@@ -146,6 +138,8 @@ export class GovernanceComponent implements OnInit {
   }
 
   private async getCompEarned() {
+    let count = 0;
+    let compedMarketCount = 0;
     const DOUBLE = new BigNumber(1e36);
     const EXP = new BigNumber(1e18);
     this.compEarned = new BigNumber(0);
@@ -155,72 +149,72 @@ export class GovernanceComponent implements OnInit {
 
     const allMarkets = await this.Contracts.Comptroller.getAllMarkets();
 
-    allMarkets.forEach(cTokenAddr => {
+    await allMarkets.forEach(async (cTokenAddr) => {
+      const markets = await this.Contracts.Comptroller.markets(cTokenAddr);
+      if (!markets.isComped) {
+        return;
+      }
+
+      compedMarketCount++;
+
       const CTokenContract = this.initContract(cTokenAddr, CErc20Immutable.abi);
 
       // For Supply
-      this.Contracts.Comptroller.compSupplyState(cTokenAddr).then(compSupplyState => {
-        const supplyIndex = new BigNumber(compSupplyState.index);
-        this.Contracts.Comptroller.compSupplierIndex(cTokenAddr, this.userAddress).then(compSupplierIndex => {
-          compSupplierIndex = new BigNumber(compSupplierIndex);
+      const compSupplyState = await this.Contracts.Comptroller.compSupplyState(cTokenAddr);
+      const supplyIndex = new BigNumber(compSupplyState.index);
 
-          if (compSupplierIndex.isEqualTo(0) && supplyIndex.isGreaterThan(0)) {
-            compSupplierIndex = new BigNumber(1e36);  // compInitialIndex
-          }
+      let compSupplierIndex = await this.Contracts.Comptroller.compSupplierIndex(cTokenAddr, this.userAddress);
+      compSupplierIndex = new BigNumber(compSupplierIndex);
 
-          const deltaIndex = supplyIndex.minus(compSupplierIndex);
+      if (compSupplierIndex.isEqualTo(0) && supplyIndex.isGreaterThan(0)) {
+        compSupplierIndex = new BigNumber(1e36);  // compInitialIndex
+      }
 
-          CTokenContract.balanceOf(this.userAddress).then(supplierTokens => {
-            supplierTokens = new BigNumber(supplierTokens);
-            let supplierDelta = supplierTokens.times(deltaIndex);
-            supplierDelta = supplierDelta.div(DOUBLE);
+      const deltaIndex = supplyIndex.minus(compSupplierIndex);
 
-            compTokenEarned = compTokenEarned.plus(supplierDelta);
+      let supplierTokens = await CTokenContract.balanceOf(this.userAddress);
+      supplierTokens = new BigNumber(supplierTokens);
+      let supplierDelta = supplierTokens.times(deltaIndex);
+      supplierDelta = supplierDelta.div(DOUBLE);
 
-            this.compEarned = this.compEarned.plus(compTokenEarned);
-          });
-        });
-      });
+      const supplierAccrued = compTokenEarned.plus(supplierDelta);
+      this.compEarned = this.compEarned.plus(supplierAccrued);
 
       // For Borrow
-      this.Contracts.Comptroller.compBorrowState(cTokenAddr).then(compBorrowState => {
-        const borrowIndex = new BigNumber(compBorrowState.index);
-        this.Contracts.Comptroller.compBorrowerIndex(cTokenAddr, this.userAddress).then(compBorrowerIndex => {
-          compBorrowerIndex = new BigNumber(compBorrowerIndex);
+      const compBorrowState = await this.Contracts.Comptroller.compBorrowState(cTokenAddr);
+      const borrowIndex = new BigNumber(compBorrowState.index);
+      let compBorrowerIndex = await this.Contracts.Comptroller.compBorrowerIndex(cTokenAddr, this.userAddress);
+      compBorrowerIndex = new BigNumber(compBorrowerIndex);
 
-          if (compBorrowerIndex.isGreaterThan(0)) {
-            const deltaIndex = borrowIndex.minus(compBorrowerIndex);
+      if (compBorrowerIndex.isGreaterThan(0)) {
+        const deltaIndexBorrow = borrowIndex.minus(compBorrowerIndex);
 
-            CTokenContract.borrowBalanceStored(this.userAddress).then(borrowBalanceStored => {
-              borrowBalanceStored = new BigNumber(borrowBalanceStored);
-              borrowBalanceStored = borrowBalanceStored.times(EXP);
+        let borrowBalanceStored = await CTokenContract.borrowBalanceStored(this.userAddress);
+        borrowBalanceStored = new BigNumber(borrowBalanceStored);
+        borrowBalanceStored = borrowBalanceStored.times(EXP);
 
-              CTokenContract.borrowIndex().then(marketBorrowIndex => {
-                marketBorrowIndex = new BigNumber(marketBorrowIndex);
-                const borrowerAmount = borrowBalanceStored.div(marketBorrowIndex);
+        let marketBorrowIndex = await CTokenContract.borrowIndex();
+        marketBorrowIndex = new BigNumber(marketBorrowIndex);
+        const borrowerAmount = borrowBalanceStored.div(marketBorrowIndex);
 
-                let borrowerDelta = borrowerAmount.times(deltaIndex);
-                borrowerDelta = borrowerDelta.div(DOUBLE);
+        let borrowerDelta = borrowerAmount.times(deltaIndexBorrow);
+        borrowerDelta = borrowerDelta.div(DOUBLE);
 
-                compTokenEarned = compTokenEarned.plus(borrowerDelta);
-
-                this.compEarned = this.compEarned.plus(compTokenEarned);
-              });
-            });
-          }
-        });
-      });
-      // Borrow end
+        const borrowerAccrued = compTokenEarned.plus(borrowerDelta);
+        this.compEarned = this.compEarned.plus(borrowerAccrued);
+      }
+      count++;
+      if (compedMarketCount === count) {
+        this.loadComplete = true;
+      }
     });
-
   }
 
-  private setCompEarnedDisplay() {
+  public formatCompEarned() {
     if (this.compEarned === undefined || this.compEarned.isEqualTo(0)) {
-      this.compEarnedDisplayed = 0;
+      return new BigNumber(0).toFixed(6);
     }
-
-    this.compEarnedDisplayed = this.compEarned.div(1e18).toFixed(6);   // 18 decimals
+    return this.compEarned.div(1e18).toFixed(6);   // 18 decimals
   }
 
   public toDecimal(val, decimal) {
