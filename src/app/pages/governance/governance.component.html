@@ -21,7 +21,8 @@
                         <h3 class="governance-amount-heading">OPEN Earned</h3>
                     </div>
                     <div class="col-md-6">
-                        <span class="governance-amount">{{ compEarnedDisplayed }}</span>
+                        <span *ngIf="loadComplete" class="governance-amount">{{ formatCompEarned() }}</span>
+                        <span *ngIf="!loadComplete" class="governance-amount">-</span>
                     </div>
                     <!-- <div class="col-md-6 text-right">
                         <a href="#" (click)="collectCompEarned(); $event.preventDefault(); $event.stopPropagation();" style="font-weight: bold;">Collect</a>
