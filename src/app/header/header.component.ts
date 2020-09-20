@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { SharedService } from '../commonData.service';
-import { CookieService } from 'ngx-cookie-service';
 
 declare var $: any;
 
@@ -18,7 +17,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   private networkName: any;
 
 
-  constructor(private sharedService: SharedService, private cookie: CookieService) {
+  constructor(private sharedService: SharedService) {
     this.initialize();
   }
   ngOnInit() {
@@ -34,11 +33,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   public async connect(walletName) {
     await this.sharedService.connect(walletName);
-    const cookieExists: boolean = this.cookie.check('first_visit');
-    this.cookie.set('first_visit', 'true', 730);
-    if (!cookieExists) {
-      $('#previewModal').modal('show');
-    }
   }
 
   public async initialize() {
