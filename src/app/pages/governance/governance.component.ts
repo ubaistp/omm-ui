@@ -146,6 +146,7 @@ export class GovernanceComponent implements OnInit {
 
     let compTokenEarned = await this.Contracts.Comptroller.compAccrued(this.userAddress);
     compTokenEarned = new BigNumber(compTokenEarned);
+    this.compEarned = this.compEarned.plus(compTokenEarned);
 
     const allMarkets = await this.Contracts.Comptroller.getAllMarkets();
 
@@ -177,8 +178,8 @@ export class GovernanceComponent implements OnInit {
       let supplierDelta = supplierTokens.times(deltaIndex);
       supplierDelta = supplierDelta.div(DOUBLE);
 
-      const supplierAccrued = compTokenEarned.plus(supplierDelta);
-      this.compEarned = this.compEarned.plus(supplierAccrued);
+      // const supplierAccrued = compTokenEarned.plus(supplierDelta);
+      this.compEarned = this.compEarned.plus(supplierDelta);
 
       // For Borrow
       const compBorrowState = await this.Contracts.Comptroller.compBorrowState(cTokenAddr);
@@ -200,8 +201,8 @@ export class GovernanceComponent implements OnInit {
         let borrowerDelta = borrowerAmount.times(deltaIndexBorrow);
         borrowerDelta = borrowerDelta.div(DOUBLE);
 
-        const borrowerAccrued = compTokenEarned.plus(borrowerDelta);
-        this.compEarned = this.compEarned.plus(borrowerAccrued);
+        // const borrowerAccrued = compTokenEarned.plus(borrowerDelta);
+        this.compEarned = this.compEarned.plus(borrowerDelta);
       }
       count++;
       if (compedMarketCount === count) {
