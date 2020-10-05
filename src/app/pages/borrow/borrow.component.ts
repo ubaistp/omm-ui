@@ -608,7 +608,7 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     const cTokenContract = this.initContract(cTokenAddress, CErc20Immutable.abi);
     const overrides = {
       gasPrice: this.GAS_PRICE,
-      gasLimit: 500000,
+      gasLimit: 600000,
     };
     const tx = await cTokenContract.borrow(amountInDec, overrides);
     await this.web3.waitForTransaction(tx.hash);
