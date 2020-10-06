@@ -29,6 +29,10 @@ export class GovernanceComponent implements OnInit {
   public compBalance: any;
   public compEarned = new BigNumber(0);
   public loadComplete = false;
+  public tokenData: any;
+  public cashTokenData = [];
+  public totalCashDeployed = 0;
+
 
   constructor(private http: HttpClient, private sharedService: SharedService) {
   }
@@ -77,6 +81,7 @@ export class GovernanceComponent implements OnInit {
     await this.getCompEarned();
     cApp.unblockPage();
     this.estimateGasPrice();
+    this.filterTable();
   }
 
 
@@ -248,5 +253,33 @@ export class GovernanceComponent implements OnInit {
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
   }
+
+  filterTable() {
+    this.cashTokenData = this.filterCashTokenArray();
+  }
+
+  public filterCashTokenArray() {
+    if (this.tokenData.length === 0) { return; }
+
+    const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) === 0);
+    return result;
+  }
+
+
+
+  private calcTotalDeployedAmount() {
+    this.totalCashDeployed = 0;
+    this.cashTokenData.forEach(token => {
+      if (parseFloat(token.totalErc20Supply) >= 0) {
+        this.totalCashDeployed += (parseFloat(token.totalErc20Supply) * parseFloat(token.priceUsd));
+      }
+    });
+  }
+
+  public calculateReward(open_price: string): void {  
+    let reward_apy = (2880*365*parseInt(open_price))/1;
+    $('#reward_apy').text(reward_apy + " %");
+}
+
 
 }
