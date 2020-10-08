@@ -155,7 +155,17 @@ export class GovernanceComponent implements OnInit {
 
     await allMarkets.forEach(async (cTokenAddr) => {
       const markets = await this.Contracts.Comptroller.markets(cTokenAddr);
-      if (!markets.isComped) {
+
+      // initial filter
+      // if (!markets.isComped) { return; }
+
+      // modified filter
+      const compSupplyState = await this.Contracts.Comptroller.compSupplyState(cTokenAddr);
+      const suppIndexCheck = new BigNumber(compSupplyState.index);
+      const compBorrowState = await this.Contracts.Comptroller.compBorrowState(cTokenAddr);
+      const borrIndexCheck = new BigNumber(compBorrowState.index);
+
+      if (suppIndexCheck.isEqualTo(0) && borrIndexCheck.isEqualTo(0)) {
         return;
       }
 
@@ -164,7 +174,6 @@ export class GovernanceComponent implements OnInit {
       const CTokenContract = this.initContract(cTokenAddr, CErc20Immutable.abi);
 
       // For Supply
-      const compSupplyState = await this.Contracts.Comptroller.compSupplyState(cTokenAddr);
       const supplyIndex = new BigNumber(compSupplyState.index);
 
       let compSupplierIndex = await this.Contracts.Comptroller.compSupplierIndex(cTokenAddr, this.userAddress);
@@ -185,7 +194,6 @@ export class GovernanceComponent implements OnInit {
       this.compEarned = this.compEarned.plus(supplierDelta);
 
       // For Borrow
-      const compBorrowState = await this.Contracts.Comptroller.compBorrowState(cTokenAddr);
       const borrowIndex = new BigNumber(compBorrowState.index);
       let compBorrowerIndex = await this.Contracts.Comptroller.compBorrowerIndex(cTokenAddr, this.userAddress);
       compBorrowerIndex = new BigNumber(compBorrowerIndex);
