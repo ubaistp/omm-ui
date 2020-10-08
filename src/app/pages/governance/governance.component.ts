@@ -7,6 +7,7 @@ import { BigNumber } from 'bignumber.js';
 import * as Comp from '../../../assets/contracts/Comp.json';
 import * as ComptrollerV3 from '../../../assets/contracts/ComptrollerV3.json';
 import * as CErc20Immutable from '../../../assets/contracts/CErc20Immutable.json';
+import * as ERC20Detailed from '../../../assets/contracts/ERC20Detailed.json';
 
 declare var $: any;
 declare var cApp: any;
@@ -29,10 +30,7 @@ export class GovernanceComponent implements OnInit {
   public compBalance: any;
   public compEarned = new BigNumber(0);
   public loadComplete = false;
-  public tokenData: any;
-  public cashTokenData = [];
-  public totalCashDeployed = 0;
-
+  public roiFactor = 0;
 
   constructor(private http: HttpClient, private sharedService: SharedService) {
   }
@@ -80,8 +78,8 @@ export class GovernanceComponent implements OnInit {
     this.compBalance = await this.getCompBalance();
     await this.getCompEarned();
     cApp.unblockPage();
+    this.setRoiFactor();
     this.estimateGasPrice();
-    this.filterTable();
   }
 
 
@@ -124,7 +122,7 @@ export class GovernanceComponent implements OnInit {
 
   private async initAllContracts(contractAddresses) {
     this.Contracts = {};
-    this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, ComptrollerV3.abi);
+    this.Contracts.Comptroller = this.initContract(contractAddresses.Comptroller, ComptrollerV3['abi']);
 
     const compAddress = await this.Contracts.Comptroller.getCompAddress();
     this.Contracts.Comp = this.initContract(compAddress, Comp.abi);
@@ -216,6 +214,40 @@ export class GovernanceComponent implements OnInit {
     });
   }
 
+  private async setRoiFactor() {
+    const blocksPerYear = 2102400;
+
+    const allMarkets = await this.Contracts.Comptroller.getAllMarkets();
+    let comprate = await this.Contracts.Comptroller.compRate();
+    comprate = parseFloat(comprate) / 10 ** 18;   // 18 decimal OPEN
+
+    const rewardPerYear = comprate * blocksPerYear;
+
+    for (let i = 0; i < allMarkets.length; i++) {
+      let cTokenAddr = allMarkets[i];
+      const market = await this.Contracts.Comptroller.markets(cTokenAddr);
+      if (market.isComped) {
+        const CTokenContract = this.initContract(cTokenAddr, CErc20Immutable.abi);
+        const supplyInDec = await this.getCtokenSupply(CTokenContract);
+
+        const underlyingAddr = await CTokenContract.underlying();
+        const TokenContract = this.initContract(underlyingAddr, ERC20Detailed.abi);
+        const decimals = await TokenContract.decimals();
+        const totalSupply = supplyInDec / (10 ** parseFloat(decimals));
+
+        this.roiFactor = rewardPerYear / totalSupply;
+        return;   // only for cashbox
+      }
+    }
+  }
+
+  private async getCtokenSupply(cTokenContract) {
+    const borrow = await cTokenContract.totalBorrows();
+    const cash = await cTokenContract.getCash();
+    const reserves = await cTokenContract.totalReserves();
+    return (parseFloat(cash) + parseFloat(borrow) + parseFloat(reserves));
+  }
+
   public formatCompEarned() {
     if (this.compEarned === undefined || this.compEarned.isEqualTo(0)) {
       return new BigNumber(0).toFixed(6);
@@ -254,32 +286,16 @@ export class GovernanceComponent implements OnInit {
     window.location.reload();
   }
 
-  filterTable() {
-    this.cashTokenData = this.filterCashTokenArray();
+  public calculateReward(openPrice: string) {
+    if (openPrice === undefined) {
+      return '0 %';
+    } else if (parseFloat(openPrice) >= 0 && this.roiFactor >= 0) {
+      let rewardApy = this.roiFactor * parseFloat(openPrice);
+      rewardApy = this.toDecimal(rewardApy, 4);
+      $('#reward_apy').text(rewardApy + " %");
+    } else {
+      return '0 %';
+    }
   }
-
-  public filterCashTokenArray() {
-    if (this.tokenData.length === 0) { return; }
-
-    const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) === 0);
-    return result;
-  }
-
-
-
-  private calcTotalDeployedAmount() {
-    this.totalCashDeployed = 0;
-    this.cashTokenData.forEach(token => {
-      if (parseFloat(token.totalErc20Supply) >= 0) {
-        this.totalCashDeployed += (parseFloat(token.totalErc20Supply) * parseFloat(token.priceUsd));
-      }
-    });
-  }
-
-  public calculateReward(open_price: string): void {  
-    let reward_apy = (2880*365*parseInt(open_price))/1;
-    $('#reward_apy').text(reward_apy + " %");
-}
-
 
 }
