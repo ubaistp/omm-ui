@@ -295,15 +295,16 @@ export class GovernanceComponent implements OnInit {
   }
 
   public calculateReward(openPrice: string) {
+    let rewardApy;
     if (openPrice === undefined) {
-      return '0 %';
+      rewardApy = 0;
     } else if (parseFloat(openPrice) >= 0 && this.roiFactor >= 0) {
-      let rewardApy = this.roiFactor * parseFloat(openPrice);
-      rewardApy = this.toDecimal(rewardApy, 4);
-      $('#reward_apy').text(rewardApy + " %");
+      rewardApy = this.roiFactor * parseFloat(openPrice);
+      rewardApy = this.localeString(rewardApy, 4);
     } else {
-      return '0 %';
+      rewardApy = 0;
     }
+    $('#reward_apy').text(rewardApy + " %");
   }
 
 }
