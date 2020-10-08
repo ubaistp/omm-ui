@@ -79,7 +79,7 @@
                                         </div>
                                         <div class="assets">
                                             <a class="asset" *ngFor="let token of cashTokenData; let i = index"
-                                                (click)="openSupplyModal(token.id)">
+                                                (click)="openSupplyModal(token.id)" style="padding: 0.75rem 2rem;">
                                                 <div class="col-3 col-sm-3">
                                                     <div class="balance">
                                                         <img src="assets/img/{{ token.symbol }}_logo.png" onError="this.onerror=null;this.src='assets/img/ether_logo.png';" alt="{{ token.symbol }} logo" class="token-logos" />
