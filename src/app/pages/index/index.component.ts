@@ -91,6 +91,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   filterTable() {
     this.cashTokenData = this.filterCashTokenArray();
     this.assetTokenData = this.filterAssetTokenArray();
+    // this.sortCashTokenArray();
   }
 
   private calcTotalAssetTokenSupply() {
@@ -136,6 +137,44 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     const result = this.tokenData.filter(token => parseFloat(token.collateralFactor) !== 0);
     return result;
   }
+
+  // public sortCashTokenArray() {
+  //   let sortedCashTokenArray = [];
+  //   let cashTokenSortedSymbols = ['DAI', 'USDT', 'USDC', 'TUSD', 'MUSD', 'LINKUSD'];
+  //   // let temp = [];
+  //   // let result;
+
+  //   cashTokenSortedSymbols.forEach(symbol => {
+  //       this.cashTokenData.forEach(token => {
+  //           if(token.symbol === cashTokenSortedSymbols.symbol) {
+  //             sortedCashTokenArray.push(token);
+  //           }
+  //       });
+  //     // result = this.cashTokenData.filter(token => symbol === token.symbol);
+  //     // sortedCashTokenArray.push(result);
+
+  //     //   this.cashTokenData.forEach(token => {
+  //     //     if(symbol === token.symbol) {
+  //     //       sortedCashTokenArray.push(token);
+  //     //     }
+  //     // });
+  //     // console.log(result);
+  //     // this.cashTokenData = sortedCashTokenArray;
+  //   });
+  //   // console.log(sortedCashTokenArray);
+
+  //   // this.cashTokenData.forEach(token => {
+  //   //       if(token.symbol !== cashTokenSortedSymbols.symbol) {
+  //   //         sortedCashTokenArray.push(token);
+  //   //       }
+  //   //       else {
+  //   //         temp.push(token); 
+  //   //       }
+  //   //   });
+
+  //   this.cashTokenData = sortedCashTokenArray;
+  //   // console.log(temp);
+  // }
 
   public setSelect2() {
     setTimeout(() => {

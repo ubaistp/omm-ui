@@ -53,6 +53,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
   public collateralBorrowEnable = false;
   public typeViewSupply = 'supply';
   public typeViewBorrow = 'borrow';
+  public totalCashLoans = 0;
+  public totalCashDeployed = 0;
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
@@ -77,6 +79,24 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
   filterTable() {
     this.cashTokenData = this.filterCashTokenArray();
     this.assetTokenData = this.filterAssetTokenArray();
+  }
+
+  private calcTotalLoanAmount() {
+    this.totalCashLoans = 0;
+    this.cashTokenData.forEach(token => {
+      if (parseFloat(token.totalErc20Borrows) >= 0) {
+        this.totalCashLoans += (parseFloat(token.totalErc20Borrows) * parseFloat(token.priceUsd));
+      }
+    });
+  }
+
+  private calcTotalDeployedAmount() {
+    this.totalCashDeployed = 5;
+    this.cashTokenData.forEach(token => {
+      if (parseFloat(token.totalErc20Supply) >= 0) {
+        this.totalCashDeployed += (parseFloat(token.totalErc20Supply) * parseFloat(token.priceUsd));
+      }
+    });
   }
 
   public filterCashTokenArray() {
@@ -186,6 +206,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.getAccountLiquidity();
       this.calcNetApy();
       this.setSelect2();
+      this.calcTotalLoanAmount();
+      this.calcTotalDeployedAmount();
       if (this.accountLiquidity !== 0) {
         this.sliderPercentage = (this.totalBorrowBalance) / (this.accountLiquidity) * 100;
       }
@@ -330,6 +352,12 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
       this.checkApproved(tokenContract, token.cTokenAddress).then(approved => {
         token.approved = approved;
       });
+      this.getCtokenBorrows(cTokenContract, tokenContract).then(totalErc20Borrows => {
+        token.totalErc20Borrows = totalErc20Borrows;
+      });
+      this.getCtokenSupply(cTokenContract, tokenContract).then(totalErc20Supply => {
+        token.totalErc20Supply = totalErc20Supply;
+      });
     });
     this.getCollateralFactor(token.cTokenAddress).then(collateralFactor => {
       token.collateralFactor = collateralFactor;
@@ -401,6 +429,24 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const utilizationRate = (parseFloat(borrow) * (10 ** 18)) / divBy;
     return utilizationRate.toString();
+  }
+
+  public async getCtokenBorrows(cTokenContract, tokenContract) {
+    const borrow = await cTokenContract.totalBorrows();
+    const erc20Decimals = await tokenContract.decimals();
+    const erc20Borrows = parseFloat(borrow) / 10 ** parseFloat(erc20Decimals);
+    return erc20Borrows;
+  }
+
+  public async getCtokenSupply(cTokenContract, tokenContract) {
+    const erc20Decimals = await tokenContract.decimals();
+    const borrow = await cTokenContract.totalBorrows();
+    const cash = await cTokenContract.getCash();
+    const reserves = await cTokenContract.totalReserves();
+    const added = (parseFloat(cash) + parseFloat(borrow) + parseFloat(reserves));
+    const divBy = 10 ** parseFloat(erc20Decimals);
+    const result = added / divBy;
+    return result;
   }
 
   public async getUserTokenBalance(tokenContract) {
@@ -633,6 +679,14 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
     const tx = await cTokenContract.repayBorrow(amountInDec, overrides);
     await this.web3.waitForTransaction(tx.hash);
     window.location.reload();
+  }
+
+  public localeString(num, precision) {
+    if (num === null || num === undefined) { return; }
+
+    num = parseFloat(num);
+    num = num.toLocaleString(undefined, { maximumFractionDigits: precision });
+    return num;
   }
 
   public async faucet() {
