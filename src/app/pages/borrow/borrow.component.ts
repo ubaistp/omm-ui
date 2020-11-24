@@ -182,7 +182,8 @@ export class BorrowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const allListedTokens = await this.fetchAllMarkets();
     await this.initAllContracts(contractAddresses);
-    const necessaryMarkets = await this.removeUnnecessaryMarkets(allListedTokens);
+    // const necessaryMarkets = await this.removeUnnecessaryMarkets(allListedTokens);
+    const necessaryMarkets = contractAddresses['TokensOnBorrow'];
     this.estimateGasPrice();
 
     // In case there are no markets
