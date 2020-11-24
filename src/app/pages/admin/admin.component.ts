@@ -203,10 +203,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       });
 
       White.multiplierPerBlock().then((multiplier) => {
-        multiplier = parseFloat(this.getNumber(multiplier));
-        let multiplierYear: any = 2102400 * multiplier / 10 ** 18;
-        multiplierYear = multiplierYear.toFixed(2);
-        irObj.multiplier = parseFloat(multiplierYear) * 100;
+        multiplier = new BigNumber(multiplier);
+        let factor = (new BigNumber(10)).pow(new BigNumber(16));
+        let multiplierYear = multiplier.times(new BigNumber(2102400)).div(factor)
+        irObj.multiplier = multiplierYear.toFixed();
       });
     });
     // console.log(this.irData);
@@ -387,7 +387,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     }
     val = val.toString();
     val = new BigNumber(val);
-    return val.toFixed(decimal);
+    return val.toFixed(decimal, BigNumber.ROUND_CEIL);
   }
 
   public trucateAddress(address) {
