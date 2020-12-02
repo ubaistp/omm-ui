@@ -8,7 +8,7 @@
         </div>
     </div> -->
     <div class="toolbar" role="banner">
-        <a href="https://opm.opendao.io">
+        <a [routerLink]="['']">
           <img src="assets/img/OTL-logo.png" style="margin-left: 2em; max-height: 41px;" />
         </a>
         <div class="spacer"></div>
@@ -45,10 +45,10 @@
                     <h2>Connect with:</h2>
                     <br>
                     <a class="asset btn wallet-connect-btns" (click)="connect('metamask')">
-                      <img src="/assets/img/metamask-logo.png" class="wallet-btn-logo" alt="Metamask logo">
+                      <img src="assets/img/metamask-logo.png" class="wallet-btn-logo" alt="Metamask logo">
                       Metamask</a>
                     <a class="asset btn wallet-connect-btns" (click)="connect('wallet-connect')">
-                      <img src="/assets/img/wallet-connect-logo.png" class="wallet-btn-logo" alt="Metamask logo">
+                      <img src="assets/img/wallet-connect-logo.png" class="wallet-btn-logo" alt="Metamask logo">
                       Wallet Connect</a>
                       <!-- <a class="asset btn wallet-connect-btns" (click)="viewOnboardingModal()">
                         <i class="fa fa-question-circle" style="margin-right: 0.3rem;" aria-hidden="true"></i>
